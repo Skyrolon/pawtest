@@ -35,15 +35,6 @@
             image-rendering: pixelated;
         }
         
-        .title {
-            font-size: 24px;
-            text-align: center;
-            margin-bottom: 30px;
-            color: #fbbf24;
-            text-shadow: 4px 4px 0 #0f172a;
-            line-height: 1.6;
-        }
-        
         .question-container {
             background: #3b82f6;
             border: 4px solid #fff;
@@ -174,6 +165,7 @@
             line-height: 2;
             color: #fff;
             text-align: left;
+            white-space: pre-wrap;
         }
         
         .restart-btn {
@@ -200,7 +192,6 @@
         }
         
         @media (max-width: 600px) {
-            .title { font-size: 16px; }
             .question-text { font-size: 11px; }
             .option-btn { font-size: 10px; }
             .progress-text { font-size: 10px; }
@@ -231,6 +222,9 @@
                 questions = parseQuestions(questionsData);
                 profiles = parseProfiles(profilesData);
                 
+                console.log('Questions loaded:', questions);
+                console.log('Profiles loaded:', profiles);
+                
                 startQuiz();
             } catch (error) {
                 document.getElementById('app').innerHTML = `
@@ -253,41 +247,33 @@
         }
         
         function parseQuestions(data) {
-            return data.map(row => ({
-                question: row.Question || row.question,
-                options: [
-                    {
-                        text: row['Option 1'] || row['option 1'],
-                        scores: parseScores(row['Option 1 Score'] || row['option 1 score'])
-                    },
-                    {
-                        text: row['Option 2'] || row['option 2'],
-                        scores: parseScores(row['Option 2 Score'] || row['option 2 score'])
-                    },
-                    {
-                        text: row['Option 3'] || row['option 3'],
-                        scores: parseScores(row['Option 3 Score'] || row['option 3 score'])
-                    },
-                    {
-                        text: row['Option 4'] || row['option 4'],
-                        scores: parseScores(row['Option 4 Score'] || row['option 4 score'])
-                    }
-                ]
-            })).filter(q => q.question);
-        }
-        
-        function parseScores(scoreStr) {
-            const scoreObj = {};
-            if (!scoreStr) return scoreObj;
+            const parsed = data.map(row => {
+                if (!row.question) return null;
+                
+                return {
+                    question: row.question,
+                    options: [
+                        {
+                            text: row.option1,
+                            trait: row.trait1
+                        },
+                        {
+                            text: row.option2,
+                            trait: row.trait2
+                        },
+                        {
+                            text: row.option3,
+                            trait: row.trait3
+                        },
+                        {
+                            text: row.option4,
+                            trait: row.trait4
+                        }
+                    ]
+                };
+            }).filter(q => q !== null);
             
-            const pairs = scoreStr.split(',');
-            pairs.forEach(pair => {
-                const [trait, value] = pair.trim().split(':');
-                if (trait && value) {
-                    scoreObj[trait.trim()] = parseInt(value.trim()) || 0;
-                }
-            });
-            return scoreObj;
+            return parsed;
         }
         
         function parseProfiles(data) {
@@ -311,8 +297,6 @@
             const progress = ((currentQuestion) / questions.length) * 100;
             
             document.getElementById('app').innerHTML = `
-                <h1 class="title">✨ PIXEL PERSONALITY QUIZ ✨</h1>
-                
                 <div class="question-container">
                     <div class="question-text">${q.question}</div>
                     <div class="options">
@@ -336,9 +320,15 @@
         function selectOption(optionIndex) {
             const option = questions[currentQuestion].options[optionIndex];
             
-            // Add scores
-            for (let trait in option.scores) {
-                scores[trait] = (scores[trait] || 0) + option.scores[trait];
+            // Parse trait like "E+2" or "I+1"
+            const trait = option.trait;
+            if (trait) {
+                const match = trait.match(/([A-Z])([+-]\d+)/);
+                if (match) {
+                    const letter = match[1];
+                    const value = parseInt(match[2]);
+                    scores[letter] = (scores[letter] || 0) + value;
+                }
             }
             
             currentQuestion++;
@@ -363,9 +353,11 @@
             const mbti = calculateMBTI();
             const result = profiles.find(p => p.mbti === mbti) || profiles[0];
             
+            console.log('Calculated MBTI:', mbti);
+            console.log('Scores:', scores);
+            console.log('Result:', result);
+            
             document.getElementById('app').innerHTML = `
-                <h1 class="title">✨ YOUR RESULT ✨</h1>
-                
                 <div class="result-container">
                     <div class="result-header">
                         <div class="animal-name">${result.animal}</div>
