@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pawtest</title>
+    <title>Pixel Personality Quiz</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Quicksand:wght@400;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&family=Gaegu:wght@400;700&family=VT323&display=swap');
         
         * {
             margin: 0;
@@ -16,114 +16,196 @@
         
         @keyframes float {
             0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
+            50% { transform: translateY(-15px); }
+        }
+        
+        @keyframes typewriter {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+        
+        @keyframes blink {
+            50% { border-color: transparent; }
+        }
+        
+        @keyframes slideProgress {
+            0% { left: 0; }
+            100% { left: calc(100% - 20px); }
         }
         
         @keyframes sparkle {
-            0%, 100% { opacity: 0; transform: scale(0); }
-            50% { opacity: 1; transform: scale(1); }
+            0%, 100% { opacity: 0.5; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+        
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(251, 207, 232, 0.4); }
+            50% { box-shadow: 0 0 40px rgba(251, 207, 232, 0.8); }
         }
         
         body {
-            font-family: 'Quicksand', sans-serif;
-            background-color: #FFF5F8;
-            background-image: radial-gradient(#FFD1DC 1px, transparent 1px);
-            background-size: 20px 20px;
+            font-family: 'Gaegu', cursive;
+            background-color: #FDF2F8;
+            background-image: 
+                repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(251, 207, 232, 0.03) 10px, rgba(251, 207, 232, 0.03) 20px);
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 20px;
-            color: #5D4E6D;
+            color: #4A4A4A;
         }
         
         .container {
-            max-width: 800px;
+            max-width: 700px;
             width: 100%;
-            background: #ffffff;
-            border: 6px solid #FFB7CE;
-            border-radius: 24px;
-            box-shadow: 0 10px 0 #FFD1DC;
-            padding: 30px;
+            background: #FFFFFF;
+            border: 8px solid #000000;
+            box-shadow: 0 0 30px rgba(251, 207, 232, 0.6), 0 10px 0 #FBCFE8;
+            padding: 35px;
+            position: relative;
+            animation: glow 3s ease-in-out infinite;
+        }
+        
+        .container::before {
+            content: '✨';
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 24px;
+            animation: sparkle 2s ease-in-out infinite;
         }
         
         .question-container {
-            background: linear-gradient(135deg, #FFF9F9 0%, #FFF5F8 100%);
-            border: 3px solid #FFB7CE;
-            border-radius: 20px;
-            padding: 25px;
-            margin-bottom: 20px;
+            background: linear-gradient(135deg, #FDF2F8 0%, #FCE7F3 100%);
+            border: 4px solid #FBCFE8;
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 24px;
+            position: relative;
         }
         
         .question-text {
-            font-size: 16px;
+            font-size: 20px;
             line-height: 1.8;
-            margin-bottom: 20px;
-            color: #5D4E6D;
-            font-weight: 600;
+            margin-bottom: 24px;
+            color: #4A4A4A;
+            font-weight: 700;
+            position: relative;
+        }
+        
+        .question-text::before {
+            content: '✨ ';
+            color: #FBCFE8;
+            margin-right: 8px;
         }
         
         .options {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 14px;
         }
         
         .option-btn {
-            font-family: 'Quicksand', sans-serif;
-            font-size: 14px;
-            font-weight: 600;
-            padding: 18px;
-            background: #B8E4FF;
-            border: 3px solid #84D2FF;
-            border-radius: 15px;
-            color: #5D4E6D;
+            font-family: 'Gaegu', cursive;
+            font-size: 17px;
+            font-weight: 700;
+            padding: 20px 20px 20px 50px;
+            background: #FFFFFF;
+            border: 4px solid #FBCFE8;
+            border-radius: 12px;
+            color: #4A4A4A;
             cursor: pointer;
-            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             text-align: left;
-            line-height: 1.6;
+            line-height: 1.7;
+            position: relative;
+            box-shadow: 0 4px 0 #FBCFE8;
+        }
+        
+        .option-btn::before {
+            content: '→';
+            position: absolute;
+            left: 20px;
+            opacity: 0;
+            transition: all 0.3s ease;
+            font-size: 20px;
+            color: #FBCFE8;
         }
         
         .option-btn:hover {
-            background: #FFF9C4;
-            transform: scale(1.03) rotate(1deg);
-            box-shadow: 0 5px 15px rgba(255, 183, 206, 0.3);
+            background: linear-gradient(135deg, #FCE7F3 0%, #FDF2F8 100%);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 0 #FBCFE8, 0 8px 20px rgba(251, 207, 232, 0.3);
+            padding-left: 50px;
+        }
+        
+        .option-btn:hover::before {
+            opacity: 1;
+            left: 15px;
         }
         
         .option-btn:active {
-            transform: scale(0.98);
+            transform: translateY(0);
+            box-shadow: 0 2px 0 #FBCFE8;
         }
         
         .progress-container {
-            background: linear-gradient(135deg, #FFF9F9 0%, #FFF5F8 100%);
-            border: 3px solid #FFB7CE;
-            border-radius: 20px;
-            padding: 20px;
+            background: linear-gradient(135deg, #FDF2F8 0%, #FCE7F3 100%);
+            border: 4px solid #E0E7FF;
+            border-radius: 16px;
+            padding: 22px;
             text-align: center;
         }
         
         .progress-text {
-            font-family: 'Press Start 2P', cursive;
-            font-size: 10px;
-            color: #FFB7CE;
-            margin-bottom: 12px;
+            font-family: 'VT323', monospace;
+            font-size: 18px;
+            color: #FBCFE8;
+            margin-bottom: 14px;
+            letter-spacing: 2px;
         }
         
         .progress-bar {
             width: 100%;
-            height: 24px;
-            background: #FFE8F0;
-            border: 2px solid #FFB7CE;
-            border-radius: 12px;
+            height: 28px;
+            background: #FFFFFF;
+            border: 3px solid #E0E7FF;
+            border-radius: 14px;
             position: relative;
             overflow: hidden;
         }
         
         .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, #FFB7CE, #B8E4FF);
+            background: linear-gradient(90deg, #FBCFE8 0%, #E0E7FF 50%, #FBCFE8 100%);
+            background-size: 200% 100%;
             border-radius: 10px;
-            transition: width 0.4s ease;
+            transition: width 0.6s ease;
+            animation: shimmer 2s linear infinite;
+            position: relative;
+        }
+        
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        
+        .progress-fill::after {
+            content: '♡';
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 16px;
+            color: #FFFFFF;
+            animation: pulse 1s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: translateY(-50%) scale(1); }
+            50% { transform: translateY(-50%) scale(1.2); }
         }
         
         .result-container {
@@ -131,98 +213,136 @@
         }
         
         .result-header {
-            background: linear-gradient(135deg, #FFF9F9 0%, #FFF5F8 100%);
-            border: 3px solid #FFB7CE;
+            background: linear-gradient(135deg, #FDF2F8 0%, #FCE7F3 100%);
+            border: 4px solid #FBCFE8;
             border-radius: 20px;
-            padding: 30px;
-            margin-bottom: 20px;
+            padding: 35px;
+            margin-bottom: 24px;
+            position: relative;
+        }
+        
+        .result-header::before,
+        .result-header::after {
+            content: '✧';
+            position: absolute;
+            font-size: 28px;
+            color: #FBCFE8;
+            animation: sparkle 2s ease-in-out infinite;
+        }
+        
+        .result-header::before {
+            top: 15px;
+            left: 15px;
+        }
+        
+        .result-header::after {
+            bottom: 15px;
+            right: 15px;
+            animation-delay: 1s;
         }
         
         .animal-name {
-            font-family: 'Press Start 2P', cursive;
-            font-size: 20px;
-            color: #FFB7CE;
-            margin-bottom: 20px;
-            text-shadow: 2px 2px 0 #FFE8F0;
+            font-family: 'Silkscreen', cursive;
+            font-size: 28px;
+            color: #FBCFE8;
+            margin-bottom: 24px;
+            text-shadow: 3px 3px 0 #E0E7FF;
+            letter-spacing: 2px;
         }
         
         .sprite-img {
-            max-width: 200px;
+            max-width: 220px;
             height: auto;
             image-rendering: pixelated;
-            border: 4px solid #FFB7CE;
-            border-radius: 20px;
-            background: #FFF9F9;
-            padding: 15px;
-            margin-bottom: 20px;
-            animation: float 3s ease-in-out infinite;
+            border: 6px solid #FBCFE8;
+            border-radius: 16px;
+            background: #FFFFFF;
+            padding: 20px;
+            margin-bottom: 24px;
+            animation: float 4s ease-in-out infinite;
+            box-shadow: 0 8px 20px rgba(251, 207, 232, 0.3);
         }
         
         .vibe-text {
-            font-size: 14px;
+            font-family: 'VT323', monospace;
+            font-size: 20px;
             line-height: 1.8;
-            color: #5D4E6D;
-            font-weight: 700;
-            font-style: italic;
+            color: #4A4A4A;
+            font-weight: 400;
+            letter-spacing: 1px;
         }
         
         .profile-container {
             display: flex;
             flex-direction: column;
-            gap: 15px;
-            margin-bottom: 25px;
+            gap: 16px;
+            margin-bottom: 28px;
         }
         
         .profile-box {
-            background: linear-gradient(135deg, #FFF9F9 0%, #FFF5F8 100%);
-            border: 3px solid #B8E4FF;
-            border-radius: 18px;
-            padding: 20px;
-            transition: transform 0.2s ease;
+            background: linear-gradient(135deg, #FFFFFF 0%, #FDF2F8 100%);
+            border: 4px solid #E0E7FF;
+            border-radius: 14px;
+            padding: 24px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .profile-box::before {
+            content: '♡';
+            position: absolute;
+            left: 15px;
+            top: 15px;
+            font-size: 16px;
+            color: #FBCFE8;
+            opacity: 0.5;
         }
         
         .profile-box:hover {
-            transform: translateX(5px);
-            box-shadow: 0 5px 15px rgba(184, 228, 255, 0.3);
+            transform: translateX(8px);
+            box-shadow: -8px 8px 0 #FCE7F3;
+            border-color: #FBCFE8;
         }
         
         .profile-text {
-            font-size: 13px;
+            font-size: 16px;
             line-height: 2;
-            color: #5D4E6D;
+            color: #4A4A4A;
             text-align: left;
+            margin-left: 20px;
         }
         
         .restart-btn {
-            font-family: 'Press Start 2P', cursive;
-            font-size: 12px;
-            padding: 18px 35px;
-            background: linear-gradient(135deg, #FFB7CE 0%, #FFA3BD 100%);
-            border: 4px solid #FF8FAF;
-            border-radius: 18px;
-            color: #fff;
+            font-family: 'Silkscreen', cursive;
+            font-size: 16px;
+            padding: 20px 40px;
+            background: linear-gradient(135deg, #FBCFE8 0%, #F9A8D4 100%);
+            border: 6px solid #000000;
+            color: #FFFFFF;
             cursor: pointer;
-            box-shadow: 0 6px 0 #FF8FAF;
+            box-shadow: 0 8px 0 #000000;
             transition: all 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 2px;
         }
         
         .restart-btn:hover {
-            background: linear-gradient(135deg, #FFF9C4 0%, #FFE99F 100%);
-            color: #5D4E6D;
-            transform: translateY(-3px);
-            box-shadow: 0 9px 0 #FFB7CE;
+            background: linear-gradient(135deg, #E0E7FF 0%, #C7D2FE 100%);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 0 #000000, 0 12px 25px rgba(251, 207, 232, 0.4);
         }
         
         .restart-btn:active {
-            transform: translateY(0);
-            box-shadow: 0 3px 0 #FF8FAF;
+            transform: translateY(2px);
+            box-shadow: 0 4px 0 #000000;
         }
         
         .loading {
             text-align: center;
-            font-size: 16px;
-            color: #FFB7CE;
-            font-family: 'Press Start 2P', cursive;
+            font-size: 22px;
+            color: #FBCFE8;
+            font-family: 'Silkscreen', cursive;
+            letter-spacing: 2px;
         }
         
         .debug-scores {
@@ -248,12 +368,14 @@
         }
         
         @media (max-width: 600px) {
-            .question-text { font-size: 14px; }
-            .option-btn { font-size: 12px; padding: 15px; }
-            .progress-text { font-size: 8px; }
-            .animal-name { font-size: 16px; }
-            .profile-text { font-size: 11px; }
-            .restart-btn { font-size: 10px; padding: 15px 25px; }
+            .container { padding: 25px; border-width: 6px; }
+            .question-text { font-size: 18px; }
+            .option-btn { font-size: 15px; padding: 16px 16px 16px 45px; }
+            .progress-text { font-size: 14px; }
+            .animal-name { font-size: 22px; }
+            .profile-text { font-size: 14px; }
+            .restart-btn { font-size: 13px; padding: 16px 30px; }
+            .vibe-text { font-size: 17px; }
         }
     </style>
 </head>
