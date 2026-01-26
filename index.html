@@ -6,7 +6,7 @@
     <title>Personality Quiz</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap');
         
         * {
             margin: 0;
@@ -15,26 +15,69 @@
         }
         
         body {
-            font-family: 'Inter', sans-serif;
-            background: white;
+            font-family: 'Fredoka', sans-serif;
+            background: linear-gradient(135deg, #ffeef8 0%, #e0f4ff 50%, #fff5e6 100%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 20px;
-            line-height: 1.6;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '✨';
+            position: absolute;
+            top: 10%;
+            left: 10%;
+            font-size: 40px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        body::after {
+            content: '💫';
+            position: absolute;
+            bottom: 15%;
+            right: 15%;
+            font-size: 35px;
+            animation: float 4s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
         }
         
         .container {
-            max-width: 700px;
+            max-width: 650px;
             width: 100%;
+            background: white;
+            border-radius: 30px;
+            padding: 50px;
+            box-shadow: 0 20px 60px rgba(255, 105, 180, 0.15);
+            position: relative;
+        }
+
+        .container::before {
+            content: '🌸';
+            position: absolute;
+            top: -20px;
+            right: 30px;
+            font-size: 50px;
+            animation: spin 10s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
         
         .loading {
             text-align: center;
-            font-size: 18px;
-            color: #6366f1;
-            font-weight: 500;
+            font-size: 22px;
+            color: #ff69b4;
+            font-weight: 600;
         }
         
         .loading::after {
@@ -49,102 +92,154 @@
         }
         
         .question-text {
-            font-size: 20px;
-            color: #1f2937;
-            margin-bottom: 40px;
-            line-height: 1.8;
+            font-size: 22px;
+            color: #4a4a4a;
+            margin-bottom: 35px;
+            line-height: 1.7;
             font-weight: 500;
+            text-align: center;
         }
         
         .options {
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 15px;
             margin-bottom: 40px;
         }
         
         .option {
-            padding: 24px;
-            background: #f9fafb;
-            border: 2px solid #e5e7eb;
-            border-radius: 12px;
+            padding: 25px;
+            background: linear-gradient(135deg, #fff9fc 0%, #f0f9ff 100%);
+            border: 3px solid #ffd6e8;
+            border-radius: 20px;
             cursor: pointer;
-            transition: all 0.2s ease;
-            font-size: 16px;
-            color: #374151;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 17px;
+            color: #4a4a4a;
             line-height: 1.6;
+            font-weight: 500;
+            position: relative;
+        }
+
+        .option::before {
+            content: '💖';
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            opacity: 0;
+            transition: all 0.3s ease;
         }
         
         .option:hover {
-            background: #f3f4f6;
-            border-color: #6366f1;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15);
+            background: linear-gradient(135deg, #ffe5f4 0%, #e0f4ff 100%);
+            border-color: #ff69b4;
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 10px 30px rgba(255, 105, 180, 0.25);
+        }
+
+        .option:hover::before {
+            opacity: 1;
+            right: 25px;
         }
         
         .progress {
             text-align: center;
-            font-size: 14px;
-            color: #6b7280;
-            font-weight: 500;
+            font-size: 16px;
+            color: #ff69b4;
+            font-weight: 600;
         }
         
         .progress-bar {
             width: 100%;
-            height: 6px;
-            background: #f3f4f6;
-            border-radius: 10px;
+            height: 12px;
+            background: #ffe5f4;
+            border-radius: 20px;
             overflow: hidden;
             margin-top: 12px;
+            border: 2px solid #ffd6e8;
         }
         
         .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, #6366f1, #8b5cf6);
-            transition: width 0.3s ease;
-            border-radius: 10px;
+            background: linear-gradient(90deg, #ff69b4, #ff8fab, #ffa6c9);
+            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 20px;
+            position: relative;
+        }
+
+        .progress-fill::after {
+            content: '✨';
+            position: absolute;
+            right: -5px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 16px;
+            animation: sparkle 1s ease-in-out infinite;
+        }
+
+        @keyframes sparkle {
+            0%, 100% { opacity: 1; transform: translateY(-50%) scale(1); }
+            50% { opacity: 0.7; transform: translateY(-50%) scale(1.2); }
         }
         
         .result-container {
             text-align: center;
+            animation: fadeIn 0.6s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         
         .sprite-container {
             margin: 20px 0;
-            font-size: 80px;
+            font-size: 100px;
+            animation: bounce 1s ease-in-out;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
         }
         
         .animal-name {
-            font-size: 32px;
-            color: #1f2937;
+            font-size: 38px;
+            background: linear-gradient(135deg, #ff69b4, #ff8fab);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
             margin: 20px 0;
             font-weight: 700;
         }
         
         .info-box {
-            background: #f9fafb;
-            border: 2px solid #e5e7eb;
-            border-radius: 16px;
-            padding: 32px;
+            background: linear-gradient(135deg, #fff9fc 0%, #f0f9ff 100%);
+            border: 3px solid #ffd6e8;
+            border-radius: 25px;
+            padding: 35px;
             margin: 20px 0;
             text-align: left;
+            box-shadow: 0 10px 30px rgba(255, 105, 180, 0.1);
         }
         
         .info-box h3 {
-            font-size: 18px;
-            color: #6366f1;
-            margin-bottom: 16px;
-            font-weight: 600;
+            font-size: 22px;
+            color: #ff69b4;
+            margin-bottom: 15px;
+            font-weight: 700;
         }
         
         .info-box p {
-            font-size: 16px;
-            color: #4b5563;
+            font-size: 17px;
+            color: #4a4a4a;
             line-height: 1.8;
+            font-weight: 500;
         }
         
         .info-box .section {
-            margin-bottom: 24px;
+            margin-bottom: 25px;
         }
         
         .info-box .section:last-child {
@@ -153,44 +248,52 @@
         
         .restart-btn {
             margin-top: 40px;
-            padding: 16px 40px;
-            background: #6366f1;
+            padding: 18px 45px;
+            background: linear-gradient(135deg, #ff69b4, #ff8fab);
             color: white;
             border: none;
-            border-radius: 12px;
+            border-radius: 25px;
             cursor: pointer;
-            font-family: 'Inter', sans-serif;
-            font-size: 16px;
-            font-weight: 600;
-            transition: all 0.2s ease;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 10px 30px rgba(255, 105, 180, 0.3);
         }
         
         .restart-btn:hover {
-            background: #4f46e5;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 15px 40px rgba(255, 105, 180, 0.4);
+        }
+
+        .restart-btn:active {
+            transform: translateY(-1px) scale(1.02);
         }
         
         .error {
-            color: #ef4444;
+            color: #ff4757;
             text-align: center;
-            font-size: 16px;
+            font-size: 18px;
             padding: 20px;
+            font-weight: 600;
         }
 
         @media (max-width: 600px) {
+            .container {
+                padding: 35px 25px;
+            }
             .question-text {
-                font-size: 18px;
+                font-size: 19px;
             }
             .option {
-                font-size: 14px;
+                font-size: 15px;
                 padding: 20px;
             }
             .animal-name {
-                font-size: 28px;
+                font-size: 32px;
             }
             .sprite-container {
-                font-size: 64px;
+                font-size: 80px;
             }
         }
     </style>
@@ -198,12 +301,13 @@
 <body>
     <div class="container">
         <div id="quiz-content">
-            <div class="loading">Loading your quiz</div>
+            <div class="loading">Loading your magical quiz</div>
         </div>
     </div>
 
     <script>
-        const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTl7KuGBmEGEHqavwmPHRCLRvFHwvzSKVcKMRCEw0aWPej50cAVUrA_Oh1PIMSY6yKL4B8OEh7tqR1d/pub?output=csv';
+        const QUESTIONS_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTl7KuGBmEGEHqavwmPHRCLRvFHwvzSKVcKMRCEw0aWPej50cAVUrA_Oh1PIMSY6yKL4B8OEh7tqR1d/pub?gid=0&single=true&output=csv';
+        const PROFILES_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTl7KuGBmEGEHqavwmPHRCLRvFHwvzSKVcKMRCEw0aWPej50cAVUrA_Oh1PIMSY6yKL4B8OEh7tqR1d/pub?gid=1646208880&single=true&output=csv';
         
         let questions = [];
         let profiles = [];
@@ -212,20 +316,31 @@
 
         async function loadQuizData() {
             try {
-                const response = await fetch(CSV_URL);
-                const csvText = await response.text();
+                // Load questions
+                const questionsResponse = await fetch(QUESTIONS_URL);
+                const questionsText = await questionsResponse.text();
                 
-                Papa.parse(csvText, {
+                // Load profiles
+                const profilesResponse = await fetch(PROFILES_URL);
+                const profilesText = await profilesResponse.text();
+                
+                // Parse questions
+                Papa.parse(questionsText, {
                     complete: function(results) {
-                        parseSheets(results.data);
-                        if (questions.length > 0) {
+                        parseQuestions(results.data);
+                    }
+                });
+                
+                // Parse profiles
+                Papa.parse(profilesText, {
+                    complete: function(results) {
+                        parseProfiles(results.data);
+                        
+                        if (questions.length > 0 && profiles.length > 0) {
                             startQuiz();
                         } else {
-                            showError('No questions found in the sheet!');
+                            showError('Unable to load quiz data!');
                         }
-                    },
-                    error: function(error) {
-                        showError('Error loading quiz data: ' + error.message);
                     }
                 });
             } catch (error) {
@@ -233,19 +348,8 @@
             }
         }
 
-        function parseSheets(data) {
-            // Find where MBTI Profiles sheet starts
-            let profileStartIndex = -1;
-            for (let i = 0; i < data.length; i++) {
-                if (data[i][0] === 'MBTI' || (data[i][0] && data[i][0].trim().toLowerCase().includes('mbti'))) {
-                    profileStartIndex = i;
-                    break;
-                }
-            }
-
-            // Parse questions (first sheet)
-            const questionEndIndex = profileStartIndex > 0 ? profileStartIndex - 1 : data.length;
-            for (let i = 1; i < questionEndIndex; i++) {
+        function parseQuestions(data) {
+            for (let i = 1; i < data.length; i++) {
                 const row = data[i];
                 if (row[0] && row[0].trim() && row[1] && row[1].trim()) {
                     questions.push({
@@ -259,21 +363,20 @@
                     });
                 }
             }
+        }
 
-            // Parse MBTI Profiles (second sheet)
-            if (profileStartIndex > 0) {
-                for (let i = profileStartIndex + 1; i < data.length; i++) {
-                    const row = data[i];
-                    if (row[0] && row[0].trim()) {
-                        profiles.push({
-                            mbti: row[0].trim(),
-                            animal: row[1] || '',
-                            sprite: row[2] || '✨',
-                            vibe: row[3] || '',
-                            sideDig: row[4] || '',
-                            profile: row[5] || ''
-                        });
-                    }
+        function parseProfiles(data) {
+            for (let i = 1; i < data.length; i++) {
+                const row = data[i];
+                if (row[0] && row[0].trim()) {
+                    profiles.push({
+                        mbti: row[0].trim(),
+                        animal: row[1] || '',
+                        sprite: row[2] || '✨',
+                        vibe: row[3] || '',
+                        sideDig: row[4] || '',
+                        profile: row[5] || ''
+                    });
                 }
             }
         }
@@ -349,22 +452,22 @@
                     
                     <div class="info-box">
                         <div class="section">
-                            <h3>Your Vibe</h3>
+                            <h3>✨ Your Vibe</h3>
                             <p>${profile.vibe}</p>
                         </div>
                         <div class="section">
-                            <h3>Side Dig</h3>
+                            <h3>💫 Side Dig</h3>
                             <p>${profile.sideDig}</p>
                         </div>
                     </div>
                     
                     <div class="info-box">
-                        <h3>Your Profile</h3>
+                        <h3>🌸 Your Profile</h3>
                         <p>${profile.profile}</p>
                     </div>
                     
                     <button class="restart-btn" onclick="startQuiz()">
-                        Take Quiz Again
+                        Take Quiz Again! 💖
                     </button>
                 </div>
             `;
