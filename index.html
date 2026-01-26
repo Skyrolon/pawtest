@@ -297,22 +297,37 @@
             for (let i = 1; i < data.length; i++) {
                 const row = data[i];
                 if (row[0] && row[0].trim()) {
-                    // Extract IBB image link from the sprite cell if it contains HTML
+                    // Extract image URL from various formats
                     let spriteUrl = row[2] || '';
-                    const imgMatch = spriteUrl.match(/src=["']([^"']+)["']/);
+                    
+                    // Try to extract from HTML img tag
+                    let imgMatch = spriteUrl.match(/src=["']([^"']+)["']/i);
                     if (imgMatch) {
                         spriteUrl = imgMatch[1];
+                    } else {
+                        // Try to extract from href in anchor tag
+                        imgMatch = spriteUrl.match(/href=["']([^"']+)["']/i);
+                        if (imgMatch) {
+                            spriteUrl = imgMatch[1];
+                        } else {
+                            // Check if it contains ibb.co URL directly
+                            imgMatch = spriteUrl.match(/(https?:\/\/[^\s<>"]+(?:ibb\.co|imgbb\.com)[^\s<>"]*)/i);
+                            if (imgMatch) {
+                                spriteUrl = imgMatch[1];
+                            }
+                        }
                     }
                     
                     profiles.push({
                         mbti: row[0].trim(),
                         animal: row[1] || '',
-                        sprite: spriteUrl,
+                        sprite: spriteUrl.trim(),
                         vibe: row[3] || '',
                         profile: row[5] || ''
                     });
                 }
             }
+            console.log('Parsed profiles:', profiles); // Debug log
         }
 
         function startQuiz() {
@@ -378,10 +393,12 @@
                 profile: 'You\'re one of a kind!'
             };
             
+            console.log('Selected profile:', profile); // Debug log
+            
             document.getElementById('quiz-content').innerHTML = `
                 <div class="result-container">
                     <div class="result-header">
-                        ${profile.sprite ? `<img src="${profile.sprite}" alt="${profile.animal}" class="sprite-img" onerror="this.style.display='none'">` : ''}
+                        ${profile.sprite && profile.sprite.includes('http') ? `<img src="${profile.sprite}" alt="${profile.animal}" class="sprite-img" onerror="console.error('Image failed to load:', this.src); this.style.display='none'">` : ''}
                         <div class="animal-name">${profile.animal}</div>
                     </div>
                     
