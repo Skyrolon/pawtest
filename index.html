@@ -272,7 +272,7 @@
             const parsed = data.map(row => {
                 if (!row.question) return null;
                 
-                return {
+                const question = {
                     question: row.question,
                     options: [
                         {
@@ -293,6 +293,9 @@
                         }
                     ]
                 };
+                
+                console.log('Parsed question:', question);
+                return question;
             }).filter(q => q !== null);
             
             return parsed;
@@ -318,13 +321,17 @@
             const q = questions[currentQuestion];
             const progress = ((currentQuestion) / questions.length) * 100;
             
+            // Debug: log the current question structure
+            console.log('Current question:', q);
+            
             document.getElementById('app').innerHTML = `
                 <div class="question-container">
                     <div class="question-text">${q.question}</div>
                     <div class="options">
                         ${q.options.map((opt, i) => `
-                            <button class="option-btn" onclick="selectOption(${i})">
+                            <button class="option-btn" onclick="selectOption(${i})" data-trait="${opt.trait}">
                                 ${opt.text}
+                                <div style="font-size: 8px; margin-top: 5px; color: #fbbf24;">[${opt.trait}]</div>
                             </button>
                         `).join('')}
                     </div>
