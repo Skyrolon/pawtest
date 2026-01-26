@@ -16,28 +16,28 @@
         
         body {
             font-family: 'Press Start 2P', cursive;
-            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 50%, #60a5fa 100%);
+            background: #ffffff;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 20px;
-            color: #fff;
+            color: #1e40af;
         }
         
         .container {
             max-width: 800px;
             width: 100%;
-            background: #1e40af;
-            border: 8px solid #fff;
-            box-shadow: 0 0 0 4px #1e40af, 8px 8px 0 0 #0f172a;
+            background: #fff;
+            border: 8px solid #1e40af;
+            box-shadow: 0 0 0 4px #fff, 8px 8px 0 0 #fbbf24;
             padding: 30px;
             image-rendering: pixelated;
         }
         
         .question-container {
-            background: #3b82f6;
-            border: 4px solid #fff;
+            background: #dbeafe;
+            border: 4px solid #1e40af;
             padding: 20px;
             margin-bottom: 20px;
         }
@@ -46,7 +46,7 @@
             font-size: 14px;
             line-height: 1.8;
             margin-bottom: 20px;
-            color: #fff;
+            color: #1e40af;
         }
         
         .options {
@@ -59,8 +59,8 @@
             font-family: 'Press Start 2P', cursive;
             font-size: 12px;
             padding: 15px;
-            background: #60a5fa;
-            border: 4px solid #fff;
+            background: #3b82f6;
+            border: 4px solid #1e40af;
             color: #fff;
             cursor: pointer;
             transition: all 0.1s;
@@ -69,9 +69,10 @@
         }
         
         .option-btn:hover {
-            background: #93c5fd;
+            background: #fbbf24;
+            color: #1e40af;
             transform: translate(-2px, -2px);
-            box-shadow: 4px 4px 0 0 #0f172a;
+            box-shadow: 4px 4px 0 0 #1e40af;
         }
         
         .option-btn:active {
@@ -80,22 +81,22 @@
         }
         
         .progress-container {
-            background: #1e3a8a;
-            border: 4px solid #fff;
+            background: #dbeafe;
+            border: 4px solid #1e40af;
             padding: 15px;
             text-align: center;
         }
         
         .progress-text {
             font-size: 12px;
-            color: #fbbf24;
+            color: #1e40af;
         }
         
         .progress-bar {
             width: 100%;
             height: 20px;
-            background: #0f172a;
-            border: 2px solid #fff;
+            background: #fff;
+            border: 2px solid #1e40af;
             margin-top: 10px;
             position: relative;
             overflow: hidden;
@@ -113,15 +114,15 @@
         }
         
         .result-header {
-            background: #3b82f6;
-            border: 4px solid #fff;
+            background: #dbeafe;
+            border: 4px solid #1e40af;
             padding: 20px;
             margin-bottom: 20px;
         }
         
         .animal-name {
             font-size: 20px;
-            color: #fbbf24;
+            color: #1e40af;
             margin-bottom: 15px;
         }
         
@@ -129,43 +130,37 @@
             max-width: 200px;
             height: auto;
             image-rendering: pixelated;
-            border: 4px solid #fff;
-            background: #60a5fa;
+            border: 4px solid #1e40af;
+            background: #fff;
             padding: 10px;
-        }
-        
-        .vibe-container {
-            background: #3b82f6;
-            border: 4px solid #fff;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-        
-        .vibe-label {
-            font-size: 14px;
-            color: #fbbf24;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
         }
         
         .vibe-text {
             font-size: 12px;
             line-height: 1.8;
-            color: #fff;
+            color: #1e40af;
+            font-weight: bold;
         }
         
         .profile-container {
-            background: #3b82f6;
-            border: 4px solid #fff;
-            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
             margin-bottom: 20px;
+        }
+        
+        .profile-box {
+            background: #dbeafe;
+            border: 4px solid #1e40af;
+            padding: 15px;
         }
         
         .profile-text {
             font-size: 11px;
             line-height: 2;
-            color: #fff;
+            color: #1e40af;
             text-align: left;
-            white-space: pre-wrap;
         }
         
         .restart-btn {
@@ -173,22 +168,22 @@
             font-size: 14px;
             padding: 15px 30px;
             background: #fbbf24;
-            border: 4px solid #fff;
-            color: #0f172a;
+            border: 4px solid #1e40af;
+            color: #1e40af;
             cursor: pointer;
-            box-shadow: 4px 4px 0 0 #0f172a;
+            box-shadow: 4px 4px 0 0 #1e40af;
         }
         
         .restart-btn:hover {
             background: #fcd34d;
             transform: translate(-2px, -2px);
-            box-shadow: 6px 6px 0 0 #0f172a;
+            box-shadow: 6px 6px 0 0 #1e40af;
         }
         
         .loading {
             text-align: center;
             font-size: 16px;
-            color: #fbbf24;
+            color: #1e40af;
         }
         
         .debug-scores {
@@ -401,15 +396,13 @@
             // Update the debug display immediately
             updateScoreDisplay();
 
-            // Move to next question with a slight delay
-            setTimeout(() => {
-                currentQuestion++;
-                if (currentQuestion < questions.length) {
-                    renderQuestion();
-                } else {
-                    showResults();
-                }
-            }, 150);
+            // Move to next question immediately
+            currentQuestion++;
+            if (currentQuestion < questions.length) {
+                renderQuestion();
+            } else {
+                showResults();
+            }
         }
         
         function calculateMBTI() {
@@ -428,20 +421,23 @@
             console.log('Final MBTI:', mbti);
             console.log('Final Scores:', scores);
             
+            // Split profile text by line breaks into separate paragraphs
+            const profileParagraphs = result.profile.split('\n').filter(p => p.trim() !== '');
+            
             document.getElementById('app').innerHTML = `
                 <div class="result-container">
                     <div class="result-header">
                         <div class="animal-name">${result.animal}</div>
                         <img src="${result.sprite}" alt="${result.animal}" class="sprite-img" onerror="this.style.display='none'">
-                    </div>
-                    
-                    <div class="vibe-container">
-                        <div class="vibe-label">✧ VIBE ✧</div>
                         <div class="vibe-text">${result.vibe}</div>
                     </div>
                     
                     <div class="profile-container">
-                        <div class="profile-text">${result.profile}</div>
+                        ${profileParagraphs.map(paragraph => `
+                            <div class="profile-box">
+                                <div class="profile-text">${paragraph}</div>
+                            </div>
+                        `).join('')}
                     </div>
                     
                     <button class="restart-btn" id="restartBtn">RESTART QUIZ</button>
