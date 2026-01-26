@@ -191,6 +191,28 @@
             color: #fbbf24;
         }
         
+        .debug-scores {
+            background: #1e3a8a;
+            border: 4px solid #fbbf24;
+            padding: 15px;
+            margin-top: 20px;
+            font-size: 10px;
+            line-height: 1.8;
+            color: #fbbf24;
+        }
+        
+        .debug-title {
+            font-size: 12px;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+        
+        .score-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+        
         @media (max-width: 600px) {
             .question-text { font-size: 11px; }
             .option-btn { font-size: 10px; }
@@ -314,20 +336,40 @@
                         <div class="progress-fill" style="width: ${progress}%"></div>
                     </div>
                 </div>
+                
+                <div class="debug-scores">
+                    <div class="debug-title">DEBUG: Current Scores</div>
+                    <div class="score-row"><span>E: ${scores.E || 0}</span><span>I: ${scores.I || 0}</span></div>
+                    <div class="score-row"><span>S: ${scores.S || 0}</span><span>N: ${scores.N || 0}</span></div>
+                    <div class="score-row"><span>T: ${scores.T || 0}</span><span>F: ${scores.F || 0}</span></div>
+                    <div class="score-row"><span>J: ${scores.J || 0}</span><span>P: ${scores.P || 0}</span></div>
+                </div>
             `;
         }
         
         function selectOption(optionIndex) {
             const option = questions[currentQuestion].options[optionIndex];
             
+            console.log('Selected option:', option);
+            console.log('Trait string:', option.trait);
+            
             // Parse trait like "E+2" or "I+1"
             const trait = option.trait;
             if (trait) {
-                const match = trait.match(/([A-Z])([+-]\d+)/);
+                // Remove any whitespace
+                const cleanTrait = trait.trim();
+                console.log('Clean trait:', cleanTrait);
+                
+                // Match pattern like E+2, I+1, etc.
+                const match = cleanTrait.match(/([A-Z])([+-]?\d+)/);
+                console.log('Match result:', match);
+                
                 if (match) {
                     const letter = match[1];
                     const value = parseInt(match[2]);
+                    console.log(`Adding ${value} to ${letter}`);
                     scores[letter] = (scores[letter] || 0) + value;
+                    console.log('Updated scores:', scores);
                 }
             }
             
@@ -354,7 +396,7 @@
             const result = profiles.find(p => p.mbti === mbti) || profiles[0];
             
             console.log('Calculated MBTI:', mbti);
-            console.log('Scores:', scores);
+            console.log('Final Scores:', scores);
             console.log('Result:', result);
             
             document.getElementById('app').innerHTML = `
@@ -371,6 +413,17 @@
                     
                     <div class="profile-container">
                         <div class="profile-text">${result.profile}</div>
+                    </div>
+                    
+                    <div class="debug-scores">
+                        <div class="debug-title">DEBUG: Final Results</div>
+                        <div style="margin-bottom: 10px;">
+                            <div class="score-row"><span>E: ${scores.E || 0}</span><span>I: ${scores.I || 0}</span><span>${scores.E > scores.I ? 'E wins' : 'I wins'}</span></div>
+                            <div class="score-row"><span>S: ${scores.S || 0}</span><span>N: ${scores.N || 0}</span><span>${scores.S > scores.N ? 'S wins' : 'N wins'}</span></div>
+                            <div class="score-row"><span>T: ${scores.T || 0}</span><span>F: ${scores.F || 0}</span><span>${scores.T > scores.F ? 'T wins' : 'F wins'}</span></div>
+                            <div class="score-row"><span>J: ${scores.J || 0}</span><span>P: ${scores.P || 0}</span><span>${scores.J > scores.P ? 'J wins' : 'P wins'}</span></div>
+                        </div>
+                        <div style="font-size: 14px; color: #fff; margin-top: 10px;">MBTI: ${mbti}</div>
                     </div>
                     
                     <button class="restart-btn" onclick="startQuiz()">RESTART QUIZ</button>
