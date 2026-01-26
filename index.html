@@ -3,389 +3,389 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pixel Personality Quiz 🌸</title>
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Pixel Personality Quiz</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <style>
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
+        
+        body {
+            font-family: 'Press Start 2P', cursive;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            line-height: 1.6;
         }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        
+        .container {
+            background: white;
+            border: 8px solid #333;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 800px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            image-rendering: pixelated;
         }
-        .animate-bounce { animation: bounce 1s infinite; }
-        .animate-pulse { animation: pulse 2s infinite; }
-        .animate-spin { animation: spin 3s linear infinite; }
+        
+        .loading {
+            text-align: center;
+            font-size: 14px;
+            color: #667eea;
+        }
+        
+        .loading::after {
+            content: '...';
+            animation: dots 1.5s steps(4, end) infinite;
+        }
+        
+        @keyframes dots {
+            0%, 20% { content: '.'; }
+            40% { content: '..'; }
+            60%, 100% { content: '...'; }
+        }
+        
+        h1 {
+            font-size: 24px;
+            color: #667eea;
+            margin-bottom: 30px;
+            text-align: center;
+            text-shadow: 4px 4px 0px #764ba2;
+        }
+        
+        .question-text {
+            font-size: 12px;
+            color: #333;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9ff;
+            border: 4px solid #667eea;
+            border-radius: 10px;
+        }
+        
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .option {
+            padding: 20px;
+            background: #fff;
+            border: 4px solid #333;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 10px;
+            position: relative;
+        }
+        
+        .option:hover {
+            background: #f8f9ff;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(102, 126, 234, 0.3);
+        }
+        
+        .option:active {
+            transform: translateY(0);
+        }
+        
+        .progress {
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 12px;
+            color: #764ba2;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e0e0e0;
+            border: 4px solid #333;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transition: width 0.3s ease;
+        }
+        
+        .result-container {
+            text-align: center;
+        }
+        
+        .sprite-container {
+            margin: 30px 0;
+            font-size: 64px;
+        }
+        
+        .animal-name {
+            font-size: 20px;
+            color: #667eea;
+            margin: 20px 0;
+            text-shadow: 3px 3px 0px #764ba2;
+        }
+        
+        .info-box {
+            background: #f8f9ff;
+            border: 4px solid #667eea;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 20px 0;
+            text-align: left;
+        }
+        
+        .info-box h3 {
+            font-size: 14px;
+            color: #764ba2;
+            margin-bottom: 15px;
+        }
+        
+        .info-box p {
+            font-size: 10px;
+            color: #333;
+            line-height: 1.8;
+        }
+        
+        .restart-btn {
+            margin-top: 30px;
+            padding: 15px 30px;
+            background: #667eea;
+            color: white;
+            border: 4px solid #333;
+            border-radius: 10px;
+            cursor: pointer;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 12px;
+            transition: all 0.2s;
+        }
+        
+        .restart-btn:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+        }
+        
+        .error {
+            color: #ff4444;
+            text-align: center;
+            font-size: 10px;
+            padding: 20px;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+            h1 {
+                font-size: 16px;
+            }
+            .question-text, .option {
+                font-size: 8px;
+            }
+        }
     </style>
 </head>
 <body>
-    <div id="root"></div>
+    <div class="container">
+        <h1>✨ Pixel Personality Quiz ✨</h1>
+        <div id="quiz-content">
+            <div class="loading">Loading your magical quiz</div>
+        </div>
+    </div>
 
-    <script type="text/babel">
-        const { useState, useEffect } = React;
+    <script>
+        const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTl7KuGBmEGEHqavwmPHRCLRvFHwvzSKVcKMRCEw0aWPej50cAVUrA_Oh1PIMSY6yKL4B8OEh7tqR1d/pub?output=csv';
+        
+        let questions = [];
+        let profiles = [];
+        let currentQuestion = 0;
+        let scores = { E: 0, I: 0, S: 0, N: 0, F: 0, T: 0, J: 0, P: 0 };
 
-        function PixelPersonalityQuiz() {
-            const [questions, setQuestions] = useState([]);
-            const [profiles, setProfiles] = useState([]);
-            const [currentQuestion, setCurrentQuestion] = useState(0);
-            const [answers, setAnswers] = useState({});
-            const [showResult, setShowResult] = useState(false);
-            const [loading, setLoading] = useState(true);
-            const [error, setError] = useState(null);
-
-            useEffect(() => {
-                loadData();
-            }, []);
-
-            const loadData = async () => {
-                try {
-                    setLoading(true);
-                    
-                    // Use CORS proxy to fetch Google Sheets data
-                    const corsProxy = 'https://corsproxy.io/?';
-                    const baseUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTl7KuGBmEGEHqavwmPHRCLRvFHwvzSKVcKMRCEw0aWPej50cAVUrA_Oh1PIMSY6yKL4B8OEh7tqR1d/pub?output=csv';
-                    
-                    const questionsUrl = corsProxy + encodeURIComponent(`${baseUrl}&gid=0`);
-                    const profilesUrl = corsProxy + encodeURIComponent(`${baseUrl}&gid=1639175958`);
-
-                    const [questionsResponse, profilesResponse] = await Promise.all([
-                        fetch(questionsUrl),
-                        fetch(profilesUrl)
-                    ]);
-
-                    if (!questionsResponse.ok || !profilesResponse.ok) {
-                        throw new Error('Failed to fetch data from Google Sheets');
-                    }
-
-                    const questionsCSV = await questionsResponse.text();
-                    const profilesCSV = await profilesResponse.text();
-
-                    parseQuestionsCSV(questionsCSV);
-                    parseProfilesCSV(profilesCSV);
-                    setLoading(false);
-                } catch (err) {
-                    console.error('Load error:', err);
-                    setError('Failed to load quiz data. Please refresh the page! 💝');
-                    setLoading(false);
-                }
-            };
-
-            const parseCSV = (csv) => {
-                const lines = csv.split('\n');
-                const result = [];
+        // Fetch and parse CSV data
+        async function loadQuizData() {
+            try {
+                const response = await fetch(CSV_URL);
+                const csvText = await response.text();
                 
-                for (let line of lines) {
-                    const row = [];
-                    let current = '';
-                    let inQuotes = false;
-                    
-                    for (let i = 0; i < line.length; i++) {
-                        const char = line[i];
-                        if (char === '"') {
-                            inQuotes = !inQuotes;
-                        } else if (char === ',' && !inQuotes) {
-                            row.push(current.trim().replace(/^"|"$/g, ''));
-                            current = '';
+                // Parse CSV
+                Papa.parse(csvText, {
+                    complete: function(results) {
+                        parseSheets(results.data);
+                        if (questions.length > 0) {
+                            startQuiz();
                         } else {
-                            current += char;
+                            showError('No questions found in the sheet!');
                         }
-                    }
-                    row.push(current.trim().replace(/^"|"$/g, ''));
-                    result.push(row);
-                }
-                return result;
-            };
-
-            const parseQuestionsCSV = (csv) => {
-                const rows = parseCSV(csv);
-                const parsedQuestions = [];
-                
-                for (let i = 1; i < rows.length; i++) {
-                    const row = rows[i];
-                    if (row[0] && row[0].trim()) {
-                        parsedQuestions.push({
-                            text: row[0],
-                            options: [
-                                { text: row[1], trait: row[2] },
-                                { text: row[3], trait: row[4] },
-                                { text: row[5], trait: row[6] },
-                                { text: row[7], trait: row[8] }
-                            ]
-                        });
-                    }
-                }
-                setQuestions(parsedQuestions);
-            };
-
-            const parseProfilesCSV = (csv) => {
-                const rows = parseCSV(csv);
-                const parsedProfiles = [];
-                
-                for (let i = 1; i < rows.length; i++) {
-                    const row = rows[i];
-                    if (row[0] && row[0].trim()) {
-                        parsedProfiles.push({
-                            mbti: row[0],
-                            animal: row[1] || '',
-                            sprite: row[2] || '✨',
-                            vibe: row[3] || '',
-                            sideDig: row[4] || '',
-                            profile: row[5] || ''
-                        });
-                    }
-                }
-                setProfiles(parsedProfiles);
-            };
-
-            const selectOption = (optionIndex) => {
-                setAnswers({ ...answers, [currentQuestion]: optionIndex });
-            };
-
-            const nextQuestion = () => {
-                if (answers[currentQuestion] === undefined) return;
-                
-                if (currentQuestion < questions.length - 1) {
-                    setCurrentQuestion(currentQuestion + 1);
-                } else {
-                    calculateResults();
-                }
-            };
-
-            const previousQuestion = () => {
-                if (currentQuestion > 0) {
-                    setCurrentQuestion(currentQuestion - 1);
-                }
-            };
-
-            const calculateResults = () => {
-                const scores = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
-
-                Object.keys(answers).forEach(questionIndex => {
-                    const question = questions[parseInt(questionIndex)];
-                    const optionIndex = answers[questionIndex];
-                    const trait = question.options[optionIndex].trait;
-
-                    const match = trait.match(/([EISNTFJP])([+-]\d+)/);
-                    if (match) {
-                        const letter = match[1];
-                        const value = parseInt(match[2]);
-                        scores[letter] += value;
+                    },
+                    error: function(error) {
+                        showError('Error loading quiz data: ' + error.message);
                     }
                 });
-
-                const mbtiType = 
-                    (scores.E > scores.I ? 'E' : 'I') +
-                    (scores.S > scores.N ? 'S' : 'N') +
-                    (scores.T > scores.F ? 'T' : 'F') +
-                    (scores.J > scores.P ? 'J' : 'P');
-
-                setShowResult(mbtiType);
-            };
-
-            const restartQuiz = () => {
-                setCurrentQuestion(0);
-                setAnswers({});
-                setShowResult(false);
-            };
-
-            if (loading) {
-                return (
-                    <div className="min-h-screen bg-gradient-to-br from-pink-200 via-purple-200 to-blue-200 flex items-center justify-center p-4">
-                        <div className="bg-white rounded-3xl shadow-2xl p-12 text-center border-8 border-pink-300">
-                            <div className="text-6xl mb-6 animate-bounce">🌸</div>
-                            <div className="text-2xl font-bold text-pink-600 mb-4" style={{fontFamily: 'monospace'}}>Loading Quiz...</div>
-                            <div className="flex justify-center gap-2">
-                                <div className="w-4 h-4 bg-pink-400 rounded-sm animate-pulse"></div>
-                                <div className="w-4 h-4 bg-purple-400 rounded-sm animate-pulse" style={{animationDelay: '0.2s'}}></div>
-                                <div className="w-4 h-4 bg-blue-400 rounded-sm animate-pulse" style={{animationDelay: '0.4s'}}></div>
-                            </div>
-                        </div>
-                    </div>
-                );
+            } catch (error) {
+                showError('Failed to fetch quiz data: ' + error.message);
             }
-
-            if (error) {
-                return (
-                    <div className="min-h-screen bg-gradient-to-br from-pink-200 via-purple-200 to-blue-200 flex items-center justify-center p-4">
-                        <div className="bg-white rounded-3xl shadow-2xl p-12 text-center border-8 border-red-300 max-w-md">
-                            <div className="text-6xl mb-6">😢</div>
-                            <div className="text-xl font-bold text-red-600 mb-4" style={{fontFamily: 'monospace'}}>{error}</div>
-                            <button 
-                                onClick={loadData}
-                                className="bg-pink-500 hover:bg-pink-600 text-white font-bold py-3 px-8 rounded-xl border-4 border-pink-700 shadow-lg transform hover:scale-105 transition"
-                                style={{fontFamily: 'monospace'}}
-                            >
-                                Try Again! ♥
-                            </button>
-                        </div>
-                    </div>
-                );
-            }
-
-            if (showResult) {
-                const profile = profiles.find(p => p.mbti === showResult);
-                
-                return (
-                    <div className="min-h-screen bg-gradient-to-br from-pink-200 via-purple-200 to-blue-200 flex items-center justify-center p-4">
-                        <div className="bg-white rounded-3xl shadow-2xl p-8 max-w-2xl w-full border-8 border-purple-300">
-                            <div className="text-center mb-8">
-                                <div className="inline-flex items-center gap-3 mb-4">
-                                    <span className="text-2xl animate-spin" style={{animationDuration: '3s'}}>⭐</span>
-                                    <span className="text-2xl">✨</span>
-                                    <span className="text-2xl animate-pulse">❤️</span>
-                                </div>
-                                
-                                <div className="text-9xl mb-6">
-                                    {profile?.sprite || '✨'}
-                                </div>
-                                
-                                <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 bg-clip-text text-transparent" style={{fontFamily: 'monospace'}}>
-                                    {profile?.animal || 'Unique Soul'}
-                                </h1>
-                            </div>
-
-                            <div className="bg-gradient-to-r from-pink-300 to-purple-300 rounded-2xl p-6 mb-6 border-4 border-pink-400 shadow-lg">
-                                <h3 className="text-2xl font-bold text-white mb-4 text-center flex items-center justify-center gap-2" style={{fontFamily: 'monospace'}}>
-                                    ✨ Your Vibe ✨
-                                </h3>
-                                <p className="text-white text-lg leading-relaxed mb-4">{profile?.vibe}</p>
-                                {profile?.sideDig && (
-                                    <p className="text-white text-base italic border-t-2 border-white pt-4 opacity-90">
-                                        {profile?.sideDig}
-                                    </p>
-                                )}
-                            </div>
-
-                            <div className="bg-gradient-to-r from-purple-300 to-blue-300 rounded-2xl p-6 mb-6 border-4 border-purple-400 shadow-lg">
-                                <h3 className="text-2xl font-bold text-white mb-4 text-center flex items-center justify-center gap-2" style={{fontFamily: 'monospace'}}>
-                                    ❤️ Your Profile ❤️
-                                </h3>
-                                <p className="text-white text-base leading-relaxed whitespace-pre-line">
-                                    {profile?.profile}
-                                </p>
-                            </div>
-
-                            <button
-                                onClick={restartQuiz}
-                                className="w-full bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white font-bold py-4 px-8 rounded-2xl border-4 border-pink-700 shadow-lg transform hover:scale-105 transition flex items-center justify-center gap-3 text-xl"
-                                style={{fontFamily: 'monospace'}}
-                            >
-                                🔄 Take Quiz Again! ♥
-                            </button>
-                        </div>
-                    </div>
-                );
-            }
-
-            const progress = ((currentQuestion + 1) / questions.length) * 100;
-            const currentQ = questions[currentQuestion];
-            const emojis = ['🌸', '🌟', '💝', '🎀', '🦋', '🌈', '🍓', '🎨', '🎭', '🎪', '🎡', '🎢'];
-
-            return (
-                <div className="min-h-screen bg-gradient-to-br from-pink-200 via-purple-200 to-blue-200 flex items-center justify-center p-4">
-                    <div className="bg-white rounded-3xl shadow-2xl p-8 max-w-3xl w-full border-8 border-pink-300">
-                        <div className="mb-6">
-                            <div className="flex justify-between items-center mb-3">
-                                <span className="text-sm font-bold text-pink-600" style={{fontFamily: 'monospace'}}>
-                                    Question {currentQuestion + 1} of {questions.length}
-                                </span>
-                                <span className="text-sm font-bold text-purple-600 flex items-center gap-1" style={{fontFamily: 'monospace'}}>
-                                    ❤️ {Math.round(progress)}%
-                                </span>
-                            </div>
-                            <div className="w-full bg-pink-200 rounded-full h-4 overflow-hidden border-4 border-pink-400">
-                                <div 
-                                    className="bg-gradient-to-r from-pink-500 to-purple-500 h-full transition-all duration-300 flex items-center justify-end pr-1"
-                                    style={{ width: `${progress}%` }}
-                                >
-                                    {progress > 10 && <span className="text-white text-xs">⭐</span>}
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="text-center mb-8">
-                            <div className="text-6xl mb-6">
-                                {emojis[currentQuestion % emojis.length]}
-                            </div>
-                        </div>
-
-                        <h2 className="text-xl font-bold text-gray-800 mb-6 leading-relaxed" style={{fontFamily: 'monospace'}}>
-                            {currentQ?.text}
-                        </h2>
-
-                        <div className="space-y-3 mb-8">
-                            {currentQ?.options.map((option, index) => (
-                                <button
-                                    key={index}
-                                    onClick={() => selectOption(index)}
-                                    className={`w-full text-left p-5 rounded-2xl border-4 transition-all duration-200 ${
-                                        answers[currentQuestion] === index
-                                            ? 'border-purple-500 bg-gradient-to-r from-pink-100 to-purple-100 shadow-lg transform scale-105'
-                                            : 'border-pink-300 hover:border-purple-400 hover:bg-pink-50 hover:shadow-md'
-                                    }`}
-                                    style={{fontFamily: 'monospace'}}
-                                >
-                                    <div className="flex items-start gap-3">
-                                        <div className={`w-6 h-6 rounded-full border-4 flex-shrink-0 mt-0.5 flex items-center justify-center ${
-                                            answers[currentQuestion] === index
-                                                ? 'border-purple-500 bg-purple-500'
-                                                : 'border-pink-400 bg-white'
-                                        }`}>
-                                            {answers[currentQuestion] === index && (
-                                                <span className="text-white text-xs">❤️</span>
-                                            )}
-                                        </div>
-                                        <span className="text-gray-700 leading-relaxed">{option.text}</span>
-                                    </div>
-                                </button>
-                            ))}
-                        </div>
-
-                        <div className="flex gap-4">
-                            <button
-                                onClick={previousQuestion}
-                                disabled={currentQuestion === 0}
-                                className={`flex items-center gap-2 px-6 py-4 rounded-2xl font-bold border-4 transition ${
-                                    currentQuestion === 0
-                                        ? 'bg-gray-200 text-gray-400 border-gray-300 cursor-not-allowed'
-                                        : 'bg-pink-200 text-pink-700 border-pink-400 hover:bg-pink-300 shadow-md hover:shadow-lg transform hover:scale-105'
-                                }`}
-                                style={{fontFamily: 'monospace'}}
-                            >
-                                ⬅️ Back
-                            </button>
-
-                            <button
-                                onClick={nextQuestion}
-                                disabled={answers[currentQuestion] === undefined}
-                                className={`flex-1 flex items-center justify-center gap-3 px-6 py-4 rounded-2xl font-bold border-4 transition ${
-                                    answers[currentQuestion] === undefined
-                                        ? 'bg-gray-200 text-gray-400 border-gray-300 cursor-not-allowed'
-                                        : 'bg-gradient-to-r from-pink-500 to-purple-500 text-white border-pink-700 shadow-lg hover:shadow-xl transform hover:scale-105'
-                                }`}
-                                style={{fontFamily: 'monospace'}}
-                            >
-                                {currentQuestion === questions.length - 1 ? (
-                                    <>See Results! ✨</>
-                                ) : (
-                                    <>Next ➡️</>
-                                )}
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            );
         }
 
-        ReactDOM.render(<PixelPersonalityQuiz />, document.getElementById('root'));
+        function parseSheets(data) {
+            // Find where profiles sheet starts (look for empty row or MBTI header)
+            let profileStartIndex = -1;
+            for (let i = 0; i < data.length; i++) {
+                if (data[i][0] === 'MBTI' || (data[i][0] && data[i][0].includes('MBTI'))) {
+                    profileStartIndex = i;
+                    break;
+                }
+            }
+
+            // Parse questions (first sheet)
+            const questionEndIndex = profileStartIndex > 0 ? profileStartIndex : data.length;
+            for (let i = 1; i < questionEndIndex; i++) {
+                const row = data[i];
+                if (row[0] && row[0].trim()) { // Has question text
+                    questions.push({
+                        question: row[0],
+                        options: [
+                            { text: row[1], trait: row[2] },
+                            { text: row[3], trait: row[4] },
+                            { text: row[5], trait: row[6] },
+                            { text: row[7], trait: row[8] }
+                        ]
+                    });
+                }
+            }
+
+            // Parse profiles (second sheet)
+            if (profileStartIndex > 0) {
+                for (let i = profileStartIndex + 1; i < data.length; i++) {
+                    const row = data[i];
+                    if (row[0] && row[0].trim()) {
+                        profiles.push({
+                            mbti: row[0],
+                            animal: row[1],
+                            sprite: row[2],
+                            vibe: row[3],
+                            sideDig: row[4],
+                            profile: row[5]
+                        });
+                    }
+                }
+            }
+        }
+
+        function startQuiz() {
+            currentQuestion = 0;
+            scores = { E: 0, I: 0, S: 0, N: 0, F: 0, T: 0, J: 0, P: 0 };
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const q = questions[currentQuestion];
+            const progress = ((currentQuestion) / questions.length) * 100;
+            
+            document.getElementById('quiz-content').innerHTML = `
+                <div class="progress">
+                    Question ${currentQuestion + 1} of ${questions.length}
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${progress}%"></div>
+                    </div>
+                </div>
+                <div class="question-text">${q.question}</div>
+                <div class="options">
+                    ${q.options.map((opt, i) => `
+                        <div class="option" onclick="selectAnswer(${i})">
+                            ${opt.text}
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function selectAnswer(optionIndex) {
+            const selected = questions[currentQuestion].options[optionIndex];
+            
+            // Parse trait (e.g., "E+2" -> add 2 to E)
+            if (selected.trait) {
+                const match = selected.trait.match(/([A-Z])([+-]\d+)/);
+                if (match) {
+                    const trait = match[1];
+                    const value = parseInt(match[2]);
+                    scores[trait] += value;
+                }
+            }
+            
+            currentQuestion++;
+            
+            if (currentQuestion < questions.length) {
+                showQuestion();
+            } else {
+                showResult();
+            }
+        }
+
+        function showResult() {
+            // Calculate MBTI type
+            const e_i = scores.E > scores.I ? 'E' : 'I';
+            const s_n = scores.S > scores.N ? 'S' : 'N';
+            const f_t = scores.F > scores.T ? 'F' : 'T';
+            const j_p = scores.J > scores.P ? 'J' : 'P';
+            const mbtiType = e_i + s_n + f_t + j_p;
+            
+            // Find matching profile
+            const profile = profiles.find(p => p.mbti === mbtiType) || {
+                animal: 'Mystery Creature',
+                sprite: '🌟',
+                vibe: 'You are wonderfully unique!',
+                sideDig: 'No one can quite figure you out.',
+                profile: 'You\'re one of a kind!'
+            };
+            
+            document.getElementById('quiz-content').innerHTML = `
+                <div class="result-container">
+                    <div class="sprite-container">${profile.sprite}</div>
+                    <div class="animal-name">${profile.animal}</div>
+                    
+                    <div class="info-box">
+                        <h3>✨ Your Vibe ✨</h3>
+                        <p>${profile.vibe}</p>
+                        <br>
+                        <h3>💫 Side Dig 💫</h3>
+                        <p>${profile.sideDig}</p>
+                    </div>
+                    
+                    <div class="info-box">
+                        <h3>🎮 Your Profile 🎮</h3>
+                        <p>${profile.profile}</p>
+                    </div>
+                    
+                    <button class="restart-btn" onclick="startQuiz()">
+                        Play Again! ↻
+                    </button>
+                </div>
+            `;
+        }
+
+        function showError(message) {
+            document.getElementById('quiz-content').innerHTML = `
+                <div class="error">${message}</div>
+                <button class="restart-btn" onclick="location.reload()">
+                    Try Again
+                </button>
+            `;
+        }
+
+        // Start loading quiz when page loads
+        loadQuizData();
     </script>
 </body>
 </html>
