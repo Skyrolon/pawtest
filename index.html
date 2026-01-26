@@ -268,37 +268,28 @@
             });
         }
         
+        // Helper to find data in a row regardless of Case or Spaces
+        function getFieldValue(row, baseName, index = "") {
+            const searchName = (baseName + index).toLowerCase().replace(/\s/g, "");
+            const key = Object.keys(row).find(k => k.toLowerCase().replace(/\s/g, "") === searchName);
+            return key ? row[key] : null;
+        }
+        
         function parseQuestions(data) {
-            const parsed = data.map(row => {
-                if (!row.question) return null;
-                
-                const question = {
-                    question: row.question,
-                    options: [
-                        {
-                            text: row.option1,
-                            trait: row.trait1
-                        },
-                        {
-                            text: row.option2,
-                            trait: row.trait2
-                        },
-                        {
-                            text: row.option3,
-                            trait: row.trait3
-                        },
-                        {
-                            text: row.option4,
-                            trait: row.trait4
-                        }
-                    ]
-                };
-                
-                console.log('Parsed question:', question);
-                return question;
+            return data.map(row => {
+                const questionText = getFieldValue(row, "question");
+                if (!questionText) return null;
+
+                const options = [];
+                for (let i = 1; i <= 4; i++) {
+                    const text = getFieldValue(row, "option", i);
+                    const trait = getFieldValue(row, "trait", i);
+                    if (text) options.push({ text, trait });
+                }
+
+                console.log('Parsed question:', { question: questionText, options });
+                return { question: questionText, options };
             }).filter(q => q !== null);
-            
-            return parsed;
         }
         
         function parseProfiles(data) {
@@ -396,52 +387,43 @@
             const option = questions[currentQuestion].options[optionIndex];
             
             console.log('=== BUTTON CLICKED ===');
-            console.log('Option index:', optionIndex);
-            console.log('Option text:', option.text);
-            console.log('Option trait:', option.trait);
+            console.log('Option:', option.text);
+            console.log('Raw trait value:', option.trait);
             
-            // Get the trait string
-            let traitStr = option.trait;
-            
+            let traitStr = option.trait ? String(option.trait).trim() : null;
+
             if (!traitStr) {
-                console.error('ERROR: No trait data!');
-                currentQuestion++;
-                if (currentQuestion < questions.length) {
-                    renderQuestion();
+                console.warn("No trait found for this option.");
+            } else {
+                let letter, value;
+
+                if (traitStr.includes('+')) {
+                    const parts = traitStr.split('+');
+                    letter = parts[0].trim().toUpperCase();
+                    value = parseInt(parts[1].trim());
                 } else {
-                    showResults();
+                    // FALLBACK: If sheet just says "E", assume "+1"
+                    letter = traitStr.toUpperCase();
+                    value = 1;
                 }
-                return;
-            }
-            
-            // Clean the string
-            traitStr = String(traitStr).trim();
-            console.log('Processing trait:', traitStr);
-            
-            // Parse the trait - format is "E+2", "I+1", etc.
-            let letter = '';
-            let value = 0;
-            
-            if (traitStr.includes('+')) {
-                const parts = traitStr.split('+');
-                letter = parts[0].trim().toUpperCase();
-                value = parseInt(parts[1].trim());
-            }
-            
-            console.log('Parsed - Letter:', letter, 'Value:', value);
-            console.log('Scores BEFORE update:', JSON.stringify(scores));
-            
-            // Update the score
-            if (letter && !isNaN(value)) {
-                scores[letter] = (scores[letter] || 0) + value;
-                console.log('Scores AFTER update:', JSON.stringify(scores));
-                console.log(`Updated ${letter}: now ${scores[letter]}`);
+
+                console.log(`Parsed: ${letter} + ${value}`);
+                console.log('Scores BEFORE:', JSON.stringify(scores));
+
+                if (scores.hasOwnProperty(letter)) {
+                    scores[letter] += value;
+                    console.log(`Score Update: ${letter} is now ${scores[letter]}`);
+                } else {
+                    console.error(`Letter ${letter} not found in scores object`);
+                }
                 
-                // Immediately update the display
+                console.log('Scores AFTER:', JSON.stringify(scores));
+                
+                // Update the display
                 updateScoreDisplay();
             }
-            
-            // Small delay to show the score update before moving to next question
+
+            // Small delay to show the score update
             setTimeout(() => {
                 currentQuestion++;
                 if (currentQuestion < questions.length) {
