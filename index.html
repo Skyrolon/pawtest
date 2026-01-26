@@ -270,8 +270,8 @@
         
         // Helper to find data in a row regardless of Case or Spaces
         function getFieldValue(row, baseName, index = "") {
-            const searchName = (baseName + index).toLowerCase().replace(/\s/g, "");
-            const key = Object.keys(row).find(k => k.toLowerCase().replace(/\s/g, "") === searchName);
+            const searchName = (baseName + index).toLowerCase().replace(/[^a-z0-9]/g, "");
+            const key = Object.keys(row).find(k => k.toLowerCase().replace(/[^a-z0-9]/g, "") === searchName);
             return key ? row[key] : null;
         }
         
@@ -392,38 +392,42 @@
             
             let traitStr = option.trait ? String(option.trait).trim() : null;
 
-            if (!traitStr) {
-                console.warn("No trait found for this option.");
-            } else {
+            if (traitStr) {
+                // This regex looks for: A Letter, then maybe a parenthesis/plus, then a Number
+                // It works for "E (+1)", "E+1", or just "E"
+                const match = traitStr.match(/([A-Z])\s*\(?\+?(\d+)\)?/i);
+                
                 let letter, value;
 
-                if (traitStr.includes('+')) {
-                    const parts = traitStr.split('+');
-                    letter = parts[0].trim().toUpperCase();
-                    value = parseInt(parts[1].trim());
+                if (match) {
+                    letter = match[1].toUpperCase();
+                    value = parseInt(match[2]);
+                    console.log(`Regex matched: ${letter} + ${value}`);
                 } else {
-                    // FALLBACK: If sheet just says "E", assume "+1"
-                    letter = traitStr.toUpperCase();
+                    // Fallback for just a letter like "E"
+                    letter = traitStr.charAt(0).toUpperCase();
                     value = 1;
+                    console.log(`Fallback: ${letter} + ${value}`);
                 }
 
-                console.log(`Parsed: ${letter} + ${value}`);
                 console.log('Scores BEFORE:', JSON.stringify(scores));
 
                 if (scores.hasOwnProperty(letter)) {
                     scores[letter] += value;
-                    console.log(`Score Update: ${letter} is now ${scores[letter]}`);
+                    console.log(`Updated ${letter}: ${scores[letter]}`);
                 } else {
                     console.error(`Letter ${letter} not found in scores object`);
                 }
                 
                 console.log('Scores AFTER:', JSON.stringify(scores));
-                
-                // Update the display
-                updateScoreDisplay();
+            } else {
+                console.warn("No trait found for this option.");
             }
 
-            // Small delay to show the score update
+            // Update the debug display immediately
+            updateScoreDisplay();
+
+            // Move to next question with a slight delay
             setTimeout(() => {
                 currentQuestion++;
                 if (currentQuestion < questions.length) {
@@ -431,7 +435,7 @@
                 } else {
                     showResults();
                 }
-            }, 100);
+            }, 150);
         }
         
         function calculateMBTI() {
