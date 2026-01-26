@@ -322,18 +322,38 @@
             const progress = ((currentQuestion) / questions.length) * 100;
             
             // Debug: log the current question structure
-            console.log('Current question:', q);
+            console.log('=== RENDERING QUESTION ===');
+            console.log('Question number:', currentQuestion + 1);
+            console.log('Question text:', q.question);
+            console.log('Option 1:', q.options[0].text, '| Trait:', q.options[0].trait);
+            console.log('Option 2:', q.options[1].text, '| Trait:', q.options[1].trait);
+            console.log('Option 3:', q.options[2].text, '| Trait:', q.options[2].trait);
+            console.log('Option 4:', q.options[3].text, '| Trait:', q.options[3].trait);
+            console.log('========================');
+            
+            // Store question globally for debugging
+            window.currentQuestionData = q;
             
             document.getElementById('app').innerHTML = `
                 <div class="question-container">
                     <div class="question-text">${q.question}</div>
                     <div class="options">
-                        ${q.options.map((opt, i) => `
-                            <button class="option-btn" onclick="selectOption(${i})" data-trait="${opt.trait}">
-                                ${opt.text}
-                                <div style="font-size: 8px; margin-top: 5px; color: #fbbf24;">[${opt.trait}]</div>
-                            </button>
-                        `).join('')}
+                        <button class="option-btn" onclick="selectOption(0)">
+                            ${q.options[0].text}
+                            <div style="font-size: 8px; margin-top: 5px; color: #fbbf24;">[Trait: ${q.options[0].trait || 'MISSING'}]</div>
+                        </button>
+                        <button class="option-btn" onclick="selectOption(1)">
+                            ${q.options[1].text}
+                            <div style="font-size: 8px; margin-top: 5px; color: #fbbf24;">[Trait: ${q.options[1].trait || 'MISSING'}]</div>
+                        </button>
+                        <button class="option-btn" onclick="selectOption(2)">
+                            ${q.options[2].text}
+                            <div style="font-size: 8px; margin-top: 5px; color: #fbbf24;">[Trait: ${q.options[2].trait || 'MISSING'}]</div>
+                        </button>
+                        <button class="option-btn" onclick="selectOption(3)">
+                            ${q.options[3].text}
+                            <div style="font-size: 8px; margin-top: 5px; color: #fbbf24;">[Trait: ${q.options[3].trait || 'MISSING'}]</div>
+                        </button>
                     </div>
                 </div>
                 
@@ -357,28 +377,72 @@
         function selectOption(optionIndex) {
             const option = questions[currentQuestion].options[optionIndex];
             
-            console.log('Selected option:', option);
-            console.log('Trait string:', option.trait);
+            console.log('=== OPTION SELECTED ===');
+            console.log('Option index:', optionIndex);
+            console.log('Option object:', option);
+            console.log('Option text:', option.text);
+            console.log('Option trait:', option.trait);
+            console.log('Type of trait:', typeof option.trait);
+            console.log('Scores BEFORE:', JSON.parse(JSON.stringify(scores)));
             
             // Parse trait like "E+2" or "I+1"
-            const trait = option.trait;
-            if (trait) {
+            const traitStr = option.trait;
+            if (traitStr && traitStr !== '') {
                 // Remove any whitespace
-                const cleanTrait = trait.trim();
-                console.log('Clean trait:', cleanTrait);
+                const cleanTrait = String(traitStr).trim();
+                console.log('Clean trait string:', cleanTrait);
                 
-                // Match pattern like E+2, I+1, etc.
-                const match = cleanTrait.match(/([A-Z])([+-]?\d+)/);
-                console.log('Match result:', match);
+                // Try different regex patterns
+                let match = cleanTrait.match(/([EISNTFJP])([+\-]?\d+)/i);
+                console.log('Regex match result:', match);
                 
                 if (match) {
-                    const letter = match[1];
-                    const value = parseInt(match[2]);
-                    console.log(`Adding ${value} to ${letter}`);
-                    scores[letter] = (scores[letter] || 0) + value;
-                    console.log('Updated scores:', scores);
+                    const letter = match[1].toUpperCase();
+                    const valueStr = match[2];
+                    const value = parseInt(valueStr);
+                    
+                    console.log('Parsed letter:', letter);
+                    console.log('Parsed value string:', valueStr);
+                    console.log('Parsed value int:', value);
+                    
+                    if (!isNaN(value)) {
+                        if (!scores[letter]) {
+                            scores[letter] = 0;
+                        }
+                        scores[letter] = scores[letter] + value;
+                        console.log(`Successfully added ${value} to ${letter}`);
+                    } else {
+                        console.error('Value is NaN!');
+                    }
+                } else {
+                    console.error('NO MATCH! Trying alternative parsing...');
+                    // Try splitting by + or -
+                    if (cleanTrait.includes('+')) {
+                        const parts = cleanTrait.split('+');
+                        const letter = parts[0].trim().toUpperCase();
+                        const value = parseInt(parts[1]);
+                        if (letter && !isNaN(value)) {
+                            if (!scores[letter]) scores[letter] = 0;
+                            scores[letter] += value;
+                            console.log(`Alternative parse: added ${value} to ${letter}`);
+                        }
+                    } else if (cleanTrait.includes('-')) {
+                        const parts = cleanTrait.split('-');
+                        const letter = parts[0].trim().toUpperCase();
+                        const value = -parseInt(parts[1]);
+                        if (letter && !isNaN(value)) {
+                            if (!scores[letter]) scores[letter] = 0;
+                            scores[letter] += value;
+                            console.log(`Alternative parse: added ${value} to ${letter}`);
+                        }
+                    }
                 }
+            } else {
+                console.error('Trait string is empty or undefined!');
             }
+            
+            console.log('Scores AFTER:', JSON.parse(JSON.stringify(scores)));
+            console.log('======================');
             
             currentQuestion++;
             
