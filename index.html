@@ -6,7 +6,7 @@
     <title>Personality Quiz</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
         
         * {
             margin: 0;
@@ -15,69 +15,31 @@
         }
         
         body {
-            font-family: 'Fredoka', sans-serif;
-            background: linear-gradient(135deg, #ffeef8 0%, #e0f4ff 50%, #fff5e6 100%);
+            font-family: 'Press Start 2P', cursive;
+            background: #1a1a2e;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 20px;
-            position: relative;
-            overflow-x: hidden;
-        }
-
-        body::before {
-            content: '✨';
-            position: absolute;
-            top: 10%;
-            left: 10%;
-            font-size: 40px;
-            animation: float 3s ease-in-out infinite;
-        }
-
-        body::after {
-            content: '💫';
-            position: absolute;
-            bottom: 15%;
-            right: 15%;
-            font-size: 35px;
-            animation: float 4s ease-in-out infinite;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
+            line-height: 1.8;
         }
         
         .container {
-            max-width: 650px;
+            max-width: 700px;
             width: 100%;
-            background: white;
-            border-radius: 30px;
-            padding: 50px;
-            box-shadow: 0 20px 60px rgba(255, 105, 180, 0.15);
-            position: relative;
-        }
-
-        .container::before {
-            content: '🌸';
-            position: absolute;
-            top: -20px;
-            right: 30px;
-            font-size: 50px;
-            animation: spin 10s linear infinite;
-        }
-
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
+            background: #16213e;
+            border: 6px solid #0f3460;
+            border-radius: 0;
+            padding: 40px;
+            box-shadow: 0 0 0 3px #e94560, 8px 8px 0 0 #533483;
+            image-rendering: pixelated;
         }
         
         .loading {
             text-align: center;
-            font-size: 22px;
-            color: #ff69b4;
-            font-weight: 600;
+            font-size: 14px;
+            color: #e94560;
         }
         
         .loading::after {
@@ -92,12 +54,13 @@
         }
         
         .question-text {
-            font-size: 22px;
-            color: #4a4a4a;
-            margin-bottom: 35px;
-            line-height: 1.7;
-            font-weight: 500;
-            text-align: center;
+            font-size: 11px;
+            color: #f1f1f1;
+            margin-bottom: 30px;
+            line-height: 1.8;
+            padding: 20px;
+            background: #0f3460;
+            border: 4px solid #e94560;
         }
         
         .options {
@@ -108,192 +71,167 @@
         }
         
         .option {
-            padding: 25px;
-            background: linear-gradient(135deg, #fff9fc 0%, #f0f9ff 100%);
-            border: 3px solid #ffd6e8;
-            border-radius: 20px;
+            padding: 20px;
+            background: #0f3460;
+            border: 4px solid #533483;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            font-size: 17px;
-            color: #4a4a4a;
-            line-height: 1.6;
-            font-weight: 500;
+            transition: all 0.1s;
+            font-size: 10px;
+            color: #f1f1f1;
+            line-height: 1.7;
             position: relative;
-        }
-
-        .option::before {
-            content: '💖';
-            position: absolute;
-            right: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            opacity: 0;
-            transition: all 0.3s ease;
         }
         
         .option:hover {
-            background: linear-gradient(135deg, #ffe5f4 0%, #e0f4ff 100%);
-            border-color: #ff69b4;
-            transform: translateY(-4px) scale(1.02);
-            box-shadow: 0 10px 30px rgba(255, 105, 180, 0.25);
+            background: #533483;
+            border-color: #e94560;
+            transform: translate(-2px, -2px);
+            box-shadow: 4px 4px 0 0 #e94560;
         }
 
-        .option:hover::before {
-            opacity: 1;
-            right: 25px;
+        .option:active {
+            transform: translate(0, 0);
+            box-shadow: none;
         }
         
         .progress {
             text-align: center;
-            font-size: 16px;
-            color: #ff69b4;
-            font-weight: 600;
+            font-size: 10px;
+            color: #e94560;
+            margin-top: 10px;
         }
         
         .progress-bar {
             width: 100%;
-            height: 12px;
-            background: #ffe5f4;
-            border-radius: 20px;
+            height: 16px;
+            background: #0f3460;
+            border: 4px solid #533483;
             overflow: hidden;
-            margin-top: 12px;
-            border: 2px solid #ffd6e8;
+            margin-top: 10px;
+            image-rendering: pixelated;
         }
         
         .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, #ff69b4, #ff8fab, #ffa6c9);
-            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            border-radius: 20px;
-            position: relative;
-        }
-
-        .progress-fill::after {
-            content: '✨';
-            position: absolute;
-            right: -5px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 16px;
-            animation: sparkle 1s ease-in-out infinite;
-        }
-
-        @keyframes sparkle {
-            0%, 100% { opacity: 1; transform: translateY(-50%) scale(1); }
-            50% { opacity: 0.7; transform: translateY(-50%) scale(1.2); }
+            background: repeating-linear-gradient(
+                90deg,
+                #e94560 0px,
+                #e94560 8px,
+                #533483 8px,
+                #533483 16px
+            );
+            transition: width 0.3s steps(10);
+            image-rendering: pixelated;
         }
         
         .result-container {
             text-align: center;
-            animation: fadeIn 0.6s ease-in-out;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
         }
         
-        .sprite-container {
-            margin: 20px 0;
-            font-size: 100px;
-            animation: bounce 1s ease-in-out;
+        .result-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 25px;
+            margin: 30px 0;
+            padding: 20px;
+            background: #0f3460;
+            border: 4px solid #e94560;
         }
 
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px); }
+        .sprite-img {
+            width: 120px;
+            height: 120px;
+            image-rendering: pixelated;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: crisp-edges;
         }
         
         .animal-name {
-            font-size: 38px;
-            background: linear-gradient(135deg, #ff69b4, #ff8fab);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin: 20px 0;
-            font-weight: 700;
+            font-size: 20px;
+            color: #e94560;
+            text-shadow: 3px 3px 0 #533483;
         }
         
         .info-box {
-            background: linear-gradient(135deg, #fff9fc 0%, #f0f9ff 100%);
-            border: 3px solid #ffd6e8;
-            border-radius: 25px;
-            padding: 35px;
+            background: #0f3460;
+            border: 4px solid #533483;
+            padding: 25px;
             margin: 20px 0;
             text-align: left;
-            box-shadow: 0 10px 30px rgba(255, 105, 180, 0.1);
         }
         
         .info-box h3 {
-            font-size: 22px;
-            color: #ff69b4;
+            font-size: 12px;
+            color: #e94560;
             margin-bottom: 15px;
-            font-weight: 700;
         }
         
         .info-box p {
-            font-size: 17px;
-            color: #4a4a4a;
+            font-size: 10px;
+            color: #f1f1f1;
             line-height: 1.8;
-            font-weight: 500;
         }
         
-        .info-box .section {
-            margin-bottom: 25px;
+        .info-section {
+            margin-bottom: 20px;
         }
         
-        .info-box .section:last-child {
+        .info-section:last-child {
             margin-bottom: 0;
         }
         
         .restart-btn {
-            margin-top: 40px;
-            padding: 18px 45px;
-            background: linear-gradient(135deg, #ff69b4, #ff8fab);
-            color: white;
-            border: none;
-            border-radius: 25px;
+            margin-top: 30px;
+            padding: 15px 30px;
+            background: #e94560;
+            color: #1a1a2e;
+            border: 4px solid #533483;
             cursor: pointer;
-            font-family: 'Fredoka', sans-serif;
-            font-size: 18px;
-            font-weight: 700;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 10px 30px rgba(255, 105, 180, 0.3);
+            font-family: 'Press Start 2P', cursive;
+            font-size: 10px;
+            transition: all 0.1s;
+            box-shadow: 4px 4px 0 0 #533483;
         }
         
         .restart-btn:hover {
-            transform: translateY(-3px) scale(1.05);
-            box-shadow: 0 15px 40px rgba(255, 105, 180, 0.4);
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0 0 #533483;
         }
 
         .restart-btn:active {
-            transform: translateY(-1px) scale(1.02);
+            transform: translate(0, 0);
+            box-shadow: 2px 2px 0 0 #533483;
         }
         
         .error {
-            color: #ff4757;
+            color: #e94560;
             text-align: center;
-            font-size: 18px;
+            font-size: 10px;
             padding: 20px;
-            font-weight: 600;
         }
 
         @media (max-width: 600px) {
             .container {
-                padding: 35px 25px;
+                padding: 25px;
             }
             .question-text {
-                font-size: 19px;
+                font-size: 9px;
             }
             .option {
-                font-size: 15px;
-                padding: 20px;
+                font-size: 8px;
+                padding: 15px;
             }
             .animal-name {
-                font-size: 32px;
+                font-size: 16px;
             }
-            .sprite-container {
-                font-size: 80px;
+            .sprite-img {
+                width: 80px;
+                height: 80px;
+            }
+            .result-header {
+                flex-direction: column;
+                gap: 15px;
             }
         }
     </style>
@@ -301,7 +239,7 @@
 <body>
     <div class="container">
         <div id="quiz-content">
-            <div class="loading">Loading your magical quiz</div>
+            <div class="loading">Loading quiz data</div>
         </div>
     </div>
 
@@ -316,22 +254,18 @@
 
         async function loadQuizData() {
             try {
-                // Load questions
                 const questionsResponse = await fetch(QUESTIONS_URL);
                 const questionsText = await questionsResponse.text();
                 
-                // Load profiles
                 const profilesResponse = await fetch(PROFILES_URL);
                 const profilesText = await profilesResponse.text();
                 
-                // Parse questions
                 Papa.parse(questionsText, {
                     complete: function(results) {
                         parseQuestions(results.data);
                     }
                 });
                 
-                // Parse profiles
                 Papa.parse(profilesText, {
                     complete: function(results) {
                         parseProfiles(results.data);
@@ -372,7 +306,7 @@
                     profiles.push({
                         mbti: row[0].trim(),
                         animal: row[1] || '',
-                        sprite: row[2] || '✨',
+                        sprite: row[2] || '',
                         vibe: row[3] || '',
                         sideDig: row[4] || '',
                         profile: row[5] || ''
@@ -439,7 +373,7 @@
             
             const profile = profiles.find(p => p.mbti === mbtiType) || {
                 animal: 'Mystery Creature',
-                sprite: '🌟',
+                sprite: '',
                 vibe: 'You are wonderfully unique!',
                 sideDig: 'No one can quite figure you out.',
                 profile: 'You\'re one of a kind!'
@@ -447,27 +381,29 @@
             
             document.getElementById('quiz-content').innerHTML = `
                 <div class="result-container">
-                    <div class="sprite-container">${profile.sprite}</div>
-                    <div class="animal-name">${profile.animal}</div>
+                    <div class="result-header">
+                        ${profile.sprite ? `<img src="${profile.sprite}" alt="${profile.animal}" class="sprite-img">` : ''}
+                        <div class="animal-name">${profile.animal}</div>
+                    </div>
                     
                     <div class="info-box">
-                        <div class="section">
-                            <h3>✨ Your Vibe</h3>
+                        <div class="info-section">
+                            <h3>Your Vibe</h3>
                             <p>${profile.vibe}</p>
                         </div>
-                        <div class="section">
-                            <h3>💫 Side Dig</h3>
+                        <div class="info-section">
+                            <h3>Side Dig</h3>
                             <p>${profile.sideDig}</p>
                         </div>
                     </div>
                     
                     <div class="info-box">
-                        <h3>🌸 Your Profile</h3>
+                        <h3>Your Profile</h3>
                         <p>${profile.profile}</p>
                     </div>
                     
                     <button class="restart-btn" onclick="startQuiz()">
-                        Take Quiz Again! 💖
+                        RESTART
                     </button>
                 </div>
             `;
@@ -477,7 +413,7 @@
             document.getElementById('quiz-content').innerHTML = `
                 <div class="error">${message}</div>
                 <button class="restart-btn" onclick="location.reload()">
-                    Try Again
+                    RETRY
                 </button>
             `;
         }
