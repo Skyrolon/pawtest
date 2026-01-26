@@ -16,7 +16,7 @@
         
         body {
             font-family: 'Press Start 2P', cursive;
-            background: #e8e8e8;
+            background: #fef4f8;
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -29,17 +29,17 @@
             max-width: 700px;
             width: 100%;
             background: #ffffff;
-            border: 6px solid #333333;
+            border: 6px solid #d4a5d8;
             border-radius: 0;
             padding: 40px;
-            box-shadow: 0 0 0 3px #666666, 8px 8px 0 0 #999999;
+            box-shadow: 0 0 0 3px #f4c2d1, 8px 8px 0 0 #c4def6;
             image-rendering: pixelated;
         }
         
         .loading {
             text-align: center;
             font-size: 14px;
-            color: #333333;
+            color: #a78bca;
         }
         
         .loading::after {
@@ -55,12 +55,12 @@
         
         .question-text {
             font-size: 11px;
-            color: #333333;
+            color: #6b5b7e;
             margin-bottom: 30px;
             line-height: 1.8;
             padding: 20px;
-            background: #f5f5f5;
-            border: 4px solid #666666;
+            background: #fef9fc;
+            border: 4px solid #d4a5d8;
         }
         
         .options {
@@ -72,21 +72,21 @@
         
         .option {
             padding: 20px;
-            background: #f5f5f5;
-            border: 4px solid #999999;
+            background: #fef9fc;
+            border: 4px solid #c4def6;
             cursor: pointer;
             transition: all 0.1s;
             font-size: 10px;
-            color: #333333;
+            color: #6b5b7e;
             line-height: 1.7;
             position: relative;
         }
         
         .option:hover {
-            background: #e0e0e0;
-            border-color: #333333;
+            background: #f4e8f7;
+            border-color: #a78bca;
             transform: translate(-2px, -2px);
-            box-shadow: 4px 4px 0 0 #666666;
+            box-shadow: 4px 4px 0 0 #d4a5d8;
         }
 
         .option:active {
@@ -97,15 +97,15 @@
         .progress {
             text-align: center;
             font-size: 10px;
-            color: #666666;
+            color: #a78bca;
             margin-top: 10px;
         }
         
         .progress-bar {
             width: 100%;
             height: 16px;
-            background: #e0e0e0;
-            border: 4px solid #999999;
+            background: #fef9fc;
+            border: 4px solid #d4a5d8;
             overflow: hidden;
             margin-top: 10px;
             image-rendering: pixelated;
@@ -115,10 +115,10 @@
             height: 100%;
             background: repeating-linear-gradient(
                 90deg,
-                #666666 0px,
-                #666666 8px,
-                #999999 8px,
-                #999999 16px
+                #d4a5d8 0px,
+                #d4a5d8 8px,
+                #c4def6 8px,
+                #c4def6 16px
             );
             transition: width 0.3s steps(10);
             image-rendering: pixelated;
@@ -135,8 +135,8 @@
             gap: 25px;
             margin: 30px 0;
             padding: 20px;
-            background: #f5f5f5;
-            border: 4px solid #666666;
+            background: #fef9fc;
+            border: 4px solid #d4a5d8;
         }
 
         .sprite-img {
@@ -150,13 +150,13 @@
         
         .animal-name {
             font-size: 20px;
-            color: #333333;
-            text-shadow: 3px 3px 0 #999999;
+            color: #6b5b7e;
+            text-shadow: 3px 3px 0 #d4a5d8;
         }
         
         .info-box {
-            background: #f5f5f5;
-            border: 4px solid #999999;
+            background: #fef9fc;
+            border: 4px solid #c4def6;
             padding: 25px;
             margin: 20px 0;
             text-align: left;
@@ -164,50 +164,42 @@
         
         .info-box h3 {
             font-size: 12px;
-            color: #333333;
+            color: #a78bca;
             margin-bottom: 15px;
         }
         
         .info-box p {
             font-size: 10px;
-            color: #333333;
+            color: #6b5b7e;
             line-height: 1.8;
             white-space: pre-wrap;
-        }
-        
-        .info-section {
-            margin-bottom: 20px;
-        }
-        
-        .info-section:last-child {
-            margin-bottom: 0;
         }
         
         .restart-btn {
             margin-top: 30px;
             padding: 15px 30px;
-            background: #666666;
+            background: #d4a5d8;
             color: #ffffff;
-            border: 4px solid #333333;
+            border: 4px solid #a78bca;
             cursor: pointer;
             font-family: 'Press Start 2P', cursive;
             font-size: 10px;
             transition: all 0.1s;
-            box-shadow: 4px 4px 0 0 #999999;
+            box-shadow: 4px 4px 0 0 #c4def6;
         }
         
         .restart-btn:hover {
             transform: translate(-2px, -2px);
-            box-shadow: 6px 6px 0 0 #999999;
+            box-shadow: 6px 6px 0 0 #c4def6;
         }
 
         .restart-btn:active {
             transform: translate(0, 0);
-            box-shadow: 2px 2px 0 0 #999999;
+            box-shadow: 2px 2px 0 0 #c4def6;
         }
         
         .error {
-            color: #333333;
+            color: #a78bca;
             text-align: center;
             font-size: 10px;
             padding: 20px;
@@ -305,12 +297,18 @@
             for (let i = 1; i < data.length; i++) {
                 const row = data[i];
                 if (row[0] && row[0].trim()) {
+                    // Extract IBB image link from the sprite cell if it contains HTML
+                    let spriteUrl = row[2] || '';
+                    const imgMatch = spriteUrl.match(/src=["']([^"']+)["']/);
+                    if (imgMatch) {
+                        spriteUrl = imgMatch[1];
+                    }
+                    
                     profiles.push({
                         mbti: row[0].trim(),
                         animal: row[1] || '',
-                        sprite: row[2] || '',
+                        sprite: spriteUrl,
                         vibe: row[3] || '',
-                        sideDig: row[4] || '',
                         profile: row[5] || ''
                     });
                 }
@@ -377,7 +375,6 @@
                 animal: 'Mystery Creature',
                 sprite: '',
                 vibe: 'You are wonderfully unique!',
-                sideDig: 'No one can quite figure you out.',
                 profile: 'You\'re one of a kind!'
             };
             
@@ -391,11 +388,6 @@
                     <div class="info-box">
                         <h3>Your Vibe</h3>
                         <p>${profile.vibe}</p>
-                    </div>
-                    
-                    <div class="info-box">
-                        <h3>Side Dig</h3>
-                        <p>${profile.sideDig}</p>
                     </div>
                     
                     <div class="info-box">
