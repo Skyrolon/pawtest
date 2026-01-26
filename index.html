@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pixel Personality Quiz</title>
+    <title>Pawtest</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Quicksand:wght@400;600;700&display=swap');
         
         * {
             margin: 0;
@@ -14,39 +14,53 @@
             box-sizing: border-box;
         }
         
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        @keyframes sparkle {
+            0%, 100% { opacity: 0; transform: scale(0); }
+            50% { opacity: 1; transform: scale(1); }
+        }
+        
         body {
-            font-family: 'Press Start 2P', cursive;
-            background: #ffffff;
+            font-family: 'Quicksand', sans-serif;
+            background-color: #FFF5F8;
+            background-image: radial-gradient(#FFD1DC 1px, transparent 1px);
+            background-size: 20px 20px;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 20px;
-            color: #1e40af;
+            color: #5D4E6D;
         }
         
         .container {
             max-width: 800px;
             width: 100%;
-            background: #fff;
-            border: 8px solid #1e40af;
-            box-shadow: 0 0 0 4px #fff, 8px 8px 0 0 #fbbf24;
+            background: #ffffff;
+            border: 6px solid #FFB7CE;
+            border-radius: 24px;
+            box-shadow: 0 10px 0 #FFD1DC;
             padding: 30px;
-            image-rendering: pixelated;
         }
         
         .question-container {
-            background: #dbeafe;
-            border: 4px solid #1e40af;
-            padding: 20px;
+            background: linear-gradient(135deg, #FFF9F9 0%, #FFF5F8 100%);
+            border: 3px solid #FFB7CE;
+            border-radius: 20px;
+            padding: 25px;
             margin-bottom: 20px;
         }
         
         .question-text {
-            font-size: 14px;
+            font-size: 16px;
             line-height: 1.8;
             margin-bottom: 20px;
-            color: #1e40af;
+            color: #5D4E6D;
+            font-weight: 600;
         }
         
         .options {
@@ -56,57 +70,60 @@
         }
         
         .option-btn {
-            font-family: 'Press Start 2P', cursive;
-            font-size: 12px;
-            padding: 15px;
-            background: #3b82f6;
-            border: 4px solid #1e40af;
-            color: #fff;
+            font-family: 'Quicksand', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            padding: 18px;
+            background: #B8E4FF;
+            border: 3px solid #84D2FF;
+            border-radius: 15px;
+            color: #5D4E6D;
             cursor: pointer;
-            transition: all 0.1s;
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             text-align: left;
             line-height: 1.6;
         }
         
         .option-btn:hover {
-            background: #fbbf24;
-            color: #1e40af;
-            transform: translate(-2px, -2px);
-            box-shadow: 4px 4px 0 0 #1e40af;
+            background: #FFF9C4;
+            transform: scale(1.03) rotate(1deg);
+            box-shadow: 0 5px 15px rgba(255, 183, 206, 0.3);
         }
         
         .option-btn:active {
-            transform: translate(0, 0);
-            box-shadow: none;
+            transform: scale(0.98);
         }
         
         .progress-container {
-            background: #dbeafe;
-            border: 4px solid #1e40af;
-            padding: 15px;
+            background: linear-gradient(135deg, #FFF9F9 0%, #FFF5F8 100%);
+            border: 3px solid #FFB7CE;
+            border-radius: 20px;
+            padding: 20px;
             text-align: center;
         }
         
         .progress-text {
-            font-size: 12px;
-            color: #1e40af;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 10px;
+            color: #FFB7CE;
+            margin-bottom: 12px;
         }
         
         .progress-bar {
             width: 100%;
-            height: 20px;
-            background: #fff;
-            border: 2px solid #1e40af;
-            margin-top: 10px;
+            height: 24px;
+            background: #FFE8F0;
+            border: 2px solid #FFB7CE;
+            border-radius: 12px;
             position: relative;
             overflow: hidden;
         }
         
         .progress-fill {
             height: 100%;
-            background: #fbbf24;
-            transition: width 0.3s ease;
-            image-rendering: pixelated;
+            background: linear-gradient(90deg, #FFB7CE, #B8E4FF);
+            border-radius: 10px;
+            transition: width 0.4s ease;
         }
         
         .result-container {
@@ -114,76 +131,98 @@
         }
         
         .result-header {
-            background: #dbeafe;
-            border: 4px solid #1e40af;
-            padding: 20px;
+            background: linear-gradient(135deg, #FFF9F9 0%, #FFF5F8 100%);
+            border: 3px solid #FFB7CE;
+            border-radius: 20px;
+            padding: 30px;
             margin-bottom: 20px;
         }
         
         .animal-name {
+            font-family: 'Press Start 2P', cursive;
             font-size: 20px;
-            color: #1e40af;
-            margin-bottom: 15px;
+            color: #FFB7CE;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 0 #FFE8F0;
         }
         
         .sprite-img {
             max-width: 200px;
             height: auto;
             image-rendering: pixelated;
-            border: 4px solid #1e40af;
-            background: #fff;
-            padding: 10px;
-            margin-bottom: 15px;
+            border: 4px solid #FFB7CE;
+            border-radius: 20px;
+            background: #FFF9F9;
+            padding: 15px;
+            margin-bottom: 20px;
+            animation: float 3s ease-in-out infinite;
         }
         
         .vibe-text {
-            font-size: 12px;
+            font-size: 14px;
             line-height: 1.8;
-            color: #1e40af;
-            font-weight: bold;
+            color: #5D4E6D;
+            font-weight: 700;
+            font-style: italic;
         }
         
         .profile-container {
             display: flex;
             flex-direction: column;
             gap: 15px;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
         
         .profile-box {
-            background: #dbeafe;
-            border: 4px solid #1e40af;
-            padding: 15px;
+            background: linear-gradient(135deg, #FFF9F9 0%, #FFF5F8 100%);
+            border: 3px solid #B8E4FF;
+            border-radius: 18px;
+            padding: 20px;
+            transition: transform 0.2s ease;
+        }
+        
+        .profile-box:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(184, 228, 255, 0.3);
         }
         
         .profile-text {
-            font-size: 11px;
+            font-size: 13px;
             line-height: 2;
-            color: #1e40af;
+            color: #5D4E6D;
             text-align: left;
         }
         
         .restart-btn {
             font-family: 'Press Start 2P', cursive;
-            font-size: 14px;
-            padding: 15px 30px;
-            background: #fbbf24;
-            border: 4px solid #1e40af;
-            color: #1e40af;
+            font-size: 12px;
+            padding: 18px 35px;
+            background: linear-gradient(135deg, #FFB7CE 0%, #FFA3BD 100%);
+            border: 4px solid #FF8FAF;
+            border-radius: 18px;
+            color: #fff;
             cursor: pointer;
-            box-shadow: 4px 4px 0 0 #1e40af;
+            box-shadow: 0 6px 0 #FF8FAF;
+            transition: all 0.2s ease;
         }
         
         .restart-btn:hover {
-            background: #fcd34d;
-            transform: translate(-2px, -2px);
-            box-shadow: 6px 6px 0 0 #1e40af;
+            background: linear-gradient(135deg, #FFF9C4 0%, #FFE99F 100%);
+            color: #5D4E6D;
+            transform: translateY(-3px);
+            box-shadow: 0 9px 0 #FFB7CE;
+        }
+        
+        .restart-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 3px 0 #FF8FAF;
         }
         
         .loading {
             text-align: center;
             font-size: 16px;
-            color: #1e40af;
+            color: #FFB7CE;
+            font-family: 'Press Start 2P', cursive;
         }
         
         .debug-scores {
@@ -209,11 +248,12 @@
         }
         
         @media (max-width: 600px) {
-            .question-text { font-size: 11px; }
-            .option-btn { font-size: 10px; }
-            .progress-text { font-size: 10px; }
+            .question-text { font-size: 14px; }
+            .option-btn { font-size: 12px; padding: 15px; }
+            .progress-text { font-size: 8px; }
             .animal-name { font-size: 16px; }
-            .profile-text { font-size: 9px; }
+            .profile-text { font-size: 11px; }
+            .restart-btn { font-size: 10px; padding: 15px 25px; }
         }
     </style>
 </head>
@@ -440,7 +480,7 @@
                         `).join('')}
                     </div>
                     
-                    <button class="restart-btn" id="restartBtn">RESTART QUIZ</button>
+                    <button class="restart-btn" id="restartBtn">✨ Dream Again? ✨</button>
                 </div>
             `;
             
