@@ -236,86 +236,6 @@
         let currentQuestion = 0;
         let scores = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
         
-        // Make selectOption globally accessible
-        window.selectOption = function(optionIndex) {
-            const option = questions[currentQuestion].options[optionIndex];
-            
-            console.log('=== OPTION SELECTED ===');
-            console.log('Option index:', optionIndex);
-            console.log('Option object:', option);
-            console.log('Option text:', option.text);
-            console.log('Option trait:', option.trait);
-            console.log('Type of trait:', typeof option.trait);
-            console.log('Scores BEFORE:', JSON.parse(JSON.stringify(scores)));
-            
-            // Parse trait like "E+2" or "I+1"
-            const traitStr = option.trait;
-            if (traitStr && traitStr !== '') {
-                // Remove any whitespace
-                const cleanTrait = String(traitStr).trim();
-                console.log('Clean trait string:', cleanTrait);
-                
-                // Try different regex patterns
-                let match = cleanTrait.match(/([EISNTFJP])([+\-]?\d+)/i);
-                console.log('Regex match result:', match);
-                
-                if (match) {
-                    const letter = match[1].toUpperCase();
-                    const valueStr = match[2];
-                    const value = parseInt(valueStr);
-                    
-                    console.log('Parsed letter:', letter);
-                    console.log('Parsed value string:', valueStr);
-                    console.log('Parsed value int:', value);
-                    
-                    if (!isNaN(value)) {
-                        if (!scores[letter]) {
-                            scores[letter] = 0;
-                        }
-                        scores[letter] = scores[letter] + value;
-                        console.log(`Successfully added ${value} to ${letter}`);
-                    } else {
-                        console.error('Value is NaN!');
-                    }
-                } else {
-                    console.error('NO MATCH! Trying alternative parsing...');
-                    // Try splitting by + or -
-                    if (cleanTrait.includes('+')) {
-                        const parts = cleanTrait.split('+');
-                        const letter = parts[0].trim().toUpperCase();
-                        const value = parseInt(parts[1]);
-                        if (letter && !isNaN(value)) {
-                            if (!scores[letter]) scores[letter] = 0;
-                            scores[letter] += value;
-                            console.log(`Alternative parse: added ${value} to ${letter}`);
-                        }
-                    } else if (cleanTrait.includes('-')) {
-                        const parts = cleanTrait.split('-');
-                        const letter = parts[0].trim().toUpperCase();
-                        const value = -parseInt(parts[1]);
-                        if (letter && !isNaN(value)) {
-                            if (!scores[letter]) scores[letter] = 0;
-                            scores[letter] += value;
-                            console.log(`Alternative parse: added ${value} to ${letter}`);
-                        }
-                    }
-                }
-            } else {
-                console.error('Trait string is empty or undefined!');
-            }
-            
-            console.log('Scores AFTER:', JSON.parse(JSON.stringify(scores)));
-            console.log('======================');
-            
-            currentQuestion++;
-            
-            if (currentQuestion < questions.length) {
-                renderQuestion();
-            } else {
-                showResults();
-            }
-        };
-        
         async function loadData() {
             try {
                 const questionsData = await fetchCSV(QUESTIONS_URL);
@@ -401,40 +321,15 @@
             const q = questions[currentQuestion];
             const progress = ((currentQuestion) / questions.length) * 100;
             
-            // Debug: log the current question structure
             console.log('=== RENDERING QUESTION ===');
             console.log('Question number:', currentQuestion + 1);
-            console.log('Question text:', q.question);
-            console.log('Option 1:', q.options[0].text, '| Trait:', q.options[0].trait);
-            console.log('Option 2:', q.options[1].text, '| Trait:', q.options[1].trait);
-            console.log('Option 3:', q.options[2].text, '| Trait:', q.options[2].trait);
-            console.log('Option 4:', q.options[3].text, '| Trait:', q.options[3].trait);
-            console.log('========================');
+            console.log('Question:', q);
             
-            // Store question globally for debugging
-            window.currentQuestionData = q;
-            
-            document.getElementById('app').innerHTML = `
+            const appDiv = document.getElementById('app');
+            appDiv.innerHTML = `
                 <div class="question-container">
                     <div class="question-text">${q.question}</div>
-                    <div class="options">
-                        <button class="option-btn" onclick="window.selectOption(0)">
-                            ${q.options[0].text}
-                            <div style="font-size: 8px; margin-top: 5px; color: #fbbf24;">[Trait: ${q.options[0].trait || 'MISSING'}]</div>
-                        </button>
-                        <button class="option-btn" onclick="window.selectOption(1)">
-                            ${q.options[1].text}
-                            <div style="font-size: 8px; margin-top: 5px; color: #fbbf24;">[Trait: ${q.options[1].trait || 'MISSING'}]</div>
-                        </button>
-                        <button class="option-btn" onclick="window.selectOption(2)">
-                            ${q.options[2].text}
-                            <div style="font-size: 8px; margin-top: 5px; color: #fbbf24;">[Trait: ${q.options[2].trait || 'MISSING'}]</div>
-                        </button>
-                        <button class="option-btn" onclick="window.selectOption(3)">
-                            ${q.options[3].text}
-                            <div style="font-size: 8px; margin-top: 5px; color: #fbbf24;">[Trait: ${q.options[3].trait || 'MISSING'}]</div>
-                        </button>
-                    </div>
+                    <div class="options" id="optionsContainer"></div>
                 </div>
                 
                 <div class="progress-container">
@@ -452,6 +347,19 @@
                     <div class="score-row"><span>J: ${scores.J || 0}</span><span>P: ${scores.P || 0}</span></div>
                 </div>
             `;
+            
+            // Add buttons with event listeners instead of onclick
+            const optionsContainer = document.getElementById('optionsContainer');
+            q.options.forEach((opt, i) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerHTML = `
+                    ${opt.text}
+                    <div style="font-size: 8px; margin-top: 5px; color: #fbbf24;">[Trait: ${opt.trait || 'MISSING'}]</div>
+                `;
+                btn.addEventListener('click', () => selectOption(i));
+                optionsContainer.appendChild(btn);
+            });
         }
         
         function selectOption(optionIndex) {
@@ -459,69 +367,33 @@
             
             console.log('=== OPTION SELECTED ===');
             console.log('Option index:', optionIndex);
-            console.log('Option object:', option);
-            console.log('Option text:', option.text);
-            console.log('Option trait:', option.trait);
-            console.log('Type of trait:', typeof option.trait);
-            console.log('Scores BEFORE:', JSON.parse(JSON.stringify(scores)));
+            console.log('Option:', option);
+            console.log('Trait:', option.trait);
+            console.log('Scores BEFORE:', {...scores});
             
-            // Parse trait like "E+2" or "I+1"
             const traitStr = option.trait;
             if (traitStr && traitStr !== '') {
-                // Remove any whitespace
                 const cleanTrait = String(traitStr).trim();
-                console.log('Clean trait string:', cleanTrait);
+                console.log('Clean trait:', cleanTrait);
                 
-                // Try different regex patterns
-                let match = cleanTrait.match(/([EISNTFJP])([+\-]?\d+)/i);
-                console.log('Regex match result:', match);
+                // Parse "E+2" format
+                const match = cleanTrait.match(/([EISNTFJP])([+\-]?\d+)/i);
+                console.log('Match:', match);
                 
                 if (match) {
                     const letter = match[1].toUpperCase();
-                    const valueStr = match[2];
-                    const value = parseInt(valueStr);
+                    const value = parseInt(match[2]);
                     
-                    console.log('Parsed letter:', letter);
-                    console.log('Parsed value string:', valueStr);
-                    console.log('Parsed value int:', value);
+                    console.log(`Parsed: ${letter} = ${value}`);
                     
                     if (!isNaN(value)) {
-                        if (!scores[letter]) {
-                            scores[letter] = 0;
-                        }
-                        scores[letter] = scores[letter] + value;
-                        console.log(`Successfully added ${value} to ${letter}`);
-                    } else {
-                        console.error('Value is NaN!');
-                    }
-                } else {
-                    console.error('NO MATCH! Trying alternative parsing...');
-                    // Try splitting by + or -
-                    if (cleanTrait.includes('+')) {
-                        const parts = cleanTrait.split('+');
-                        const letter = parts[0].trim().toUpperCase();
-                        const value = parseInt(parts[1]);
-                        if (letter && !isNaN(value)) {
-                            if (!scores[letter]) scores[letter] = 0;
-                            scores[letter] += value;
-                            console.log(`Alternative parse: added ${value} to ${letter}`);
-                        }
-                    } else if (cleanTrait.includes('-')) {
-                        const parts = cleanTrait.split('-');
-                        const letter = parts[0].trim().toUpperCase();
-                        const value = -parseInt(parts[1]);
-                        if (letter && !isNaN(value)) {
-                            if (!scores[letter]) scores[letter] = 0;
-                            scores[letter] += value;
-                            console.log(`Alternative parse: added ${value} to ${letter}`);
-                        }
+                        scores[letter] = (scores[letter] || 0) + value;
+                        console.log(`Added ${value} to ${letter}`);
                     }
                 }
-            } else {
-                console.error('Trait string is empty or undefined!');
             }
             
-            console.log('Scores AFTER:', JSON.parse(JSON.stringify(scores)));
+            console.log('Scores AFTER:', {...scores});
             console.log('======================');
             
             currentQuestion++;
@@ -546,9 +418,8 @@
             const mbti = calculateMBTI();
             const result = profiles.find(p => p.mbti === mbti) || profiles[0];
             
-            console.log('Calculated MBTI:', mbti);
+            console.log('Final MBTI:', mbti);
             console.log('Final Scores:', scores);
-            console.log('Result:', result);
             
             document.getElementById('app').innerHTML = `
                 <div class="result-container">
@@ -577,12 +448,13 @@
                         <div style="font-size: 14px; color: #fff; margin-top: 10px;">MBTI: ${mbti}</div>
                     </div>
                     
-                    <button class="restart-btn" onclick="startQuiz()">RESTART QUIZ</button>
+                    <button class="restart-btn" id="restartBtn">RESTART QUIZ</button>
                 </div>
             `;
+            
+            document.getElementById('restartBtn').addEventListener('click', startQuiz);
         }
         
-        // Start loading data when page loads
         loadData();
     </script>
 </body>
