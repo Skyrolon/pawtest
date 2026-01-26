@@ -326,7 +326,9 @@
             console.log('Question:', q);
             
             const appDiv = document.getElementById('app');
-            appDiv.innerHTML = `
+            
+            // Create the HTML structure first
+            const htmlContent = `
                 <div class="question-container">
                     <div class="question-text">${q.question}</div>
                     <div class="options" id="optionsContainer"></div>
@@ -339,16 +341,18 @@
                     </div>
                 </div>
                 
-                <div class="debug-scores">
+                <div class="debug-scores" id="debugScores">
                     <div class="debug-title">DEBUG: Current Scores</div>
-                    <div class="score-row"><span>E: ${scores.E || 0}</span><span>I: ${scores.I || 0}</span></div>
-                    <div class="score-row"><span>S: ${scores.S || 0}</span><span>N: ${scores.N || 0}</span></div>
-                    <div class="score-row"><span>T: ${scores.T || 0}</span><span>F: ${scores.F || 0}</span></div>
-                    <div class="score-row"><span>J: ${scores.J || 0}</span><span>P: ${scores.P || 0}</span></div>
+                    <div class="score-row"><span>E: <span id="scoreE">${scores.E || 0}</span></span><span>I: <span id="scoreI">${scores.I || 0}</span></span></div>
+                    <div class="score-row"><span>S: <span id="scoreS">${scores.S || 0}</span></span><span>N: <span id="scoreN">${scores.N || 0}</span></span></div>
+                    <div class="score-row"><span>T: <span id="scoreT">${scores.T || 0}</span></span><span>F: <span id="scoreF">${scores.F || 0}</span></span></div>
+                    <div class="score-row"><span>J: <span id="scoreJ">${scores.J || 0}</span></span><span>P: <span id="scoreP">${scores.P || 0}</span></span></div>
                 </div>
             `;
             
-            // Add buttons with event listeners instead of onclick
+            appDiv.innerHTML = htmlContent;
+            
+            // Add buttons with event listeners
             const optionsContainer = document.getElementById('optionsContainer');
             q.options.forEach((opt, i) => {
                 const btn = document.createElement('button');
@@ -357,9 +361,35 @@
                     ${opt.text}
                     <div style="font-size: 8px; margin-top: 5px; color: #fbbf24;">[Trait: ${opt.trait || 'MISSING'}]</div>
                 `;
-                btn.addEventListener('click', () => selectOption(i));
+                btn.addEventListener('click', () => {
+                    console.log('Button clicked for option:', i);
+                    selectOption(i);
+                });
                 optionsContainer.appendChild(btn);
             });
+            
+            // Update the score display with current values
+            updateScoreDisplay();
+        }
+        
+        function updateScoreDisplay() {
+            const scoreE = document.getElementById('scoreE');
+            const scoreI = document.getElementById('scoreI');
+            const scoreS = document.getElementById('scoreS');
+            const scoreN = document.getElementById('scoreN');
+            const scoreT = document.getElementById('scoreT');
+            const scoreF = document.getElementById('scoreF');
+            const scoreJ = document.getElementById('scoreJ');
+            const scoreP = document.getElementById('scoreP');
+            
+            if (scoreE) scoreE.textContent = scores.E || 0;
+            if (scoreI) scoreI.textContent = scores.I || 0;
+            if (scoreS) scoreS.textContent = scores.S || 0;
+            if (scoreN) scoreN.textContent = scores.N || 0;
+            if (scoreT) scoreT.textContent = scores.T || 0;
+            if (scoreF) scoreF.textContent = scores.F || 0;
+            if (scoreJ) scoreJ.textContent = scores.J || 0;
+            if (scoreP) scoreP.textContent = scores.P || 0;
         }
         
         function selectOption(optionIndex) {
@@ -367,28 +397,28 @@
             
             console.log('=== BUTTON CLICKED ===');
             console.log('Option index:', optionIndex);
-            console.log('Full option object:', JSON.stringify(option));
             console.log('Option text:', option.text);
-            console.log('Option trait RAW:', option.trait);
-            console.log('Type of trait:', typeof option.trait);
-            console.log('Trait length:', option.trait ? option.trait.length : 'undefined');
-            console.log('Scores BEFORE:', JSON.stringify(scores));
+            console.log('Option trait:', option.trait);
             
             // Get the trait string
             let traitStr = option.trait;
             
-            // Check if trait exists
-            if (!traitStr || traitStr === '' || traitStr === 'undefined') {
-                console.error('ERROR: Trait is missing or empty!');
-                alert('ERROR: No trait data for this option! Trait: ' + traitStr);
+            if (!traitStr) {
+                console.error('ERROR: No trait data!');
+                currentQuestion++;
+                if (currentQuestion < questions.length) {
+                    renderQuestion();
+                } else {
+                    showResults();
+                }
                 return;
             }
             
-            // Clean and parse
+            // Clean the string
             traitStr = String(traitStr).trim();
-            console.log('Cleaned trait string:', traitStr);
+            console.log('Processing trait:', traitStr);
             
-            // Simple split method - if trait is "E+2", split by "+"
+            // Parse the trait - format is "E+2", "I+1", etc.
             let letter = '';
             let value = 0;
             
@@ -396,42 +426,30 @@
                 const parts = traitStr.split('+');
                 letter = parts[0].trim().toUpperCase();
                 value = parseInt(parts[1].trim());
-                console.log('Split by +:', {letter, value});
-            } else if (traitStr.includes('-') && traitStr.indexOf('-') > 0) {
-                const parts = traitStr.split('-');
-                letter = parts[0].trim().toUpperCase();
-                value = -parseInt(parts[1].trim());
-                console.log('Split by -:', {letter, value});
             }
             
-            // Validate
+            console.log('Parsed - Letter:', letter, 'Value:', value);
+            console.log('Scores BEFORE update:', JSON.stringify(scores));
+            
+            // Update the score
             if (letter && !isNaN(value)) {
-                console.log(`ADDING: ${value} points to ${letter}`);
+                scores[letter] = (scores[letter] || 0) + value;
+                console.log('Scores AFTER update:', JSON.stringify(scores));
+                console.log(`Updated ${letter}: now ${scores[letter]}`);
                 
-                // Initialize if needed
-                if (typeof scores[letter] === 'undefined') {
-                    scores[letter] = 0;
+                // Immediately update the display
+                updateScoreDisplay();
+            }
+            
+            // Small delay to show the score update before moving to next question
+            setTimeout(() => {
+                currentQuestion++;
+                if (currentQuestion < questions.length) {
+                    renderQuestion();
+                } else {
+                    showResults();
                 }
-                
-                // Add the score
-                scores[letter] = scores[letter] + value;
-                
-                console.log(`SUCCESS: ${letter} is now ${scores[letter]}`);
-            } else {
-                console.error('PARSING FAILED!', {letter, value});
-                alert('Parsing failed! Letter: ' + letter + ', Value: ' + value);
-            }
-            
-            console.log('Scores AFTER:', JSON.stringify(scores));
-            console.log('======================');
-            
-            currentQuestion++;
-            
-            if (currentQuestion < questions.length) {
-                renderQuestion();
-            } else {
-                showResults();
-            }
+            }, 100);
         }
         
         function calculateMBTI() {
