@@ -16,7 +16,7 @@
         
         body {
             font-family: 'Press Start 2P', cursive;
-            background: #fef4f8;
+            background: #e3f2fd;
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -29,17 +29,17 @@
             max-width: 700px;
             width: 100%;
             background: #ffffff;
-            border: 6px solid #d4a5d8;
+            border: 6px solid #1976d2;
             border-radius: 0;
             padding: 40px;
-            box-shadow: 0 0 0 3px #f4c2d1, 8px 8px 0 0 #c4def6;
+            box-shadow: 0 0 0 3px #64b5f6, 8px 8px 0 0 #90caf9;
             image-rendering: pixelated;
         }
         
         .loading {
             text-align: center;
             font-size: 14px;
-            color: #a78bca;
+            color: #1976d2;
         }
         
         .loading::after {
@@ -55,12 +55,12 @@
         
         .question-text {
             font-size: 11px;
-            color: #6b5b7e;
+            color: #1565c0;
             margin-bottom: 30px;
             line-height: 1.8;
             padding: 20px;
-            background: #fef9fc;
-            border: 4px solid #d4a5d8;
+            background: #f1f8fe;
+            border: 4px solid #42a5f5;
         }
         
         .options {
@@ -72,21 +72,21 @@
         
         .option {
             padding: 20px;
-            background: #fef9fc;
-            border: 4px solid #c4def6;
+            background: #f1f8fe;
+            border: 4px solid #90caf9;
             cursor: pointer;
             transition: all 0.1s;
             font-size: 10px;
-            color: #6b5b7e;
+            color: #1565c0;
             line-height: 1.7;
             position: relative;
         }
         
         .option:hover {
-            background: #f4e8f7;
-            border-color: #a78bca;
+            background: #e3f2fd;
+            border-color: #1976d2;
             transform: translate(-2px, -2px);
-            box-shadow: 4px 4px 0 0 #d4a5d8;
+            box-shadow: 4px 4px 0 0 #64b5f6;
         }
 
         .option:active {
@@ -97,15 +97,15 @@
         .progress {
             text-align: center;
             font-size: 10px;
-            color: #a78bca;
+            color: #1976d2;
             margin-top: 10px;
         }
         
         .progress-bar {
             width: 100%;
             height: 16px;
-            background: #fef9fc;
-            border: 4px solid #d4a5d8;
+            background: #f1f8fe;
+            border: 4px solid #90caf9;
             overflow: hidden;
             margin-top: 10px;
             image-rendering: pixelated;
@@ -115,10 +115,10 @@
             height: 100%;
             background: repeating-linear-gradient(
                 90deg,
-                #d4a5d8 0px,
-                #d4a5d8 8px,
-                #c4def6 8px,
-                #c4def6 16px
+                #1976d2 0px,
+                #1976d2 8px,
+                #42a5f5 8px,
+                #42a5f5 16px
             );
             transition: width 0.3s steps(10);
             image-rendering: pixelated;
@@ -135,8 +135,8 @@
             gap: 25px;
             margin: 30px 0;
             padding: 20px;
-            background: #fef9fc;
-            border: 4px solid #d4a5d8;
+            background: #f1f8fe;
+            border: 4px solid #1976d2;
         }
 
         .sprite-img {
@@ -150,13 +150,13 @@
         
         .animal-name {
             font-size: 20px;
-            color: #6b5b7e;
-            text-shadow: 3px 3px 0 #d4a5d8;
+            color: #1565c0;
+            text-shadow: 3px 3px 0 #90caf9;
         }
         
         .info-box {
-            background: #fef9fc;
-            border: 4px solid #c4def6;
+            background: #f1f8fe;
+            border: 4px solid #64b5f6;
             padding: 25px;
             margin: 20px 0;
             text-align: left;
@@ -164,13 +164,13 @@
         
         .info-box h3 {
             font-size: 12px;
-            color: #a78bca;
+            color: #1976d2;
             margin-bottom: 15px;
         }
         
         .info-box p {
             font-size: 10px;
-            color: #6b5b7e;
+            color: #1565c0;
             line-height: 1.8;
             white-space: pre-wrap;
         }
@@ -178,28 +178,28 @@
         .restart-btn {
             margin-top: 30px;
             padding: 15px 30px;
-            background: #d4a5d8;
+            background: #1976d2;
             color: #ffffff;
-            border: 4px solid #a78bca;
+            border: 4px solid #0d47a1;
             cursor: pointer;
             font-family: 'Press Start 2P', cursive;
             font-size: 10px;
             transition: all 0.1s;
-            box-shadow: 4px 4px 0 0 #c4def6;
+            box-shadow: 4px 4px 0 0 #64b5f6;
         }
         
         .restart-btn:hover {
             transform: translate(-2px, -2px);
-            box-shadow: 6px 6px 0 0 #c4def6;
+            box-shadow: 6px 6px 0 0 #64b5f6;
         }
 
         .restart-btn:active {
             transform: translate(0, 0);
-            box-shadow: 2px 2px 0 0 #c4def6;
+            box-shadow: 2px 2px 0 0 #64b5f6;
         }
         
         .error {
-            color: #a78bca;
+            color: #1976d2;
             text-align: center;
             font-size: 10px;
             padding: 20px;
@@ -297,20 +297,18 @@
             for (let i = 1; i < data.length; i++) {
                 const row = data[i];
                 if (row[0] && row[0].trim()) {
-                    // Extract image URL from various formats
+                    // Extract image URL from various formats (IBB link in column 2)
                     let spriteUrl = row[2] || '';
                     
-                    // Try to extract from HTML img tag
+                    // Try multiple extraction methods
                     let imgMatch = spriteUrl.match(/src=["']([^"']+)["']/i);
                     if (imgMatch) {
                         spriteUrl = imgMatch[1];
                     } else {
-                        // Try to extract from href in anchor tag
                         imgMatch = spriteUrl.match(/href=["']([^"']+)["']/i);
                         if (imgMatch) {
                             spriteUrl = imgMatch[1];
                         } else {
-                            // Check if it contains ibb.co URL directly
                             imgMatch = spriteUrl.match(/(https?:\/\/[^\s<>"]+(?:ibb\.co|imgbb\.com)[^\s<>"]*)/i);
                             if (imgMatch) {
                                 spriteUrl = imgMatch[1];
@@ -327,7 +325,7 @@
                     });
                 }
             }
-            console.log('Parsed profiles:', profiles); // Debug log
+            console.log('Loaded profiles:', profiles);
         }
 
         function startQuiz() {
@@ -361,6 +359,7 @@
         function selectAnswer(optionIndex) {
             const selected = questions[currentQuestion].options[optionIndex];
             
+            // Parse trait scoring (format: "E+2" means add 2 to E)
             if (selected.trait) {
                 const match = selected.trait.match(/([A-Z])([+-]\d+)/);
                 if (match) {
@@ -380,12 +379,17 @@
         }
 
         function showResult() {
+            // Determine MBTI type by comparing scores for each dimension
             const e_i = scores.E > scores.I ? 'E' : 'I';
             const s_n = scores.S > scores.N ? 'S' : 'N';
             const f_t = scores.F > scores.T ? 'F' : 'T';
             const j_p = scores.J > scores.P ? 'J' : 'P';
             const mbtiType = e_i + s_n + f_t + j_p;
             
+            console.log('Final scores:', scores);
+            console.log('MBTI Type:', mbtiType);
+            
+            // Find matching profile
             const profile = profiles.find(p => p.mbti === mbtiType) || {
                 animal: 'Mystery Creature',
                 sprite: '',
@@ -393,12 +397,12 @@
                 profile: 'You\'re one of a kind!'
             };
             
-            console.log('Selected profile:', profile); // Debug log
+            console.log('Selected profile:', profile);
             
             document.getElementById('quiz-content').innerHTML = `
                 <div class="result-container">
                     <div class="result-header">
-                        ${profile.sprite && profile.sprite.includes('http') ? `<img src="${profile.sprite}" alt="${profile.animal}" class="sprite-img" onerror="console.error('Image failed to load:', this.src); this.style.display='none'">` : ''}
+                        ${profile.sprite && profile.sprite.includes('http') ? `<img src="${profile.sprite}" alt="${profile.animal}" class="sprite-img" onerror="console.error('Image failed:', this.src); this.style.display='none'">` : ''}
                         <div class="animal-name">${profile.animal}</div>
                     </div>
                     
