@@ -359,6 +359,8 @@
         function selectAnswer(optionIndex) {
             const selected = questions[currentQuestion].options[optionIndex];
             
+            console.log('Q' + (currentQuestion + 1) + ': Selected option ' + (optionIndex + 1) + ', trait:', selected.trait);
+            
             // Parse trait scoring (format: "E+2" means add 2 to E)
             if (selected.trait) {
                 const match = selected.trait.match(/([A-Z])([+-]\d+)/);
@@ -366,6 +368,9 @@
                     const trait = match[1];
                     const value = parseInt(match[2]);
                     scores[trait] += value;
+                    console.log('Added', value, 'to', trait, '→ New score:', scores[trait]);
+                } else {
+                    console.log('Could not parse trait:', selected.trait);
                 }
             }
             
@@ -379,15 +384,22 @@
         }
 
         function showResult() {
+            console.log('=== FINAL SCORING DEBUG ===');
+            console.log('Raw scores:', scores);
+            
             // Determine MBTI type by comparing scores for each dimension
             const e_i = scores.E > scores.I ? 'E' : 'I';
             const s_n = scores.S > scores.N ? 'S' : 'N';
             const f_t = scores.F > scores.T ? 'F' : 'T';
             const j_p = scores.J > scores.P ? 'J' : 'P';
-            const mbtiType = e_i + s_n + f_t + j_p;
             
-            console.log('Final scores:', scores);
-            console.log('MBTI Type:', mbtiType);
+            console.log('E vs I:', scores.E, 'vs', scores.I, '→', e_i);
+            console.log('S vs N:', scores.S, 'vs', scores.N, '→', s_n);
+            console.log('F vs T:', scores.F, 'vs', scores.T, '→', f_t);
+            console.log('J vs P:', scores.J, 'vs', scores.P, '→', j_p);
+            
+            const mbtiType = e_i + s_n + f_t + j_p;
+            console.log('Final MBTI Type:', mbtiType);
             
             // Find matching profile
             const profile = profiles.find(p => p.mbti === mbtiType) || {
