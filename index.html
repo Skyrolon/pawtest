@@ -365,35 +365,64 @@
         function selectOption(optionIndex) {
             const option = questions[currentQuestion].options[optionIndex];
             
-            console.log('=== OPTION SELECTED ===');
+            console.log('=== BUTTON CLICKED ===');
             console.log('Option index:', optionIndex);
-            console.log('Option:', option);
-            console.log('Trait:', option.trait);
-            console.log('Scores BEFORE:', {...scores});
+            console.log('Full option object:', JSON.stringify(option));
+            console.log('Option text:', option.text);
+            console.log('Option trait RAW:', option.trait);
+            console.log('Type of trait:', typeof option.trait);
+            console.log('Trait length:', option.trait ? option.trait.length : 'undefined');
+            console.log('Scores BEFORE:', JSON.stringify(scores));
             
-            const traitStr = option.trait;
-            if (traitStr && traitStr !== '') {
-                const cleanTrait = String(traitStr).trim();
-                console.log('Clean trait:', cleanTrait);
-                
-                // Parse "E+2" format
-                const match = cleanTrait.match(/([EISNTFJP])([+\-]?\d+)/i);
-                console.log('Match:', match);
-                
-                if (match) {
-                    const letter = match[1].toUpperCase();
-                    const value = parseInt(match[2]);
-                    
-                    console.log(`Parsed: ${letter} = ${value}`);
-                    
-                    if (!isNaN(value)) {
-                        scores[letter] = (scores[letter] || 0) + value;
-                        console.log(`Added ${value} to ${letter}`);
-                    }
-                }
+            // Get the trait string
+            let traitStr = option.trait;
+            
+            // Check if trait exists
+            if (!traitStr || traitStr === '' || traitStr === 'undefined') {
+                console.error('ERROR: Trait is missing or empty!');
+                alert('ERROR: No trait data for this option! Trait: ' + traitStr);
+                return;
             }
             
-            console.log('Scores AFTER:', {...scores});
+            // Clean and parse
+            traitStr = String(traitStr).trim();
+            console.log('Cleaned trait string:', traitStr);
+            
+            // Simple split method - if trait is "E+2", split by "+"
+            let letter = '';
+            let value = 0;
+            
+            if (traitStr.includes('+')) {
+                const parts = traitStr.split('+');
+                letter = parts[0].trim().toUpperCase();
+                value = parseInt(parts[1].trim());
+                console.log('Split by +:', {letter, value});
+            } else if (traitStr.includes('-') && traitStr.indexOf('-') > 0) {
+                const parts = traitStr.split('-');
+                letter = parts[0].trim().toUpperCase();
+                value = -parseInt(parts[1].trim());
+                console.log('Split by -:', {letter, value});
+            }
+            
+            // Validate
+            if (letter && !isNaN(value)) {
+                console.log(`ADDING: ${value} points to ${letter}`);
+                
+                // Initialize if needed
+                if (typeof scores[letter] === 'undefined') {
+                    scores[letter] = 0;
+                }
+                
+                // Add the score
+                scores[letter] = scores[letter] + value;
+                
+                console.log(`SUCCESS: ${letter} is now ${scores[letter]}`);
+            } else {
+                console.error('PARSING FAILED!', {letter, value});
+                alert('Parsing failed! Letter: ' + letter + ', Value: ' + value);
+            }
+            
+            console.log('Scores AFTER:', JSON.stringify(scores));
             console.log('======================');
             
             currentQuestion++;
