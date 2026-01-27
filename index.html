@@ -42,12 +42,24 @@
         .question-text {
             font-family: 'Lexend Exa', sans-serif;
             font-size: 18px;
-            font-weight: 900;
-            line-height: 1.4;
+            font-weight: 700;
+            line-height: 1.5;
             margin-bottom: 24px;
             color: #FFFFFF;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.3px;
+        }
+        
+        .question-pixel-art {
+            width: 100%;
+            height: 120px;
+            margin-bottom: 20px;
+            image-rendering: pixelated;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+            border: 3px solid #FFFFFF;
+            background: #1a1a1a;
         }
         
         .options {
@@ -74,24 +86,24 @@
             transform: scale(0.98);
         }
         
-        /* Dynamic accent colors that cycle through questions */
-        .accent-0 { border-color: #00FF00; }
-        .accent-0:hover { background: #00FF00; color: #000000; }
+        /* Dynamic accent colors - pastel palette */
+        .accent-0 { border-color: #B4E7CE; }
+        .accent-0:hover { background: #B4E7CE; color: #000000; }
         
-        .accent-1 { border-color: #FF00FF; }
-        .accent-1:hover { background: #FF00FF; color: #000000; }
+        .accent-1 { border-color: #E5B3FE; }
+        .accent-1:hover { background: #E5B3FE; color: #000000; }
         
-        .accent-2 { border-color: #00FFFF; }
-        .accent-2:hover { background: #00FFFF; color: #000000; }
+        .accent-2 { border-color: #B8E8FC; }
+        .accent-2:hover { background: #B8E8FC; color: #000000; }
         
-        .accent-3 { border-color: #FFFF00; }
-        .accent-3:hover { background: #FFFF00; color: #000000; }
+        .accent-3 { border-color: #FFF4B3; }
+        .accent-3:hover { background: #FFF4B3; color: #000000; }
         
-        .accent-4 { border-color: #FF6B00; }
-        .accent-4:hover { background: #FF6B00; color: #000000; }
+        .accent-4 { border-color: #FFD4B3; }
+        .accent-4:hover { background: #FFD4B3; color: #000000; }
         
-        .accent-5 { border-color: #FF0099; }
-        .accent-5:hover { background: #FF0099; color: #000000; }
+        .accent-5 { border-color: #FFB3D9; }
+        .accent-5:hover { background: #FFB3D9; color: #000000; }
         
         .progress-container {
             background: #000000;
@@ -123,13 +135,13 @@
             transition: width 0.3s ease;
         }
         
-        /* Progress bar color cycles with accent */
-        .progress-accent-0 { background: #00FF00; }
-        .progress-accent-1 { background: #FF00FF; }
-        .progress-accent-2 { background: #00FFFF; }
-        .progress-accent-3 { background: #FFFF00; }
-        .progress-accent-4 { background: #FF6B00; }
-        .progress-accent-5 { background: #FF0099; }
+        /* Progress bar color cycles with accent - pastel */
+        .progress-accent-0 { background: #B4E7CE; }
+        .progress-accent-1 { background: #E5B3FE; }
+        .progress-accent-2 { background: #B8E8FC; }
+        .progress-accent-3 { background: #FFF4B3; }
+        .progress-accent-4 { background: #FFD4B3; }
+        .progress-accent-5 { background: #FFB3D9; }
         
         .result-container {
             background: #000000;
@@ -206,17 +218,16 @@
             font-size: 16px;
             font-weight: 900;
             padding: 20px 40px;
-            background: #00FF00;
+            background: #B4E7CE;
             border: 4px solid #000000;
             color: #000000;
             cursor: pointer;
-            text-transform: uppercase;
             letter-spacing: 2px;
             transition: all 0.1s ease;
         }
         
         .restart-btn:hover {
-            background: #FF00FF;
+            background: #E5B3FE;
         }
         
         .restart-btn:active {
@@ -226,7 +237,7 @@
         .loading {
             text-align: center;
             font-size: 18px;
-            color: #00FF00;
+            color: #B4E7CE;
             font-family: 'Lexend Exa', sans-serif;
             padding: 40px 20px;
         }
@@ -248,7 +259,24 @@
         const QUESTIONS_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTl7KuGBmEGEHqavwmPHRCLRvFHwvzSKVcKMRCEw0aWPej50cAVUrA_Oh1PIMSY6yKL4B8OEh7tqR1d/pub?gid=0&single=true&output=csv';
         const PROFILES_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTl7KuGBmEGEHqavwmPHRCLRvFHwvzSKVcKMRCEw0aWPej50cAVUrA_Oh1PIMSY6yKL4B8OEh7tqR1d/pub?gid=1646208880&single=true&output=csv';
         
-        const ACCENT_COLORS = ['#00FF00', '#FF00FF', '#00FFFF', '#FFFF00', '#FF6B00', '#FF0099'];
+        const ACCENT_COLORS = ['#B4E7CE', '#E5B3FE', '#B8E8FC', '#FFF4B3', '#FFD4B3', '#FFB3D9'];
+        
+        // Pixel art backgrounds for questions - emojis as placeholder pixel art
+        const QUESTION_BACKGROUNDS = [
+            '🏠🔑',  // Home/Key theme
+            '🎉🎪',  // Celebration theme
+            '🌳☁️',  // Nature/Sky theme
+            '✨🎁',  // Magic/Gift theme
+            '☁️🌈',  // Sky/Dream theme
+            '💭⭐',  // Thought/Memory theme
+            '🌧️🌂',  // Rain/Weather theme
+            '🎂❤️',  // Anniversary/Love theme
+            '😢💔',  // Sadness/Emotion theme
+            '💕💝',  // Love/Affection theme
+            '✈️🧳',  // Travel/Journey theme
+            '🍳🎨',  // Cooking/Creative theme
+            '📸🚫'   // Photo/Rules theme
+        ];
         
         let questions = [];
         let profiles = [];
@@ -330,11 +358,13 @@
             const q = questions[currentQuestion];
             const progress = ((currentQuestion) / questions.length) * 100;
             const accentIndex = currentQuestion % ACCENT_COLORS.length;
+            const backgroundArt = QUESTION_BACKGROUNDS[currentQuestion] || '✨💫';
             
             const appDiv = document.getElementById('app');
             
             const htmlContent = `
                 <div class="question-container">
+                    <div class="question-pixel-art">${backgroundArt}</div>
                     <div class="question-text">${q.question}</div>
                     <div class="options" id="optionsContainer"></div>
                 </div>
