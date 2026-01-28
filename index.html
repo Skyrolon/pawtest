@@ -6,247 +6,184 @@
     <title>Pixel Personality Quiz</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Lexend+Exa:wght@700;900&family=Inter:wght@700&display=swap');
-        
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@900&family=Lexend+Exa:wght@800&display=swap');
+
+        :root {
+            --accent: #B4E7CE;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             -webkit-tap-highlight-color: transparent;
         }
-        
+
         body {
+            background-color: #000;
+            color: #fff;
             font-family: 'Inter', sans-serif;
-            background: #000000;
-            min-height: 100vh;
-            color: #FFFFFF;
-            padding: 0;
-        }
-        
-        .container {
-            max-width: 600px;
-            width: 100%;
-            margin: 0 auto;
-            background: #FFFFFF;
-            min-height: 100vh;
+            margin: 0;
+            padding: 10px;
             display: flex;
-            flex-direction: column;
+            justify-content: center;
         }
-        
-        .question-container {
-            background: #000000;
-            padding: 24px 20px;
-            flex-grow: 1;
+
+        .container {
+            width: 100%;
+            max-width: 450px;
+            background: #000;
+            border: 4px solid #fff;
+            padding: 20px;
+            box-sizing: border-box;
         }
-        
-        .question-text {
-            font-family: 'Lexend Exa', sans-serif;
-            font-size: 18px;
-            font-weight: 700;
-            line-height: 1.5;
-            margin-bottom: 24px;
-            color: #FFFFFF;
-            letter-spacing: 0.3px;
-        }
-        
+
         .question-pixel-art {
             width: 100%;
-            height: 120px;
+            height: 100px;
             margin-bottom: 20px;
-            image-rendering: pixelated;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 60px;
-            border: 3px solid #FFFFFF;
-            background: #1a1a1a;
+            font-size: 50px;
+            border: 3px solid #fff;
+            background: #111;
         }
-        
+
+        .question-text {
+            font-family: 'Lexend Exa', sans-serif;
+            font-size: 1.1rem;
+            line-height: 1.4;
+            margin-bottom: 25px;
+            border-left: 8px solid var(--accent);
+            padding-left: 15px;
+        }
+
         .options {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 8px;
         }
-        
+
         .option-btn {
-            font-family: 'Inter', sans-serif;
-            font-size: 15px;
-            font-weight: 700;
-            padding: 18px 20px;
-            background: #FFFFFF;
-            border: 3px solid #000000;
-            color: #000000;
-            cursor: pointer;
+            background: #fff;
+            color: #000;
+            border: none;
+            padding: 18px 15px;
+            font-size: 1rem;
+            font-weight: 900;
             text-align: left;
-            line-height: 1.5;
-            transition: all 0.1s ease;
+            cursor: pointer;
+            transition: none;
         }
-        
+
         .option-btn:active {
-            transform: scale(0.98);
+            background: var(--accent);
+            color: #000;
         }
-        
-        /* Dynamic accent colors - pastel palette */
-        .accent-0 { border-color: #B4E7CE; }
-        .accent-0:hover { background: #B4E7CE; color: #000000; }
-        
-        .accent-1 { border-color: #E5B3FE; }
-        .accent-1:hover { background: #E5B3FE; color: #000000; }
-        
-        .accent-2 { border-color: #B8E8FC; }
-        .accent-2:hover { background: #B8E8FC; color: #000000; }
-        
-        .accent-3 { border-color: #FFF4B3; }
-        .accent-3:hover { background: #FFF4B3; color: #000000; }
-        
-        .accent-4 { border-color: #FFD4B3; }
-        .accent-4:hover { background: #FFD4B3; color: #000000; }
-        
-        .accent-5 { border-color: #FFB3D9; }
-        .accent-5:hover { background: #FFB3D9; color: #000000; }
-        
+
         .progress-container {
-            background: #000000;
-            padding: 16px 20px;
-            border-top: 3px solid #FFFFFF;
+            margin-top: 30px;
+            border-top: 2px solid #333;
+            padding-top: 15px;
         }
-        
-        .progress-text {
-            font-family: 'Lexend Exa', sans-serif;
-            font-size: 12px;
-            font-weight: 700;
-            color: #FFFFFF;
-            margin-bottom: 10px;
-            text-align: center;
-            letter-spacing: 1px;
-        }
-        
+
         .progress-bar {
             width: 100%;
             height: 12px;
-            background: #FFFFFF;
-            border: 2px solid #FFFFFF;
-            position: relative;
-            overflow: hidden;
+            background: #222;
         }
-        
+
         .progress-fill {
             height: 100%;
+            background: var(--accent);
             transition: width 0.3s ease;
         }
-        
-        /* Progress bar color cycles with accent - pastel */
-        .progress-accent-0 { background: #B4E7CE; }
-        .progress-accent-1 { background: #E5B3FE; }
-        .progress-accent-2 { background: #B8E8FC; }
-        .progress-accent-3 { background: #FFF4B3; }
-        .progress-accent-4 { background: #FFD4B3; }
-        .progress-accent-5 { background: #FFB3D9; }
-        
-        .result-container {
-            background: #000000;
-            padding: 32px 20px;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+
+        .progress-text {
+            font-size: 0.7rem;
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+            color: #888;
         }
-        
-        .result-header {
-            background: #FFFFFF;
-            border: 4px solid #000000;
-            padding: 28px 24px;
-            margin-bottom: 20px;
+
+        .result-container {
             width: 100%;
+        }
+
+        .result-header {
+            border: 4px solid var(--accent);
+            padding: 15px;
+            margin-bottom: 10px;
             text-align: center;
         }
-        
+
         .animal-name {
             font-family: 'Lexend Exa', sans-serif;
-            font-size: 24px;
-            font-weight: 900;
-            color: #000000;
-            margin-bottom: 20px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            font-size: 1.5rem;
+            color: var(--accent);
+            margin-bottom: 15px;
         }
-        
+
         .sprite-img {
             max-width: 180px;
             height: auto;
             image-rendering: pixelated;
-            border: 4px solid #000000;
-            background: #FFFFFF;
-            padding: 16px;
-            margin-bottom: 20px;
+            border: 3px solid #fff;
+            background: #111;
+            padding: 15px;
+            margin-bottom: 15px;
         }
-        
+
         .vibe-text {
             font-family: 'Inter', sans-serif;
-            font-size: 15px;
-            line-height: 1.6;
-            color: #000000;
-            font-weight: 700;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            color: #ccc;
         }
-        
-        .profile-container {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-bottom: 24px;
-            width: 100%;
-        }
-        
+
         .profile-box {
-            background: #FFFFFF;
-            border: 3px solid #000000;
-            padding: 20px;
+            border: 1px solid #333;
+            padding: 15px;
+            margin-top: 5px;
+            background: #111;
         }
-        
+
         .profile-text {
-            font-family: 'Inter', sans-serif;
-            font-size: 14px;
-            line-height: 1.8;
-            color: #000000;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            color: #ccc;
             text-align: left;
-            font-weight: 400;
         }
-        
+
         .restart-btn {
             font-family: 'Lexend Exa', sans-serif;
-            font-size: 16px;
-            font-weight: 900;
-            padding: 20px 40px;
-            background: #B4E7CE;
-            border: 4px solid #000000;
-            color: #000000;
+            font-size: 1rem;
+            font-weight: 800;
+            padding: 18px 30px;
+            background: var(--accent);
+            border: none;
+            color: #000;
             cursor: pointer;
-            letter-spacing: 2px;
-            transition: all 0.1s ease;
+            margin-top: 20px;
+            width: 100%;
         }
-        
-        .restart-btn:hover {
-            background: #E5B3FE;
-        }
-        
+
         .restart-btn:active {
-            transform: scale(0.95);
+            opacity: 0.8;
         }
-        
+
         .loading {
             text-align: center;
-            font-size: 18px;
-            color: #B4E7CE;
+            font-size: 1.2rem;
+            color: var(--accent);
             font-family: 'Lexend Exa', sans-serif;
             padding: 40px 20px;
         }
-        
-        @media (max-width: 600px) {
-            .question-text { font-size: 16px; }
-            .option-btn { font-size: 14px; padding: 16px 18px; }
-            .animal-name { font-size: 20px; }
-            .profile-text { font-size: 13px; }
+
+        @media (max-width: 450px) {
+            .question-text { font-size: 1rem; }
+            .option-btn { font-size: 0.9rem; padding: 16px 12px; }
         }
     </style>
 </head>
@@ -259,23 +196,22 @@
         const QUESTIONS_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTl7KuGBmEGEHqavwmPHRCLRvFHwvzSKVcKMRCEw0aWPej50cAVUrA_Oh1PIMSY6yKL4B8OEh7tqR1d/pub?gid=0&single=true&output=csv';
         const PROFILES_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTl7KuGBmEGEHqavwmPHRCLRvFHwvzSKVcKMRCEw0aWPej50cAVUrA_Oh1PIMSY6yKL4B8OEh7tqR1d/pub?gid=1646208880&single=true&output=csv';
         
-        const ACCENT_COLORS = ['#B4E7CE', '#E5B3FE', '#B8E8FC', '#FFF4B3', '#FFD4B3', '#FFB3D9'];
+        const accents = ['#B4E7CE', '#E5B3FE', '#B8E8FC', '#FFF4B3', '#FFD4B3', '#FFB3D9'];
         
-        // Pixel art backgrounds for questions - emojis as placeholder pixel art
         const QUESTION_BACKGROUNDS = [
-            '🏠🔑',  // Home/Key theme
-            '🎉🎪',  // Celebration theme
-            '🌳☁️',  // Nature/Sky theme
-            '✨🎁',  // Magic/Gift theme
-            '☁️🌈',  // Sky/Dream theme
-            '💭⭐',  // Thought/Memory theme
-            '🌧️🌂',  // Rain/Weather theme
-            '🎂❤️',  // Anniversary/Love theme
-            '😢💔',  // Sadness/Emotion theme
-            '💕💝',  // Love/Affection theme
-            '✈️🧳',  // Travel/Journey theme
-            '🍳🎨',  // Cooking/Creative theme
-            '📸🚫'   // Photo/Rules theme
+            '🏠🔑',
+            '🎉🎪',
+            '🌳☁️',
+            '✨🎁',
+            '☁️🌈',
+            '💭⭐',
+            '🌧️🌂',
+            '🎂❤️',
+            '😢💔',
+            '💕💝',
+            '✈️🧳',
+            '🍳🎨',
+            '📸🚫'
         ];
         
         let questions = [];
@@ -333,7 +269,6 @@
                     if (text) options.push({ text, trait });
                 }
 
-                console.log('Parsed question:', { question: questionText, options });
                 return { question: questionText, options };
             }).filter(q => q !== null);
         }
@@ -357,32 +292,32 @@
         function renderQuestion() {
             const q = questions[currentQuestion];
             const progress = ((currentQuestion) / questions.length) * 100;
-            const accentIndex = currentQuestion % ACCENT_COLORS.length;
+            
+            // Set the accent color based on question index
+            const currentAccent = accents[currentQuestion % accents.length];
+            document.documentElement.style.setProperty('--accent', currentAccent);
+            
             const backgroundArt = QUESTION_BACKGROUNDS[currentQuestion] || '✨💫';
             
             const appDiv = document.getElementById('app');
             
-            const htmlContent = `
-                <div class="question-container">
-                    <div class="question-pixel-art">${backgroundArt}</div>
-                    <div class="question-text">${q.question}</div>
-                    <div class="options" id="optionsContainer"></div>
-                </div>
+            appDiv.innerHTML = `
+                <div class="question-pixel-art">${backgroundArt}</div>
+                <div class="question-text">${q.question}</div>
+                <div class="options" id="optionsContainer"></div>
                 
                 <div class="progress-container">
                     <div class="progress-text">QUESTION ${currentQuestion + 1} / ${questions.length}</div>
                     <div class="progress-bar">
-                        <div class="progress-fill progress-accent-${accentIndex}" style="width: ${progress}%"></div>
+                        <div class="progress-fill" style="width: ${progress}%"></div>
                     </div>
                 </div>
             `;
             
-            appDiv.innerHTML = htmlContent;
-            
             const optionsContainer = document.getElementById('optionsContainer');
             q.options.forEach((opt, i) => {
                 const btn = document.createElement('button');
-                btn.className = `option-btn accent-${accentIndex}`;
+                btn.className = 'option-btn';
                 btn.textContent = opt.text;
                 btn.addEventListener('click', () => {
                     selectOption(i);
@@ -394,10 +329,6 @@
         function selectOption(optionIndex) {
             const option = questions[currentQuestion].options[optionIndex];
             
-            console.log('=== BUTTON CLICKED ===');
-            console.log('Option:', option.text);
-            console.log('Raw trait value:', option.trait);
-            
             let traitStr = option.trait ? String(option.trait).trim() : null;
 
             if (traitStr) {
@@ -408,21 +339,14 @@
                 if (match) {
                     letter = match[1].toUpperCase();
                     value = parseInt(match[2]);
-                    console.log(`Regex matched: ${letter} + ${value}`);
                 } else {
                     letter = traitStr.charAt(0).toUpperCase();
                     value = 1;
-                    console.log(`Fallback: ${letter} + ${value}`);
                 }
-
-                console.log('Scores BEFORE:', JSON.stringify(scores));
 
                 if (scores.hasOwnProperty(letter)) {
                     scores[letter] += value;
-                    console.log(`Updated ${letter}: ${scores[letter]}`);
                 }
-                
-                console.log('Scores AFTER:', JSON.stringify(scores));
             }
 
             currentQuestion++;
@@ -447,8 +371,9 @@
             const mbti = calculateMBTI();
             const result = profiles.find(p => p.mbti === mbti) || profiles[0];
             
-            console.log('Final MBTI:', mbti);
-            console.log('Final Scores:', scores);
+            // Set final accent color
+            const finalAccent = accents[accents.length - 1];
+            document.documentElement.style.setProperty('--accent', finalAccent);
             
             const profileParagraphs = result.profile.split('\n').filter(p => p.trim() !== '');
             
@@ -460,13 +385,11 @@
                         <div class="vibe-text">${result.vibe}</div>
                     </div>
                     
-                    <div class="profile-container">
-                        ${profileParagraphs.map(paragraph => `
-                            <div class="profile-box">
-                                <div class="profile-text">${paragraph}</div>
-                            </div>
-                        `).join('')}
-                    </div>
+                    ${profileParagraphs.map(paragraph => `
+                        <div class="profile-box">
+                            <div class="profile-text">${paragraph}</div>
+                        </div>
+                    `).join('')}
                     
                     <button class="restart-btn" id="restartBtn">RESTART</button>
                 </div>
