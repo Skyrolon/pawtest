@@ -6,7 +6,7 @@
     <title>Pixel Personality Quiz</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@700;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
         * {
             margin: 0;
@@ -16,146 +16,135 @@
         }
 
         body {
-            background-color: #1a1a2e;
-            color: #ffffff;
-            font-family: 'Inter', sans-serif;
+            background-color: #70C5CE;
+            background-image: 
+                radial-gradient(circle at 20% 30%, #FFFFFF 8%, transparent 8%),
+                radial-gradient(circle at 80% 60%, #FFFFFF 6%, transparent 6%),
+                radial-gradient(circle at 40% 80%, #FFFFFF 10%, transparent 10%),
+                radial-gradient(circle at 90% 20%, #FFFFFF 7%, transparent 7%);
+            font-family: 'Press Start 2P', cursive;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 16px;
+            padding: 20px;
         }
 
         .container {
             width: 100%;
-            max-width: 480px;
-            background: #0f0f1a;
-            border: 4px solid #e94560;
-            box-shadow: 8px 8px 0 #16213e;
-            padding: 24px;
+            max-width: 500px;
+            background: #FFFFFF;
+            border: 4px solid #000000;
+            box-shadow: 8px 8px 0px #000000;
+            padding: 32px;
         }
 
         .question-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 20px;
-            padding-bottom: 16px;
-            border-bottom: 2px solid #16213e;
+            text-align: center;
+            margin-bottom: 24px;
         }
 
         .question-number {
-            font-family: 'Press Start 2P', cursive;
-            font-size: 10px;
-            color: #ffd700;
-            letter-spacing: 1px;
+            font-size: 14px;
+            color: #533845;
+            letter-spacing: 2px;
+            text-transform: uppercase;
         }
 
         .question-pixel-art {
             width: 100%;
-            height: 80px;
-            margin-bottom: 20px;
+            height: 100px;
+            margin: 20px 0;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 48px;
-            border: 3px solid #16213e;
-            background: #1a1a2e;
+            font-size: 56px;
+            background: #70C5CE;
+            border: 4px solid #000000;
         }
 
         .question-text {
-            font-family: 'Inter', sans-serif;
             font-size: 16px;
-            font-weight: 700;
-            line-height: 1.6;
-            margin-bottom: 24px;
-            color: #ffffff;
+            line-height: 1.8;
+            margin-bottom: 28px;
+            color: #533845;
+            text-align: center;
         }
 
         .options {
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            margin-bottom: 24px;
+            gap: 12px;
+            margin-bottom: 28px;
         }
 
         .option-btn {
-            font-family: 'Inter', sans-serif;
-            font-size: 14px;
-            font-weight: 700;
-            padding: 16px 16px 16px 48px;
-            background: #16213e;
-            border: 3px solid #00d2fc;
-            color: #ffffff;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 12px;
+            padding: 20px 16px;
+            background: #E66B2F;
+            border: 4px solid #000000;
+            box-shadow: 0px 6px 0px #BC4909;
+            color: #FFFFFF;
             cursor: pointer;
-            text-align: left;
-            line-height: 1.5;
+            text-align: center;
+            line-height: 1.6;
             min-height: 44px;
-            position: relative;
-            transition: none;
-        }
-
-        .option-btn::before {
-            content: '→';
-            position: absolute;
-            left: 16px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 20px;
-            color: #00d2fc;
-            opacity: 0;
+            transition: all 0.1s ease;
+            text-transform: uppercase;
         }
 
         .option-btn:hover {
-            background: #00d2fc;
-            color: #0f0f1a;
-            box-shadow: 4px 4px 0 #16213e;
-        }
-
-        .option-btn:hover::before {
-            opacity: 1;
-            color: #0f0f1a;
+            background: #FFD94C;
+            color: #533845;
+            box-shadow: 0px 6px 0px #E6B600;
         }
 
         .option-btn:active {
-            background: #ffd700;
-            color: #0f0f1a;
-            border-color: #ffd700;
-            box-shadow: 2px 2px 0 #16213e;
+            transform: translateY(4px);
+            box-shadow: 0px 2px 0px #BC4909;
         }
 
         .progress-container {
-            border-top: 2px solid #16213e;
-            padding-top: 16px;
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 4px solid #000000;
         }
 
         .progress-text {
-            font-family: 'Press Start 2P', cursive;
-            font-size: 8px;
-            letter-spacing: 1px;
+            font-size: 10px;
+            letter-spacing: 2px;
             margin-bottom: 12px;
-            color: #00d2fc;
+            color: #533845;
             text-align: center;
+            text-transform: uppercase;
         }
 
-        .progress-bar {
+        .progress-bar-outer {
             width: 100%;
-            height: 20px;
-            background: #16213e;
-            border: 2px solid #00d2fc;
-            display: flex;
-            gap: 2px;
-            padding: 2px;
+            height: 32px;
+            background: #FFFFFF;
+            border: 4px solid #000000;
+            box-shadow: inset 4px 4px 0px rgba(0, 0, 0, 0.2);
+            padding: 4px;
         }
 
-        .progress-segment {
-            flex: 1;
-            background: #16213e;
-            transition: background 0.3s ease;
+        .progress-bar-inner {
+            height: 100%;
+            background: #FFD94C;
+            border-right: 4px solid #000000;
+            transition: width 0.3s ease;
+            position: relative;
         }
 
-        .progress-segment.filled {
-            background: #ffd700;
+        .progress-bar-inner::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: -4px;
+            width: 4px;
+            height: 100%;
+            background: #E6B600;
         }
 
         .result-container {
@@ -163,105 +152,99 @@
         }
 
         .result-header {
-            border: 4px solid #ffd700;
-            background: #16213e;
-            padding: 24px;
+            background: #FFFFFF;
+            border: 4px solid #000000;
+            padding: 28px;
             margin-bottom: 16px;
             text-align: center;
-            box-shadow: 6px 6px 0 #0f0f1a;
+            box-shadow: 6px 6px 0px #000000;
         }
 
         .animal-name {
-            font-family: 'Press Start 2P', cursive;
-            font-size: 16px;
-            color: #ffd700;
-            margin-bottom: 20px;
+            font-size: 20px;
+            color: #E66B2F;
+            margin-bottom: 24px;
             letter-spacing: 2px;
             line-height: 1.6;
+            text-transform: uppercase;
         }
 
         .sprite-img {
-            max-width: 180px;
+            max-width: 200px;
             height: auto;
             image-rendering: pixelated;
-            border: 3px solid #00d2fc;
-            background: #1a1a2e;
-            padding: 16px;
-            margin-bottom: 20px;
+            background: #70C5CE;
+            padding: 20px;
+            margin-bottom: 24px;
         }
 
         .vibe-text {
-            font-family: 'Inter', sans-serif;
-            font-size: 14px;
-            font-weight: 700;
-            line-height: 1.6;
-            color: #00d2fc;
+            font-size: 12px;
+            line-height: 1.8;
+            color: #533845;
+            text-transform: uppercase;
         }
 
         .profile-box {
-            border: 2px solid #16213e;
-            background: #1a1a2e;
-            padding: 16px;
-            margin-bottom: 8px;
+            border: 4px solid #000000;
+            background: #FFFFFF;
+            padding: 20px;
+            margin-bottom: 12px;
+            box-shadow: 4px 4px 0px #000000;
         }
 
         .profile-text {
-            font-family: 'Inter', sans-serif;
-            font-size: 13px;
-            font-weight: 700;
-            line-height: 1.7;
-            color: #ffffff;
+            font-size: 11px;
+            line-height: 2;
+            color: #533845;
             text-align: left;
         }
 
         .restart-btn {
             font-family: 'Press Start 2P', cursive;
-            font-size: 12px;
-            font-weight: 400;
-            padding: 16px 24px;
-            background: #e94560;
-            border: 4px solid #00d2fc;
-            color: #ffffff;
+            font-size: 14px;
+            padding: 20px 32px;
+            background: #73BF2E;
+            border: 4px solid #000000;
+            box-shadow: 0px 6px 0px #4A8020;
+            color: #FFFFFF;
             cursor: pointer;
             width: 100%;
-            margin-top: 16px;
-            box-shadow: 4px 4px 0 #16213e;
+            margin-top: 20px;
+            text-transform: uppercase;
             letter-spacing: 2px;
         }
 
         .restart-btn:hover {
-            background: #00d2fc;
-            color: #0f0f1a;
-            box-shadow: 6px 6px 0 #16213e;
+            background: #8FD944;
+            box-shadow: 0px 6px 0px #5A9028;
         }
 
         .restart-btn:active {
-            background: #ffd700;
-            color: #0f0f1a;
-            border-color: #ffd700;
-            box-shadow: 2px 2px 0 #16213e;
+            transform: translateY(4px);
+            box-shadow: 0px 2px 0px #4A8020;
         }
 
         .loading {
             text-align: center;
-            font-family: 'Press Start 2P', cursive;
-            font-size: 14px;
-            color: #00d2fc;
+            font-size: 16px;
+            color: #533845;
             padding: 40px 20px;
-            line-height: 1.8;
+            line-height: 2;
+            text-transform: uppercase;
         }
 
-        @media (max-width: 480px) {
-            .container { padding: 20px; }
-            .question-text { font-size: 15px; }
-            .option-btn { font-size: 13px; padding: 14px 14px 14px 44px; }
-            .animal-name { font-size: 14px; }
+        @media (max-width: 500px) {
+            .container { padding: 24px; }
+            .question-text { font-size: 14px; }
+            .option-btn { font-size: 11px; padding: 16px 12px; }
+            .animal-name { font-size: 16px; }
         }
     </style>
 </head>
 <body>
     <div class="container" id="app">
-        <div class="loading">LOADING...</div>
+        <div class="loading">Loading...</div>
     </div>
 
     <script>
@@ -289,7 +272,7 @@
                 startQuiz();
             } catch (error) {
                 document.getElementById('app').innerHTML = `
-                    <div class="loading">ERROR<br>LOADING<br>DATA</div>
+                    <div class="loading">Error<br>Loading<br>Data</div>
                 `;
                 console.error('Error:', error);
             }
@@ -347,9 +330,7 @@
         
         function renderQuestion() {
             const q = questions[currentQuestion];
-            const progress = currentQuestion / questions.length;
-            const totalSegments = questions.length;
-            const filledSegments = currentQuestion;
+            const progress = (currentQuestion / questions.length) * 100;
             
             const backgroundArt = QUESTION_BACKGROUNDS[currentQuestion] || '✨💫';
             
@@ -357,7 +338,7 @@
             
             appDiv.innerHTML = `
                 <div class="question-header">
-                    <span class="question-number">Q ${currentQuestion + 1}/${questions.length}</span>
+                    <div class="question-number">Question ${currentQuestion + 1} of ${questions.length}</div>
                 </div>
                 
                 <div class="question-pixel-art">${backgroundArt}</div>
@@ -367,23 +348,13 @@
                 <div class="options" id="optionsContainer"></div>
                 
                 <div class="progress-container">
-                    <div class="progress-text">PROGRESS</div>
-                    <div class="progress-bar" id="progressBar"></div>
+                    <div class="progress-text">Progress</div>
+                    <div class="progress-bar-outer">
+                        <div class="progress-bar-inner" style="width: ${progress}%"></div>
+                    </div>
                 </div>
             `;
             
-            // Create segmented progress bar
-            const progressBar = document.getElementById('progressBar');
-            for (let i = 0; i < totalSegments; i++) {
-                const segment = document.createElement('div');
-                segment.className = 'progress-segment';
-                if (i < filledSegments) {
-                    segment.classList.add('filled');
-                }
-                progressBar.appendChild(segment);
-            }
-            
-            // Create option buttons
             const optionsContainer = document.getElementById('optionsContainer');
             q.options.forEach((opt, i) => {
                 const btn = document.createElement('button');
@@ -457,7 +428,7 @@
                         </div>
                     `).join('')}
                     
-                    <button class="restart-btn" id="restartBtn">RESTART</button>
+                    <button class="restart-btn" id="restartBtn">Play Again</button>
                 </div>
             `;
             
