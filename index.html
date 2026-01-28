@@ -6,11 +6,7 @@
     <title>Pixel Personality Quiz</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@900&family=Lexend+Exa:wght@800&display=swap');
-
-        :root {
-            --accent: #B4E7CE;
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@700;900&display=swap');
 
         * {
             margin: 0;
@@ -20,91 +16,146 @@
         }
 
         body {
-            background-color: #000;
-            color: #fff;
+            background-color: #1a1a2e;
+            color: #ffffff;
             font-family: 'Inter', sans-serif;
-            margin: 0;
-            padding: 10px;
+            min-height: 100vh;
             display: flex;
             justify-content: center;
+            align-items: center;
+            padding: 16px;
         }
 
         .container {
             width: 100%;
-            max-width: 450px;
-            background: #000;
-            border: 4px solid #fff;
-            padding: 20px;
-            box-sizing: border-box;
+            max-width: 480px;
+            background: #0f0f1a;
+            border: 4px solid #e94560;
+            box-shadow: 8px 8px 0 #16213e;
+            padding: 24px;
+        }
+
+        .question-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid #16213e;
+        }
+
+        .question-number {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 10px;
+            color: #ffd700;
+            letter-spacing: 1px;
         }
 
         .question-pixel-art {
             width: 100%;
-            height: 100px;
+            height: 80px;
             margin-bottom: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 50px;
-            border: 3px solid #fff;
-            background: #111;
+            font-size: 48px;
+            border: 3px solid #16213e;
+            background: #1a1a2e;
         }
 
         .question-text {
-            font-family: 'Lexend Exa', sans-serif;
-            font-size: 1.1rem;
-            line-height: 1.4;
-            margin-bottom: 25px;
-            border-left: 8px solid var(--accent);
-            padding-left: 15px;
+            font-family: 'Inter', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            line-height: 1.6;
+            margin-bottom: 24px;
+            color: #ffffff;
         }
 
         .options {
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 10px;
+            margin-bottom: 24px;
         }
 
         .option-btn {
-            background: #fff;
-            color: #000;
-            border: none;
-            padding: 18px 15px;
-            font-size: 1rem;
-            font-weight: 900;
-            text-align: left;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            padding: 16px 16px 16px 48px;
+            background: #16213e;
+            border: 3px solid #00d2fc;
+            color: #ffffff;
             cursor: pointer;
+            text-align: left;
+            line-height: 1.5;
+            min-height: 44px;
+            position: relative;
             transition: none;
         }
 
+        .option-btn::before {
+            content: '→';
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 20px;
+            color: #00d2fc;
+            opacity: 0;
+        }
+
+        .option-btn:hover {
+            background: #00d2fc;
+            color: #0f0f1a;
+            box-shadow: 4px 4px 0 #16213e;
+        }
+
+        .option-btn:hover::before {
+            opacity: 1;
+            color: #0f0f1a;
+        }
+
         .option-btn:active {
-            background: var(--accent);
-            color: #000;
+            background: #ffd700;
+            color: #0f0f1a;
+            border-color: #ffd700;
+            box-shadow: 2px 2px 0 #16213e;
         }
 
         .progress-container {
-            margin-top: 30px;
-            border-top: 2px solid #333;
-            padding-top: 15px;
+            border-top: 2px solid #16213e;
+            padding-top: 16px;
+        }
+
+        .progress-text {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 8px;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            color: #00d2fc;
+            text-align: center;
         }
 
         .progress-bar {
             width: 100%;
-            height: 12px;
-            background: #222;
+            height: 20px;
+            background: #16213e;
+            border: 2px solid #00d2fc;
+            display: flex;
+            gap: 2px;
+            padding: 2px;
         }
 
-        .progress-fill {
-            height: 100%;
-            background: var(--accent);
-            transition: width 0.3s ease;
+        .progress-segment {
+            flex: 1;
+            background: #16213e;
+            transition: background 0.3s ease;
         }
 
-        .progress-text {
-            font-size: 0.7rem;
-            letter-spacing: 2px;
-            margin-bottom: 8px;
-            color: #888;
+        .progress-segment.filled {
+            background: #ffd700;
         }
 
         .result-container {
@@ -112,78 +163,99 @@
         }
 
         .result-header {
-            border: 4px solid var(--accent);
-            padding: 15px;
-            margin-bottom: 10px;
+            border: 4px solid #ffd700;
+            background: #16213e;
+            padding: 24px;
+            margin-bottom: 16px;
             text-align: center;
+            box-shadow: 6px 6px 0 #0f0f1a;
         }
 
         .animal-name {
-            font-family: 'Lexend Exa', sans-serif;
-            font-size: 1.5rem;
-            color: var(--accent);
-            margin-bottom: 15px;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 16px;
+            color: #ffd700;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+            line-height: 1.6;
         }
 
         .sprite-img {
             max-width: 180px;
             height: auto;
             image-rendering: pixelated;
-            border: 3px solid #fff;
-            background: #111;
-            padding: 15px;
-            margin-bottom: 15px;
+            border: 3px solid #00d2fc;
+            background: #1a1a2e;
+            padding: 16px;
+            margin-bottom: 20px;
         }
 
         .vibe-text {
             font-family: 'Inter', sans-serif;
-            font-size: 0.9rem;
-            line-height: 1.5;
-            color: #ccc;
+            font-size: 14px;
+            font-weight: 700;
+            line-height: 1.6;
+            color: #00d2fc;
         }
 
         .profile-box {
-            border: 1px solid #333;
-            padding: 15px;
-            margin-top: 5px;
-            background: #111;
+            border: 2px solid #16213e;
+            background: #1a1a2e;
+            padding: 16px;
+            margin-bottom: 8px;
         }
 
         .profile-text {
-            font-size: 0.9rem;
-            line-height: 1.5;
-            color: #ccc;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            line-height: 1.7;
+            color: #ffffff;
             text-align: left;
         }
 
         .restart-btn {
-            font-family: 'Lexend Exa', sans-serif;
-            font-size: 1rem;
-            font-weight: 800;
-            padding: 18px 30px;
-            background: var(--accent);
-            border: none;
-            color: #000;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 12px;
+            font-weight: 400;
+            padding: 16px 24px;
+            background: #e94560;
+            border: 4px solid #00d2fc;
+            color: #ffffff;
             cursor: pointer;
-            margin-top: 20px;
             width: 100%;
+            margin-top: 16px;
+            box-shadow: 4px 4px 0 #16213e;
+            letter-spacing: 2px;
+        }
+
+        .restart-btn:hover {
+            background: #00d2fc;
+            color: #0f0f1a;
+            box-shadow: 6px 6px 0 #16213e;
         }
 
         .restart-btn:active {
-            opacity: 0.8;
+            background: #ffd700;
+            color: #0f0f1a;
+            border-color: #ffd700;
+            box-shadow: 2px 2px 0 #16213e;
         }
 
         .loading {
             text-align: center;
-            font-size: 1.2rem;
-            color: var(--accent);
-            font-family: 'Lexend Exa', sans-serif;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 14px;
+            color: #00d2fc;
             padding: 40px 20px;
+            line-height: 1.8;
         }
 
-        @media (max-width: 450px) {
-            .question-text { font-size: 1rem; }
-            .option-btn { font-size: 0.9rem; padding: 16px 12px; }
+        @media (max-width: 480px) {
+            .container { padding: 20px; }
+            .question-text { font-size: 15px; }
+            .option-btn { font-size: 13px; padding: 14px 14px 14px 44px; }
+            .animal-name { font-size: 14px; }
         }
     </style>
 </head>
@@ -196,22 +268,9 @@
         const QUESTIONS_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTl7KuGBmEGEHqavwmPHRCLRvFHwvzSKVcKMRCEw0aWPej50cAVUrA_Oh1PIMSY6yKL4B8OEh7tqR1d/pub?gid=0&single=true&output=csv';
         const PROFILES_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTl7KuGBmEGEHqavwmPHRCLRvFHwvzSKVcKMRCEw0aWPej50cAVUrA_Oh1PIMSY6yKL4B8OEh7tqR1d/pub?gid=1646208880&single=true&output=csv';
         
-        const accents = ['#B4E7CE', '#E5B3FE', '#B8E8FC', '#FFF4B3', '#FFD4B3', '#FFB3D9'];
-        
         const QUESTION_BACKGROUNDS = [
-            '🏠🔑',
-            '🎉🎪',
-            '🌳☁️',
-            '✨🎁',
-            '☁️🌈',
-            '💭⭐',
-            '🌧️🌂',
-            '🎂❤️',
-            '😢💔',
-            '💕💝',
-            '✈️🧳',
-            '🍳🎨',
-            '📸🚫'
+            '🏠🔑', '🎉🎪', '🌳☁️', '✨🎁', '☁️🌈', '💭⭐',
+            '🌧️🌂', '🎂❤️', '😢💔', '💕💝', '✈️🧳', '🍳🎨', '📸🚫'
         ];
         
         let questions = [];
@@ -227,13 +286,10 @@
                 questions = parseQuestions(questionsData);
                 profiles = parseProfiles(profilesData);
                 
-                console.log('Questions loaded:', questions);
-                console.log('Profiles loaded:', profiles);
-                
                 startQuiz();
             } catch (error) {
                 document.getElementById('app').innerHTML = `
-                    <div class="loading">ERROR LOADING DATA</div>
+                    <div class="loading">ERROR<br>LOADING<br>DATA</div>
                 `;
                 console.error('Error:', error);
             }
@@ -291,29 +347,43 @@
         
         function renderQuestion() {
             const q = questions[currentQuestion];
-            const progress = ((currentQuestion) / questions.length) * 100;
-            
-            // Set the accent color based on question index
-            const currentAccent = accents[currentQuestion % accents.length];
-            document.documentElement.style.setProperty('--accent', currentAccent);
+            const progress = currentQuestion / questions.length;
+            const totalSegments = questions.length;
+            const filledSegments = currentQuestion;
             
             const backgroundArt = QUESTION_BACKGROUNDS[currentQuestion] || '✨💫';
             
             const appDiv = document.getElementById('app');
             
             appDiv.innerHTML = `
+                <div class="question-header">
+                    <span class="question-number">Q ${currentQuestion + 1}/${questions.length}</span>
+                </div>
+                
                 <div class="question-pixel-art">${backgroundArt}</div>
+                
                 <div class="question-text">${q.question}</div>
+                
                 <div class="options" id="optionsContainer"></div>
                 
                 <div class="progress-container">
-                    <div class="progress-text">QUESTION ${currentQuestion + 1} / ${questions.length}</div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: ${progress}%"></div>
-                    </div>
+                    <div class="progress-text">PROGRESS</div>
+                    <div class="progress-bar" id="progressBar"></div>
                 </div>
             `;
             
+            // Create segmented progress bar
+            const progressBar = document.getElementById('progressBar');
+            for (let i = 0; i < totalSegments; i++) {
+                const segment = document.createElement('div');
+                segment.className = 'progress-segment';
+                if (i < filledSegments) {
+                    segment.classList.add('filled');
+                }
+                progressBar.appendChild(segment);
+            }
+            
+            // Create option buttons
             const optionsContainer = document.getElementById('optionsContainer');
             q.options.forEach((opt, i) => {
                 const btn = document.createElement('button');
@@ -370,10 +440,6 @@
         function showResults() {
             const mbti = calculateMBTI();
             const result = profiles.find(p => p.mbti === mbti) || profiles[0];
-            
-            // Set final accent color
-            const finalAccent = accents[accents.length - 1];
-            document.documentElement.style.setProperty('--accent', finalAccent);
             
             const profileParagraphs = result.profile.split('\n').filter(p => p.trim() !== '');
             
