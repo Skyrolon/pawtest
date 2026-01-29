@@ -6,7 +6,13 @@
     <title>Pixel Personality Quiz</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Lexend+Exa:wght@800&family=Quicksand:wght@700&display=swap');
+
+        :root {
+            --accent: #FFC8DD;
+            --bg: #FFF0F5;
+            --text: #4A4A4A;
+        }
 
         * {
             margin: 0;
@@ -16,229 +22,182 @@
         }
 
         body {
-            background-color: #70C5CE;
-            background-image: 
-                radial-gradient(circle at 20% 30%, #FFFFFF 8%, transparent 8%),
-                radial-gradient(circle at 80% 60%, #FFFFFF 6%, transparent 6%),
-                radial-gradient(circle at 40% 80%, #FFFFFF 10%, transparent 10%),
-                radial-gradient(circle at 90% 20%, #FFFFFF 7%, transparent 7%);
-            font-family: 'Press Start 2P', cursive;
-            min-height: 100vh;
+            background-color: var(--bg);
+            background-image: radial-gradient(var(--accent) 2px, transparent 2px);
+            background-size: 40px 40px;
+            font-family: 'Quicksand', sans-serif;
+            margin: 0;
+            padding: 15px;
             display: flex;
             justify-content: center;
+            color: var(--text);
+            min-height: 100vh;
             align-items: center;
-            padding: 20px;
         }
 
         .container {
             width: 100%;
-            max-width: 500px;
-            background: #FFFFFF;
-            border: 4px solid #000000;
-            box-shadow: 8px 8px 0px #000000;
-            padding: 32px;
-        }
-
-        .question-header {
-            text-align: center;
-            margin-bottom: 24px;
-        }
-
-        .question-number {
-            font-size: 14px;
-            color: #533845;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-        }
-
-        .question-pixel-art {
-            width: 100%;
-            height: 100px;
-            margin: 20px 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 56px;
-            background: #70C5CE;
-            border: 4px solid #000000;
+            max-width: 420px;
+            background: #ffffff;
+            border: 5px solid #000;
+            box-shadow: 8px 8px 0px #000;
+            padding: 25px;
+            box-sizing: border-box;
         }
 
         .question-text {
-            font-size: 16px;
-            line-height: 1.8;
-            margin-bottom: 28px;
-            color: #533845;
-            text-align: center;
+            font-family: 'Lexend Exa', sans-serif;
+            font-size: 1.1rem;
+            line-height: 1.4;
+            margin-bottom: 20px;
+            color: #000;
+            text-transform: uppercase;
         }
 
         .options {
             display: flex;
             flex-direction: column;
-            gap: 12px;
-            margin-bottom: 28px;
+            margin-bottom: 20px;
         }
 
         .option-btn {
-            font-family: 'Press Start 2P', cursive;
-            font-size: 12px;
-            padding: 20px 16px;
-            background: #E66B2F;
-            border: 4px solid #000000;
-            box-shadow: 0px 6px 0px #BC4909;
-            color: #FFFFFF;
-            cursor: pointer;
+            width: 100%;
+            background: #fff;
+            color: #000;
+            border: 3px solid #000;
+            border-radius: 50px;
+            padding: 16px 20px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            margin-bottom: 10px;
             text-align: center;
-            line-height: 1.6;
-            min-height: 44px;
-            transition: all 0.1s ease;
-            text-transform: uppercase;
+            cursor: pointer;
+            box-shadow: 0px 4px 0px #000;
+            font-family: 'Quicksand', sans-serif;
+            transition: none;
         }
 
         .option-btn:hover {
-            background: #FFD94C;
-            color: #533845;
-            box-shadow: 0px 6px 0px #E6B600;
+            background: var(--accent);
         }
 
         .option-btn:active {
-            transform: translateY(4px);
-            box-shadow: 0px 2px 0px #BC4909;
+            background: var(--accent);
+            transform: translateY(2px);
+            box-shadow: 0px 2px 0px #000;
         }
 
         .progress-container {
-            margin-top: 32px;
-            padding-top: 24px;
-            border-top: 4px solid #000000;
+            margin-top: 20px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 14px;
+            background: #f0f0f0;
+            border: 3px solid #000;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--accent);
+            transition: width 0.3s ease;
         }
 
         .progress-text {
-            font-size: 10px;
-            letter-spacing: 2px;
-            margin-bottom: 12px;
-            color: #533845;
-            text-align: center;
+            font-size: 0.7rem;
+            font-weight: 800;
             text-transform: uppercase;
-        }
-
-        .progress-bar-outer {
-            width: 100%;
-            height: 32px;
-            background: #FFFFFF;
-            border: 4px solid #000000;
-            box-shadow: inset 4px 4px 0px rgba(0, 0, 0, 0.2);
-            padding: 4px;
-        }
-
-        .progress-bar-inner {
-            height: 100%;
-            background: #FFD94C;
-            border-right: 4px solid #000000;
-            transition: width 0.3s ease;
-            position: relative;
-        }
-
-        .progress-bar-inner::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            right: -4px;
-            width: 4px;
-            height: 100%;
-            background: #E6B600;
+            margin-top: 8px;
+            letter-spacing: 1px;
+            text-align: center;
+            color: var(--text);
         }
 
         .result-container {
-            width: 100%;
-        }
-
-        .result-header {
-            background: #FFFFFF;
-            border: 4px solid #000000;
-            padding: 28px;
-            margin-bottom: 16px;
             text-align: center;
-            box-shadow: 6px 6px 0px #000000;
         }
 
         .animal-name {
-            font-size: 20px;
-            color: #E66B2F;
-            margin-bottom: 24px;
-            letter-spacing: 2px;
-            line-height: 1.6;
+            font-family: 'Lexend Exa', sans-serif;
+            font-size: 1.8rem;
+            background: var(--accent);
+            display: inline-block;
+            padding: 8px 20px;
+            border: 3px solid #000;
+            margin-bottom: 20px;
+            color: #000;
             text-transform: uppercase;
         }
 
         .sprite-img {
-            max-width: 200px;
+            max-width: 150px;
             height: auto;
             image-rendering: pixelated;
-            background: #70C5CE;
-            padding: 20px;
-            margin-bottom: 24px;
+            margin: 20px 0;
         }
 
         .vibe-text {
-            font-size: 12px;
-            line-height: 1.8;
-            color: #533845;
-            text-transform: uppercase;
+            font-family: 'Quicksand', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 20px;
+            line-height: 1.6;
         }
 
         .profile-box {
-            border: 4px solid #000000;
-            background: #FFFFFF;
-            padding: 20px;
-            margin-bottom: 12px;
-            box-shadow: 4px 4px 0px #000000;
-        }
-
-        .profile-text {
-            font-size: 11px;
-            line-height: 2;
-            color: #533845;
             text-align: left;
+            background: #fafafa;
+            border: 2px solid #000;
+            padding: 15px;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            line-height: 1.7;
+            color: var(--text);
         }
 
         .restart-btn {
-            font-family: 'Press Start 2P', cursive;
-            font-size: 14px;
-            padding: 20px 32px;
-            background: #73BF2E;
-            border: 4px solid #000000;
-            box-shadow: 0px 6px 0px #4A8020;
-            color: #FFFFFF;
+            font-family: 'Lexend Exa', sans-serif;
+            font-size: 1rem;
+            font-weight: 800;
+            padding: 16px 32px;
+            background: var(--accent);
+            border: 3px solid #000;
+            border-radius: 50px;
+            color: #000;
             cursor: pointer;
-            width: 100%;
             margin-top: 20px;
             text-transform: uppercase;
-            letter-spacing: 2px;
+            box-shadow: 0px 4px 0px #000;
+            width: 100%;
         }
 
         .restart-btn:hover {
-            background: #8FD944;
-            box-shadow: 0px 6px 0px #5A9028;
+            background: #FFB3CC;
         }
 
         .restart-btn:active {
-            transform: translateY(4px);
-            box-shadow: 0px 2px 0px #4A8020;
+            transform: translateY(2px);
+            box-shadow: 0px 2px 0px #000;
         }
 
         .loading {
             text-align: center;
-            font-size: 16px;
-            color: #533845;
+            font-family: 'Lexend Exa', sans-serif;
+            font-size: 1.2rem;
+            color: #000;
             padding: 40px 20px;
-            line-height: 2;
             text-transform: uppercase;
         }
 
-        @media (max-width: 500px) {
-            .container { padding: 24px; }
-            .question-text { font-size: 14px; }
-            .option-btn { font-size: 11px; padding: 16px 12px; }
-            .animal-name { font-size: 16px; }
+        @media (max-width: 420px) {
+            .container { padding: 20px; }
+            .question-text { font-size: 1rem; }
+            .option-btn { font-size: 0.9rem; padding: 14px 18px; }
+            .animal-name { font-size: 1.5rem; }
         }
     </style>
 </head>
@@ -250,11 +209,6 @@
     <script>
         const QUESTIONS_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTl7KuGBmEGEHqavwmPHRCLRvFHwvzSKVcKMRCEw0aWPej50cAVUrA_Oh1PIMSY6yKL4B8OEh7tqR1d/pub?gid=0&single=true&output=csv';
         const PROFILES_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTl7KuGBmEGEHqavwmPHRCLRvFHwvzSKVcKMRCEw0aWPej50cAVUrA_Oh1PIMSY6yKL4B8OEh7tqR1d/pub?gid=1646208880&single=true&output=csv';
-        
-        const QUESTION_BACKGROUNDS = [
-            '🏠🔑', '🎉🎪', '🌳☁️', '✨🎁', '☁️🌈', '💭⭐',
-            '🌧️🌂', '🎂❤️', '😢💔', '💕💝', '✈️🧳', '🍳🎨', '📸🚫'
-        ];
         
         let questions = [];
         let profiles = [];
@@ -272,7 +226,7 @@
                 startQuiz();
             } catch (error) {
                 document.getElementById('app').innerHTML = `
-                    <div class="loading">Error<br>Loading<br>Data</div>
+                    <div class="loading">Error Loading Data</div>
                 `;
                 console.error('Error:', error);
             }
@@ -332,26 +286,18 @@
             const q = questions[currentQuestion];
             const progress = (currentQuestion / questions.length) * 100;
             
-            const backgroundArt = QUESTION_BACKGROUNDS[currentQuestion] || '✨💫';
-            
             const appDiv = document.getElementById('app');
             
             appDiv.innerHTML = `
-                <div class="question-header">
-                    <div class="question-number">Question ${currentQuestion + 1} of ${questions.length}</div>
-                </div>
-                
-                <div class="question-pixel-art">${backgroundArt}</div>
-                
                 <div class="question-text">${q.question}</div>
                 
                 <div class="options" id="optionsContainer"></div>
                 
                 <div class="progress-container">
-                    <div class="progress-text">Progress</div>
-                    <div class="progress-bar-outer">
-                        <div class="progress-bar-inner" style="width: ${progress}%"></div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${progress}%"></div>
                     </div>
+                    <div class="progress-text">Question ${currentQuestion + 1} of ${questions.length}</div>
                 </div>
             `;
             
@@ -416,16 +362,12 @@
             
             document.getElementById('app').innerHTML = `
                 <div class="result-container">
-                    <div class="result-header">
-                        <div class="animal-name">${result.animal}</div>
-                        <img src="${result.sprite}" alt="${result.animal}" class="sprite-img" onerror="this.style.display='none'">
-                        <div class="vibe-text">${result.vibe}</div>
-                    </div>
+                    <div class="animal-name">${result.animal}</div>
+                    <img src="${result.sprite}" alt="${result.animal}" class="sprite-img" onerror="this.style.display='none'">
+                    <div class="vibe-text">${result.vibe}</div>
                     
                     ${profileParagraphs.map(paragraph => `
-                        <div class="profile-box">
-                            <div class="profile-text">${paragraph}</div>
-                        </div>
+                        <div class="profile-box">${paragraph}</div>
                     `).join('')}
                     
                     <button class="restart-btn" id="restartBtn">Play Again</button>
