@@ -9,7 +9,6 @@
         @import url('https://fonts.googleapis.com/css2?family=Silkscreen:wght@700&family=Roboto+Mono:wght@400;700&display=swap');
 
         :root {
-            --yellow: #FFD700;
             --white: #FFFFFF;
             --charcoal: #333333;
             --blue: #A2D2FF;
@@ -22,28 +21,178 @@
             -webkit-tap-highlight-color: transparent;
         }
 
+        html, body {
+            height: 100%;
+            overflow: hidden;
+        }
+
         body {
-            background-color: #f0f0f0;
+            background-color: #2a2a3e;
             font-family: 'Roboto Mono', monospace;
             margin: 0;
             padding: 0;
             color: var(--charcoal);
-            min-height: 100vh;
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: stretch;
         }
 
         .mobile-frame {
             width: 100%;
             max-width: 414px;
-            height: 100vh;
-            max-height: 896px;
+            height: 100%;
             background-color: var(--white);
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
             overflow-y: auto;
+            overflow-x: hidden;
             display: flex;
             flex-direction: column;
+            position: relative;
+        }
+
+        .pixel-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 280px;
+            background: linear-gradient(180deg, #87CEEB 0%, #B8E6F5 100%);
+            image-rendering: pixelated;
+            overflow: hidden;
+        }
+
+        .pixel-scene {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .cloud {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 
+                20px 0 0 white,
+                40px 0 0 white,
+                10px -10px 0 white,
+                30px -10px 0 white,
+                15px 5px 0 #f0f0f0,
+                35px 5px 0 #f0f0f0;
+        }
+
+        .cloud1 {
+            width: 15px;
+            height: 15px;
+            top: 30px;
+            left: 20px;
+            animation: float1 20s infinite ease-in-out;
+        }
+
+        .cloud2 {
+            width: 12px;
+            height: 12px;
+            top: 60px;
+            right: 40px;
+            animation: float2 25s infinite ease-in-out;
+        }
+
+        .cloud3 {
+            width: 18px;
+            height: 18px;
+            top: 45px;
+            left: 50%;
+            animation: float1 22s infinite ease-in-out;
+        }
+
+        @keyframes float1 {
+            0%, 100% { transform: translateY(0px) translateX(0px); }
+            50% { transform: translateY(-15px) translateX(20px); }
+        }
+
+        @keyframes float2 {
+            0%, 100% { transform: translateY(0px) translateX(0px); }
+            50% { transform: translateY(-10px) translateX(-15px); }
+        }
+
+        .sun {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: radial-gradient(circle, #FFE66D 0%, #FFD93D 100%);
+            border-radius: 50%;
+            top: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 0 20px rgba(255, 230, 109, 0.5);
+        }
+
+        .sun::before,
+        .sun::after {
+            content: '';
+            position: absolute;
+            background: #FFE66D;
+        }
+
+        .mountain {
+            position: absolute;
+            bottom: 0;
+            width: 0;
+            height: 0;
+            border-left: 80px solid transparent;
+            border-right: 80px solid transparent;
+            border-bottom: 100px solid #6C91BF;
+        }
+
+        .mountain1 {
+            left: -30px;
+        }
+
+        .mountain2 {
+            right: -20px;
+            border-bottom-color: #5A7BA6;
+        }
+
+        .mountain3 {
+            left: 50%;
+            transform: translateX(-50%);
+            border-left: 60px solid transparent;
+            border-right: 60px solid transparent;
+            border-bottom: 80px solid #7EA3CC;
+        }
+
+        .grass {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 80px;
+            background: linear-gradient(180deg, #7FB069 0%, #6A9955 100%);
+        }
+
+        .flower {
+            position: absolute;
+            bottom: 10px;
+            width: 8px;
+            height: 8px;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 
+                -6px -6px 0 white,
+                6px -6px 0 white,
+                -6px 6px 0 white,
+                6px 6px 0 white,
+                0 0 0 3px #FFE66D;
+        }
+
+        .sparkle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: white;
+            animation: twinkle 2s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.5); }
         }
 
         .container {
@@ -52,15 +201,22 @@
             padding: 20px;
             display: flex;
             flex-direction: column;
+            position: relative;
+            z-index: 1;
+            margin-top: 280px;
         }
 
         .question-text {
-            font-family: 'Silkscreen';
+            font-family: 'Roboto Mono';
             font-size: 14px;
             line-height: 1.4;
             margin-bottom: 20px;
             color: var(--charcoal);
             font-weight: 700;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 16px;
+            border: 3px solid var(--charcoal);
+            border-radius: 8px;
         }
 
         .options {
@@ -82,14 +238,17 @@
             cursor: pointer;
             font-family: 'Roboto Mono', monospace;
             line-height: 1.4;
+            border-radius: 6px;
+            transition: transform 0.1s;
         }
 
         .option-btn:active {
-            background: var(--yellow);
+            transform: scale(0.98);
         }
 
         .progress-container {
-            margin-top: 20px;
+            margin-top: auto;
+            padding-top: 20px;
         }
 
         .progress-bar {
@@ -98,11 +257,11 @@
             background: var(--white);
             border: 3px solid var(--charcoal);
             overflow: hidden;
+            border-radius: 10px;
         }
 
         .progress-fill {
             height: 100%;
-            background: var(--yellow);
             transition: width 0.3s ease;
         }
 
@@ -148,10 +307,11 @@
             line-height: 1.6;
             color: var(--charcoal);
             font-family: 'Roboto Mono', monospace;
+            border-radius: 6px;
         }
 
         .restart-btn {
-            font-family: 'Silkscreen';
+            font-family: 'Roboto Mono';
             font-size: 14px;
             font-weight: 700;
             padding: 14px 24px;
@@ -162,15 +322,16 @@
             margin-top: 16px;
             width: 100%;
             text-transform: uppercase;
+            border-radius: 6px;
         }
 
         .restart-btn:active {
-            background: var(--yellow);
+            transform: scale(0.98);
         }
 
         .loading {
             text-align: center;
-            font-family: 'Silkscreen';
+            font-family: 'Roboto Mono';
             font-size: 14px;
             color: var(--charcoal);
             padding: 40px 20px;
@@ -178,12 +339,13 @@
             text-transform: uppercase;
         }
 
-        @media (max-width: 400px) {
+        @media (max-width: 414px) {
             .mobile-frame {
                 max-width: 100%;
-                box-shadow: none;
             }
-            
+        }
+
+        @media (max-width: 400px) {
             .question-text { font-size: 12px; }
             .option-btn { font-size: 11px; padding: 12px 10px; }
             .animal-name { font-size: 16px; }
@@ -193,6 +355,9 @@
 </head>
 <body>
     <div class="mobile-frame">
+        <div class="pixel-background" id="pixelBg">
+            <div class="pixel-scene" id="pixelScene"></div>
+        </div>
         <div class="container" id="app">
             <div class="loading">Loading...</div>
         </div>
@@ -206,6 +371,70 @@
         let profiles = [];
         let currentQuestion = 0;
         let scores = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
+        
+        const scenes = [
+            { bg: 'linear-gradient(180deg, #87CEEB 0%, #B8E6F5 100%)', theme: 'day' },
+            { bg: 'linear-gradient(180deg, #FF9E80 0%, #FFB347 100%)', theme: 'sunset' },
+            { bg: 'linear-gradient(180deg, #1a1a2e 0%, #2a2a4e 100%)', theme: 'night' },
+            { bg: 'linear-gradient(180deg, #FFB6D9 0%, #D891EF 100%)', theme: 'magic' },
+            { bg: 'linear-gradient(180deg, #96E6B3 0%, #B8F5D3 100%)', theme: 'forest' },
+            { bg: 'linear-gradient(180deg, #A8DADC 0%, #F1FAEE 100%)', theme: 'ocean' }
+        ];
+        
+        function generatePixelScene(theme) {
+            const scene = document.getElementById('pixelScene');
+            const bg = document.getElementById('pixelBg');
+            const sceneData = scenes[currentQuestion % scenes.length];
+            
+            bg.style.background = sceneData.bg;
+            scene.innerHTML = '';
+            
+            // Add clouds
+            for (let i = 0; i < 3; i++) {
+                const cloud = document.createElement('div');
+                cloud.className = `cloud cloud${i + 1}`;
+                scene.appendChild(cloud);
+            }
+            
+            // Add sun/moon
+            const sun = document.createElement('div');
+            sun.className = 'sun';
+            if (sceneData.theme === 'night') {
+                sun.style.background = 'radial-gradient(circle, #F0F0F0 0%, #E0E0E0 100%)';
+            }
+            scene.appendChild(sun);
+            
+            // Add mountains
+            for (let i = 0; i < 3; i++) {
+                const mountain = document.createElement('div');
+                mountain.className = `mountain mountain${i + 1}`;
+                scene.appendChild(mountain);
+            }
+            
+            // Add grass
+            const grass = document.createElement('div');
+            grass.className = 'grass';
+            scene.appendChild(grass);
+            
+            // Add flowers
+            for (let i = 0; i < 8; i++) {
+                const flower = document.createElement('div');
+                flower.className = 'flower';
+                flower.style.left = `${Math.random() * 90 + 5}%`;
+                flower.style.animationDelay = `${Math.random() * 2}s`;
+                scene.appendChild(flower);
+            }
+            
+            // Add sparkles
+            for (let i = 0; i < 12; i++) {
+                const sparkle = document.createElement('div');
+                sparkle.className = 'sparkle';
+                sparkle.style.left = `${Math.random() * 100}%`;
+                sparkle.style.top = `${Math.random() * 200}px`;
+                sparkle.style.animationDelay = `${Math.random() * 2}s`;
+                scene.appendChild(sparkle);
+            }
+        }
         
         async function loadData() {
             try {
@@ -271,12 +500,15 @@
         function startQuiz() {
             currentQuestion = 0;
             scores = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
+            document.getElementById('pixelBg').style.display = 'block';
             renderQuestion();
         }
         
         function renderQuestion() {
             const q = questions[currentQuestion];
             const progress = (currentQuestion / questions.length) * 100;
+            
+            generatePixelScene();
             
             const appDiv = document.getElementById('app');
             
@@ -346,6 +578,8 @@
         }
         
         function showResults() {
+            document.getElementById('pixelBg').style.display = 'none';
+            
             const mbti = calculateMBTI();
             const result = profiles.find(p => p.mbti === mbti) || profiles[0];
             
@@ -365,7 +599,11 @@
                 </div>
             `;
             
-            document.getElementById('restartBtn').addEventListener('click', startQuiz);
+            document.getElementById('app').style.marginTop = '20px';
+            document.getElementById('restartBtn').addEventListener('click', () => {
+                document.getElementById('app').style.marginTop = '280px';
+                startQuiz();
+            });
         }
         
         loadData();
