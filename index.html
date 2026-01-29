@@ -9,9 +9,10 @@
         @import url('https://fonts.googleapis.com/css2?family=Lexend+Exa:wght@800&family=Quicksand:wght@700&display=swap');
 
         :root {
-            --accent: #FFC8DD;
-            --bg: #FFF0F5;
-            --text: #4A4A4A;
+            --yellow: #FFD700;
+            --orange: #FF8C00;
+            --white: #FFFFFF;
+            --charcoal: #333333;
         }
 
         * {
@@ -22,15 +23,13 @@
         }
 
         body {
-            background-color: var(--bg);
-            background-image: radial-gradient(var(--accent) 2px, transparent 2px);
-            background-size: 40px 40px;
+            background-color: var(--white);
             font-family: 'Quicksand', sans-serif;
             margin: 0;
             padding: 15px;
             display: flex;
             justify-content: center;
-            color: var(--text);
+            color: var(--charcoal);
             min-height: 100vh;
             align-items: center;
         }
@@ -38,72 +37,85 @@
         .container {
             width: 100%;
             max-width: 420px;
-            background: #ffffff;
-            border: 5px solid #000;
-            box-shadow: 8px 8px 0px #000;
-            padding: 25px;
+            background: var(--white);
+            border: 6px solid var(--charcoal);
+            box-shadow: 10px 10px 0px var(--charcoal);
+            padding: 28px;
             box-sizing: border-box;
         }
 
         .question-text {
             font-family: 'Lexend Exa', sans-serif;
             font-size: 1.1rem;
-            line-height: 1.4;
-            margin-bottom: 20px;
-            color: #000;
-            text-transform: uppercase;
+            line-height: 1.5;
+            margin-bottom: 24px;
+            color: var(--charcoal);
+            text-align: center;
+            font-weight: 800;
         }
 
         .options {
             display: flex;
             flex-direction: column;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
         }
 
         .option-btn {
             width: 100%;
-            background: #fff;
-            color: #000;
-            border: 3px solid #000;
-            border-radius: 50px;
-            padding: 16px 20px;
+            background: var(--yellow);
+            color: var(--charcoal);
+            border: 4px solid var(--charcoal);
+            border-radius: 0;
+            padding: 18px 20px;
             font-size: 0.95rem;
             font-weight: 700;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
             text-align: center;
             cursor: pointer;
-            box-shadow: 0px 4px 0px #000;
+            box-shadow: 0px 5px 0px var(--orange);
             font-family: 'Quicksand', sans-serif;
             transition: none;
         }
 
         .option-btn:hover {
-            background: var(--accent);
+            background: var(--orange);
+            color: var(--white);
         }
 
         .option-btn:active {
-            background: var(--accent);
-            transform: translateY(2px);
-            box-shadow: 0px 2px 0px #000;
+            transform: translateY(3px);
+            box-shadow: 0px 2px 0px var(--orange);
         }
 
         .progress-container {
-            margin-top: 20px;
+            margin-top: 24px;
+            position: relative;
         }
 
         .progress-bar {
             width: 100%;
-            height: 14px;
-            background: #f0f0f0;
-            border: 3px solid #000;
-            border-radius: 10px;
+            height: 16px;
+            background: var(--white);
+            border: 4px solid var(--charcoal);
+            border-style: dashed;
             overflow: hidden;
+            position: relative;
         }
 
         .progress-fill {
             height: 100%;
-            background: var(--accent);
+            background: var(--orange);
             transition: width 0.3s ease;
+            position: relative;
+        }
+
+        .progress-fill::after {
+            content: '⭐';
+            position: absolute;
+            right: -10px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 20px;
         }
 
         .progress-text {
@@ -113,7 +125,7 @@
             margin-top: 8px;
             letter-spacing: 1px;
             text-align: center;
-            color: var(--text);
+            color: var(--charcoal);
         }
 
         .result-container {
@@ -123,13 +135,14 @@
         .animal-name {
             font-family: 'Lexend Exa', sans-serif;
             font-size: 1.8rem;
-            background: var(--accent);
+            background: var(--yellow);
             display: inline-block;
-            padding: 8px 20px;
-            border: 3px solid #000;
+            padding: 12px 24px;
+            border: 4px solid var(--charcoal);
+            box-shadow: 5px 5px 0px var(--orange);
             margin-bottom: 20px;
-            color: #000;
-            text-transform: uppercase;
+            color: var(--charcoal);
+            font-weight: 800;
         }
 
         .sprite-img {
@@ -143,54 +156,54 @@
             font-family: 'Quicksand', sans-serif;
             font-size: 1rem;
             font-weight: 700;
-            color: var(--text);
+            color: var(--charcoal);
             margin-bottom: 20px;
             line-height: 1.6;
         }
 
         .profile-box {
             text-align: left;
-            background: #fafafa;
-            border: 2px solid #000;
-            padding: 15px;
-            margin-bottom: 8px;
+            background: var(--white);
+            border: 3px solid var(--charcoal);
+            padding: 16px;
+            margin-bottom: 10px;
             font-size: 0.9rem;
             line-height: 1.7;
-            color: var(--text);
+            color: var(--charcoal);
         }
 
         .restart-btn {
             font-family: 'Lexend Exa', sans-serif;
             font-size: 1rem;
             font-weight: 800;
-            padding: 16px 32px;
-            background: var(--accent);
-            border: 3px solid #000;
-            border-radius: 50px;
-            color: #000;
+            padding: 18px 32px;
+            background: var(--yellow);
+            border: 4px solid var(--charcoal);
+            border-radius: 0;
+            color: var(--charcoal);
             cursor: pointer;
             margin-top: 20px;
-            text-transform: uppercase;
-            box-shadow: 0px 4px 0px #000;
+            box-shadow: 0px 5px 0px var(--orange);
             width: 100%;
         }
 
         .restart-btn:hover {
-            background: #FFB3CC;
+            background: var(--orange);
+            color: var(--white);
         }
 
         .restart-btn:active {
-            transform: translateY(2px);
-            box-shadow: 0px 2px 0px #000;
+            transform: translateY(3px);
+            box-shadow: 0px 2px 0px var(--orange);
         }
 
         .loading {
             text-align: center;
             font-family: 'Lexend Exa', sans-serif;
             font-size: 1.2rem;
-            color: #000;
+            color: var(--charcoal);
             padding: 40px 20px;
-            text-transform: uppercase;
+            font-weight: 800;
         }
 
         @media (max-width: 420px) {
