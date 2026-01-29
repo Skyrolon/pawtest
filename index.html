@@ -6,12 +6,14 @@
     <title>Pixel Personality Quiz</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Lexend+Exa:wght@800&family=Quicksand:wght@700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Silkscreen:wght@700&family=Roboto+Mono:wght@400;700&display=swap');
 
         :root {
-            --blue: #BDE0FE;
+            --yellow: #FFD700;
+            --orange: #FF8C00;
             --white: #FFFFFF;
             --charcoal: #333333;
+            --blue: #BDE0FE;
         }
 
         * {
@@ -23,184 +25,159 @@
 
         body {
             background-color: var(--white);
-            font-family: 'Quicksand', sans-serif;
+            font-family: 'Roboto Mono', monospace;
             margin: 0;
-            padding: 15px;
-            display: flex;
-            justify-content: center;
+            padding: 12px;
             color: var(--charcoal);
             min-height: 100vh;
-            align-items: center;
         }
 
         .container {
             width: 100%;
-            max-width: 420px;
-            background: var(--white);
-            border: 6px solid var(--charcoal);
-            padding: 28px;
-            box-sizing: border-box;
+            max-width: 100%;
+            padding: 16px;
         }
 
         .question-text {
-            font-family: 'Lexend Exa', sans-serif;
-            font-size: 1.1rem;
-            line-height: 1.5;
-            margin-bottom: 24px;
+            font-family: 'Silkscreen', cursive;
+            font-size: 14px;
+            line-height: 1.4;
+            margin-bottom: 20px;
             color: var(--charcoal);
-            text-align: center;
-            font-weight: 800;
+            text-transform: uppercase;
+            font-weight: 700;
         }
 
         .options {
             display: flex;
             flex-direction: column;
-            margin-bottom: 24px;
+            margin-bottom: 16px;
         }
 
         .option-btn {
             width: 100%;
             background: var(--blue);
             color: var(--charcoal);
-            border: 4px solid var(--charcoal);
-            border-radius: 0;
-            padding: 18px 20px;
-            font-size: 0.95rem;
-            font-weight: 700;
-            margin-bottom: 12px;
-            text-align: center;
+            border: 3px solid var(--charcoal);
+            padding: 14px 12px;
+            font-size: 13px;
+            font-weight: 400;
+            margin-bottom: 10px;
+            text-align: left;
             cursor: pointer;
-            font-family: 'Quicksand', sans-serif;
-            transition: none;
+            font-family: 'Roboto Mono', monospace;
+            line-height: 1.4;
         }
 
         .option-btn:hover {
+            background: var(--orange);
             color: var(--white);
         }
 
         .option-btn:active {
-            transform: translateY(3px);
+            background: var(--yellow);
         }
 
         .progress-container {
-            margin-top: 24px;
-            position: relative;
+            margin-top: 20px;
         }
 
         .progress-bar {
             width: 100%;
-            height: 16px;
+            height: 20px;
             background: var(--white);
-            border: 4px solid var(--charcoal);
-            border-style: dashed;
+            border: 3px solid var(--charcoal);
             overflow: hidden;
-            position: relative;
         }
 
         .progress-fill {
             height: 100%;
+            background: var(--yellow);
             transition: width 0.3s ease;
-            position: relative;
-        }
-
-        .progress-fill::after {
-            content: '⭐';
-            position: absolute;
-            right: -10px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 20px;
-        }
-
-        .progress-text {
-            font-size: 0.7rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            margin-top: 8px;
-            letter-spacing: 1px;
-            text-align: center;
-            color: var(--charcoal);
         }
 
         .result-container {
-            text-align: center;
+            width: 100%;
         }
 
         .animal-name {
-            font-family: 'Lexend Exa', sans-serif;
-            font-size: 1.8rem;
-            background: var(--blue);
-            display: inline-block;
-            padding: 12px 24px;
-            border: 4px solid var(--charcoal);
-            margin-bottom: 20px;
+            font-family: 'Silkscreen', cursive;
+            font-size: 18px;
             color: var(--charcoal);
-            font-weight: 800;
+            margin-bottom: 16px;
+            font-weight: 700;
+            text-transform: uppercase;
+            text-align: center;
         }
 
         .sprite-img {
-            max-width: 150px;
+            max-width: 140px;
             height: auto;
             image-rendering: pixelated;
-            margin: 20px 0;
+            margin: 16px auto;
+            display: block;
         }
 
         .vibe-text {
-            font-family: 'Quicksand', sans-serif;
-            font-size: 1rem;
+            font-family: 'Roboto Mono', monospace;
+            font-size: 13px;
             font-weight: 700;
             color: var(--charcoal);
-            margin-bottom: 20px;
-            line-height: 1.6;
+            margin-bottom: 16px;
+            line-height: 1.5;
+            text-align: center;
         }
 
         .profile-box {
             text-align: left;
             background: var(--white);
             border: 3px solid var(--charcoal);
-            padding: 16px;
-            margin-bottom: 10px;
-            font-size: 0.9rem;
-            line-height: 1.7;
+            padding: 12px;
+            margin-bottom: 8px;
+            font-size: 12px;
+            line-height: 1.6;
             color: var(--charcoal);
+            font-family: 'Roboto Mono', monospace;
         }
 
         .restart-btn {
-            font-family: 'Lexend Exa', sans-serif;
-            font-size: 1rem;
-            font-weight: 800;
-            padding: 18px 32px;
+            font-family: 'Silkscreen', cursive;
+            font-size: 14px;
+            font-weight: 700;
+            padding: 14px 24px;
             background: var(--blue);
-            border: 4px solid var(--charcoal);
-            border-radius: 0;
+            border: 3px solid var(--charcoal);
             color: var(--charcoal);
             cursor: pointer;
-            margin-top: 20px;
+            margin-top: 16px;
             width: 100%;
+            text-transform: uppercase;
         }
 
         .restart-btn:hover {
-            color: var(--white);
+            background: var(--yellow);
         }
 
         .restart-btn:active {
-            transform: translateY(3px);
+            background: var(--orange);
+            color: var(--white);
         }
 
         .loading {
             text-align: center;
-            font-family: 'Lexend Exa', sans-serif;
-            font-size: 1.2rem;
+            font-family: 'Silkscreen', cursive;
+            font-size: 14px;
             color: var(--charcoal);
             padding: 40px 20px;
-            font-weight: 800;
+            font-weight: 700;
+            text-transform: uppercase;
         }
 
-        @media (max-width: 420px) {
-            .container { padding: 20px; }
-            .question-text { font-size: 1rem; }
-            .option-btn { font-size: 0.9rem; padding: 14px 18px; }
-            .animal-name { font-size: 1.5rem; }
+        @media (max-width: 400px) {
+            .question-text { font-size: 12px; }
+            .option-btn { font-size: 11px; padding: 12px 10px; }
+            .animal-name { font-size: 16px; }
+            .profile-box { font-size: 11px; }
         }
     </style>
 </head>
@@ -300,7 +277,6 @@
                     <div class="progress-bar">
                         <div class="progress-fill" style="width: ${progress}%"></div>
                     </div>
-                    <div class="progress-text">Question ${currentQuestion + 1} of ${questions.length}</div>
                 </div>
             `;
             
