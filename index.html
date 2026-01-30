@@ -690,59 +690,6 @@
             })).filter(p => p.mbti);
         }
         
-        function adjustFontSize() {
-            const container = document.getElementById('app');
-            const questionText = document.getElementById('questionText');
-            const optionsContainer = document.getElementById('optionsContainer');
-            
-            if (!container || !questionText || !optionsContainer) return;
-            
-            const containerHeight = container.clientHeight;
-            const questionBgImg = container.querySelector('.question-bg-img');
-            const progressContainer = container.querySelector('.progress-container');
-            
-            const imageHeight = questionBgImg ? questionBgImg.offsetHeight : 0;
-            const progressHeight = progressContainer ? progressContainer.offsetHeight : 0;
-            const margins = 40; // Account for margins between elements
-            
-            const availableHeight = containerHeight - imageHeight - progressHeight - margins;
-            
-            // Start with base sizes
-            let questionFontSize = 11;
-            let optionFontSize = 12;
-            let questionPadding = 12;
-            let optionPadding = 10;
-            
-            // Measure actual content height
-            questionText.style.fontSize = questionFontSize + 'px';
-            questionText.style.padding = questionPadding + 'px';
-            Array.from(optionsContainer.children).forEach(btn => {
-                btn.style.fontSize = optionFontSize + 'px';
-                btn.style.padding = optionPadding + 'px';
-            });
-            
-            let totalContentHeight = questionText.offsetHeight + optionsContainer.offsetHeight;
-            
-            // Shrink if needed
-            let iterations = 0;
-            while (totalContentHeight > availableHeight && questionFontSize > 6 && iterations < 30) {
-                questionFontSize = Math.max(6, questionFontSize - 0.3);
-                optionFontSize = Math.max(7, optionFontSize - 0.3);
-                questionPadding = Math.max(8, questionPadding - 0.2);
-                optionPadding = Math.max(6, optionPadding - 0.2);
-                
-                questionText.style.fontSize = questionFontSize + 'px';
-                questionText.style.padding = questionPadding + 'px';
-                Array.from(optionsContainer.children).forEach(btn => {
-                    btn.style.fontSize = optionFontSize + 'px';
-                    btn.style.padding = optionPadding + 'px';
-                });
-                
-                totalContentHeight = questionText.offsetHeight + optionsContainer.offsetHeight;
-                iterations++;
-            }
-        }
-        
         function startQuiz() {
             currentQuestion = 0;
             scores = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
