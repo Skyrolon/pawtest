@@ -68,39 +68,35 @@
             align-items: center;
             min-height: 100vh;
             padding: 32px 24px;
-            background: linear-gradient(180deg, var(--sky) 0%, var(--lavender) 50%, var(--peach) 100%);
+            background: var(--white);
             text-align: center;
         }
 
-        .landing-decorations {
-            display: flex;
+        .sprite-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
             gap: 12px;
             margin-bottom: 32px;
-            justify-content: center;
-            flex-wrap: wrap;
+            max-width: 320px;
         }
 
-        .landing-icon {
-            width: 40px;
-            height: 40px;
+        .sprite-grid-item {
+            width: 70px;
+            height: 70px;
             border: 3px solid var(--ink);
-            background: var(--white);
+            background: var(--paper);
             box-shadow: var(--shadow-small);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
-            animation: float 3s ease-in-out infinite;
+            overflow: hidden;
         }
 
-        .landing-icon:nth-child(1) { animation-delay: 0s; }
-        .landing-icon:nth-child(2) { animation-delay: 0.5s; }
-        .landing-icon:nth-child(3) { animation-delay: 1s; }
-        .landing-icon:nth-child(4) { animation-delay: 1.5s; }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
+        .sprite-grid-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            image-rendering: pixelated;
         }
 
         .landing-title {
@@ -129,19 +125,6 @@
             max-width: 300px;
         }
 
-        .landing-illustration {
-            width: 120px;
-            height: 120px;
-            margin-bottom: 48px;
-            border: 4px solid var(--ink);
-            background: var(--white);
-            box-shadow: var(--shadow);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 64px;
-        }
-
         .start-btn {
             font-family: 'Press Start 2P';
             font-size: 14px;
@@ -166,23 +149,13 @@
             box-shadow: var(--shadow-active);
         }
 
-        .landing-footer {
-            font-family: 'Space Mono';
-            font-size: 11px;
-            color: var(--ink);
-            margin-top: 24px;
-            opacity: 0.7;
-        }
-
-        /* Background image in a box */
+        /* Background image without border */
         .question-bg-img {
             width: 100%;
             aspect-ratio: 16 / 9;
             position: relative;
             overflow: hidden;
-            border: 3px solid var(--ink);
             margin-bottom: 16px;
-            box-shadow: var(--shadow-small);
         }
         
         .question-bg-img img {
@@ -196,7 +169,6 @@
 
         .question-text {
             font-family: 'Press Start 2P';
-            font-size: 11px;
             line-height: 1.6;
             margin-bottom: 16px;
             padding: 12px;
@@ -216,7 +188,6 @@
             color: var(--ink);
             border: 3px solid var(--ink);
             padding: 12px;
-            font-size: 12px;
             font-weight: 700;
             margin-bottom: 10px;
             text-align: left;
@@ -278,7 +249,7 @@
         }
 
         .sprite-img {
-            max-width: 120px;
+            max-width: 200px;
             height: auto;
             image-rendering: pixelated;
             margin: 0 auto 16px;
@@ -405,22 +376,15 @@
     <div class="mobile-viewport">
         <!-- Landing Page -->
         <div class="landing-page" id="landingPage">
-            <div class="landing-decorations">
-                <div class="landing-icon">🎨</div>
-                <div class="landing-icon">✨</div>
-                <div class="landing-icon">🎭</div>
-                <div class="landing-icon">🌟</div>
-            </div>
-            
-            <div class="landing-illustration">🔮</div>
-            
             <h1 class="landing-title">Personality Test</h1>
             
-            <p class="landing-subtitle">Find out what you really are</p>
+            <div class="sprite-grid" id="spriteGrid">
+                <!-- Sprites will be loaded here -->
+            </div>
+            
+            <p class="landing-subtitle">Find out what pet you are</p>
             
             <button class="start-btn" id="startBtn">Start Test</button>
-            
-            <p class="landing-footer">Discover your true nature ✦</p>
         </div>
 
         <!-- Quiz Container -->
@@ -438,6 +402,26 @@
         let currentQuestion = 0;
         let scores = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
         let dataLoaded = false;
+        
+        // Load sprites on page load
+        loadSprites();
+        
+        async function loadSprites() {
+            try {
+                const profilesData = await fetchCSV(PROFILES_URL);
+                const parsedProfiles = parseProfiles(profilesData);
+                
+                const spriteGrid = document.getElementById('spriteGrid');
+                parsedProfiles.forEach(profile => {
+                    const spriteItem = document.createElement('div');
+                    spriteItem.className = 'sprite-grid-item';
+                    spriteItem.innerHTML = `<img src="${profile.sprite}" alt="${profile.animal}">`;
+                    spriteGrid.appendChild(spriteItem);
+                });
+            } catch (error) {
+                console.error('Error loading sprites:', error);
+            }
+        }
         
         // Start button click handler
         document.getElementById('startBtn').addEventListener('click', () => {
@@ -458,6 +442,7 @@
                 questions = parseQuestions(questionsData);
                 profiles = parseProfiles(profilesData);
                 dataLoaded = true;
+                calculateOptimalFontSizes();
                 startQuiz();
             } catch (error) {
                 document.getElementById('app').innerHTML = `<div class="loading">ERROR LOADING DATA</div>`;
@@ -509,6 +494,46 @@
                 vibe: row.Vibe || row.vibe,
                 profile: row.Profiles || row.profiles || row.Profile || row.profile
             })).filter(p => p.mbti);
+        }
+        
+        function calculateOptimalFontSizes() {
+            const viewportHeight = window.innerHeight;
+            const availableHeight = viewportHeight - 100; // Account for padding and progress bar
+            
+            let maxContentHeight = 0;
+            questions.forEach(q => {
+                const hasImage = q.background && q.background.trim() !== "";
+                const imageHeight = hasImage ? 200 : 0; // Approximate image height
+                const questionLength = q.question.length;
+                const optionsLength = q.options.reduce((sum, opt) => sum + opt.text.length, 0);
+                const totalLength = questionLength + optionsLength;
+                
+                // Estimate content height
+                const estimatedHeight = imageHeight + (totalLength * 0.5);
+                maxContentHeight = Math.max(maxContentHeight, estimatedHeight);
+            });
+            
+            // Calculate scale factor
+            let scaleFactor = 1;
+            if (maxContentHeight > availableHeight) {
+                scaleFactor = availableHeight / maxContentHeight;
+                scaleFactor = Math.max(0.6, scaleFactor); // Don't go below 60% size
+            }
+            
+            // Apply font sizes
+            const questionFontSize = Math.floor(11 * scaleFactor);
+            const optionFontSize = Math.floor(12 * scaleFactor);
+            
+            document.documentElement.style.setProperty('--question-font-size', `${questionFontSize}px`);
+            document.documentElement.style.setProperty('--option-font-size', `${optionFontSize}px`);
+            
+            // Update CSS
+            const style = document.createElement('style');
+            style.textContent = `
+                .question-text { font-size: ${questionFontSize}px; }
+                .option-btn { font-size: ${optionFontSize}px; }
+            `;
+            document.head.appendChild(style);
         }
         
         function startQuiz() {
