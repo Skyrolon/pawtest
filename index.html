@@ -80,12 +80,13 @@
             gap: 12px;
             margin-bottom: 24px;
             max-width: 320px;
+            position: relative;
         }
 
         .sprite-grid-item {
             width: 70px;
             height: 70px;
-            border: 3px solid var(--ink);
+            border: 2px solid var(--ink);
             border-radius: 12px;
             background: var(--paper);
             display: flex;
@@ -93,9 +94,32 @@
             justify-content: center;
             overflow: visible;
             position: relative;
-            cursor: pointer;
+            cursor: move;
             transition: transform 0.1s ease;
+            touch-action: none;
         }
+
+        .sprite-grid-item.dragging {
+            opacity: 0.5;
+            z-index: 1000;
+        }
+
+        .sprite-grid-item:nth-child(1) { border-color: var(--brick-red); }
+        .sprite-grid-item:nth-child(2) { border-color: var(--yellow); }
+        .sprite-grid-item:nth-child(3) { border-color: var(--mint); }
+        .sprite-grid-item:nth-child(4) { border-color: var(--sky); }
+        .sprite-grid-item:nth-child(5) { border-color: var(--lavender); }
+        .sprite-grid-item:nth-child(6) { border-color: var(--peach); }
+        .sprite-grid-item:nth-child(7) { border-color: var(--steel-blue); }
+        .sprite-grid-item:nth-child(8) { border-color: #FF6B9D; }
+        .sprite-grid-item:nth-child(9) { border-color: #95E1D3; }
+        .sprite-grid-item:nth-child(10) { border-color: #FFA07A; }
+        .sprite-grid-item:nth-child(11) { border-color: #DDA0DD; }
+        .sprite-grid-item:nth-child(12) { border-color: #98D8C8; }
+        .sprite-grid-item:nth-child(13) { border-color: #F7DC6F; }
+        .sprite-grid-item:nth-child(14) { border-color: #BB8FCE; }
+        .sprite-grid-item:nth-child(15) { border-color: #85C1E2; }
+        .sprite-grid-item:nth-child(16) { border-color: #F8B88B; }
 
         .sprite-grid-item:active {
             transform: scale(0.95);
@@ -106,13 +130,15 @@
             height: 100%;
             object-fit: contain;
             image-rendering: pixelated;
+            pointer-events: none;
         }
 
         .sparkle {
-            position: absolute;
+            position: fixed;
             pointer-events: none;
             font-size: 20px;
             animation: sparkleFloat 0.8s ease-out forwards;
+            z-index: 10000;
         }
 
         @keyframes sparkleFloat {
@@ -132,16 +158,14 @@
 
         .landing-subtitle {
             font-family: 'Space Mono';
-            font-size: 18px;
+            font-size: 20px;
             font-weight: 700;
             margin-bottom: 12px;
             color: var(--ink);
-            background: var(--white);
-            padding: 16px 24px;
-            border: 3px solid var(--ink);
-            border-radius: 12px;
+            background: transparent;
             max-width: 320px;
             width: 100%;
+            text-transform: uppercase;
         }
 
         .landing-subtext {
@@ -306,12 +330,12 @@
             font-weight: 700;
             text-align: center;
             margin-bottom: 16px;
-            background: var(--yellow);
-            padding: 10px;
-            border: 2px solid var(--ink);
-            border-radius: 12px;
+            background: transparent;
+            padding: 0;
+            border: none;
             text-transform: uppercase;
             line-height: 1.4;
+            color: var(--ink);
         }
 
         .profile-box {
@@ -425,7 +449,7 @@
                 <!-- Sprites will be loaded here -->
             </div>
             
-            <p class="landing-subtitle">Find out what pet you are</p>
+            <p class="landing-subtitle">FIND OUT WHAT PET YOU ARE</p>
             <p class="landing-subtext">Can you get the prized black cat or golden retriever?</p>
             
             <button class="start-btn" id="startBtn">Start Test</button>
@@ -446,6 +470,100 @@
         let currentQuestion = 0;
         let scores = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
         let dataLoaded = false;
+        
+        // Drag and drop functionality
+        let draggedElement = null;
+        let draggedIndex = null;
+        
+        function initDragAndDrop() {
+            const spriteGrid = document.getElementById('spriteGrid');
+            const items = spriteGrid.querySelectorAll('.sprite-grid-item');
+            
+            items.forEach((item, index) => {
+                // Mouse events
+                item.addEventListener('mousedown', (e) => startDrag(e, item, index));
+                
+                // Touch events
+                item.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    startDrag(e.touches[0], item, index);
+                });
+                
+                item.addEventListener('dragover', (e) => e.preventDefault());
+                item.addEventListener('drop', (e) => handleDrop(e, index));
+                
+                // Click for sparkles
+                item.addEventListener('click', (e) => {
+                    if (!draggedElement) {
+                        createSparkles(item);
+                    }
+                });
+            });
+            
+            document.addEventListener('mousemove', handleDragMove);
+            document.addEventListener('mouseup', endDrag);
+            document.addEventListener('touchmove', (e) => handleDragMove(e.touches[0]));
+            document.addEventListener('touchend', endDrag);
+        }
+        
+        function startDrag(e, item, index) {
+            draggedElement = item;
+            draggedIndex = index;
+            item.classList.add('dragging');
+        }
+        
+        function handleDragMove(e) {
+            if (!draggedElement) return;
+            e.preventDefault();
+        }
+        
+        function endDrag(e) {
+            if (!draggedElement) return;
+            
+            const spriteGrid = document.getElementById('spriteGrid');
+            const items = Array.from(spriteGrid.querySelectorAll('.sprite-grid-item'));
+            
+            // Find which item we're hovering over
+            let targetIndex = null;
+            items.forEach((item, index) => {
+                if (item === draggedElement) return;
+                const rect = item.getBoundingClientRect();
+                const clientX = e.clientX || (e.changedTouches && e.changedTouches[0].clientX);
+                const clientY = e.clientY || (e.changedTouches && e.changedTouches[0].clientY);
+                
+                if (clientX >= rect.left && clientX <= rect.right &&
+                    clientY >= rect.top && clientY <= rect.bottom) {
+                    targetIndex = index;
+                }
+            });
+            
+            // Swap positions
+            if (targetIndex !== null && targetIndex !== draggedIndex) {
+                const draggedHTML = draggedElement.innerHTML;
+                const targetHTML = items[targetIndex].innerHTML;
+                
+                draggedElement.innerHTML = targetHTML;
+                items[targetIndex].innerHTML = draggedHTML;
+            }
+            
+            draggedElement.classList.remove('dragging');
+            draggedElement = null;
+            draggedIndex = null;
+        }
+        
+        function handleDrop(e, targetIndex) {
+            e.preventDefault();
+            if (draggedElement && draggedIndex !== targetIndex) {
+                const spriteGrid = document.getElementById('spriteGrid');
+                const items = Array.from(spriteGrid.querySelectorAll('.sprite-grid-item'));
+                
+                const draggedHTML = draggedElement.innerHTML;
+                const targetHTML = items[targetIndex].innerHTML;
+                
+                draggedElement.innerHTML = targetHTML;
+                items[targetIndex].innerHTML = draggedHTML;
+            }
+        }
         
         // Sparkle effect
         function createSparkles(element) {
@@ -490,11 +608,11 @@
                     const spriteItem = document.createElement('div');
                     spriteItem.className = 'sprite-grid-item';
                     spriteItem.innerHTML = `<img src="${profile.sprite}" alt="${profile.animal}">`;
-                    spriteItem.addEventListener('click', (e) => {
-                        createSparkles(spriteItem);
-                    });
+                    spriteItem.draggable = true;
                     spriteGrid.appendChild(spriteItem);
                 });
+                
+                initDragAndDrop();
             } catch (error) {
                 console.error('Error loading sprites:', error);
             }
@@ -585,34 +703,42 @@
             
             const imageHeight = questionBgImg ? questionBgImg.offsetHeight : 0;
             const progressHeight = progressContainer ? progressContainer.offsetHeight : 0;
-            const padding = 32;
+            const margins = 40; // Account for margins between elements
             
-            const availableHeight = containerHeight - imageHeight - progressHeight - padding;
+            const availableHeight = containerHeight - imageHeight - progressHeight - margins;
             
             // Start with base sizes
             let questionFontSize = 11;
             let optionFontSize = 12;
+            let questionPadding = 12;
+            let optionPadding = 10;
             
             // Measure actual content height
             questionText.style.fontSize = questionFontSize + 'px';
+            questionText.style.padding = questionPadding + 'px';
             Array.from(optionsContainer.children).forEach(btn => {
                 btn.style.fontSize = optionFontSize + 'px';
+                btn.style.padding = optionPadding + 'px';
             });
             
-            let totalContentHeight = questionText.offsetHeight + optionsContainer.offsetHeight + 12;
+            let totalContentHeight = questionText.offsetHeight + optionsContainer.offsetHeight;
             
             // Shrink if needed
             let iterations = 0;
-            while (totalContentHeight > availableHeight && questionFontSize > 6 && iterations < 20) {
-                questionFontSize -= 0.5;
-                optionFontSize -= 0.5;
+            while (totalContentHeight > availableHeight && questionFontSize > 6 && iterations < 30) {
+                questionFontSize = Math.max(6, questionFontSize - 0.3);
+                optionFontSize = Math.max(7, optionFontSize - 0.3);
+                questionPadding = Math.max(8, questionPadding - 0.2);
+                optionPadding = Math.max(6, optionPadding - 0.2);
                 
                 questionText.style.fontSize = questionFontSize + 'px';
+                questionText.style.padding = questionPadding + 'px';
                 Array.from(optionsContainer.children).forEach(btn => {
                     btn.style.fontSize = optionFontSize + 'px';
+                    btn.style.padding = optionPadding + 'px';
                 });
                 
-                totalContentHeight = questionText.offsetHeight + optionsContainer.offsetHeight + 12;
+                totalContentHeight = questionText.offsetHeight + optionsContainer.offsetHeight;
                 iterations++;
             }
         }
@@ -662,9 +788,9 @@
             });
             
             // Adjust font size after rendering
-            requestAnimationFrame(() => {
+            setTimeout(() => {
                 adjustFontSize();
-            });
+            }, 50);
         }
         
         function selectOption(optionIndex) {
