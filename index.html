@@ -19,10 +19,6 @@
             --peach: #FFD3B6;
             --lavender: #D4B5F0;
             --sky: #B3D9FF;
-            
-            --shadow: 4px 4px 0px var(--ink);
-            --shadow-small: 2px 2px 0px var(--ink);
-            --shadow-active: 1px 1px 0px var(--ink);
         }
 
         * {
@@ -42,20 +38,22 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            overflow: hidden;
         }
 
         .mobile-viewport {
             width: 100%;
             max-width: 430px;
-            min-height: 100vh;
+            height: 100vh;
+            height: 100dvh;
             background-color: var(--white);
             box-shadow: 0 0 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
         }
 
         .container {
             width: 100%;
-            height: 100vh;
-            height: 100dvh;
+            height: 100%;
             padding: 16px;
             display: flex;
             flex-direction: column;
@@ -68,10 +66,12 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
+            height: 100vh;
+            height: 100dvh;
             padding: 32px 24px;
             background: var(--white);
             text-align: center;
+            overflow: hidden;
         }
 
         .sprite-grid {
@@ -91,7 +91,14 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            overflow: hidden;
+            overflow: visible;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.1s ease;
+        }
+
+        .sprite-grid-item:active {
+            transform: scale(0.95);
         }
 
         .sprite-grid-item img {
@@ -99,6 +106,28 @@
             height: 100%;
             object-fit: contain;
             image-rendering: pixelated;
+        }
+
+        .sparkle {
+            position: absolute;
+            pointer-events: none;
+            font-size: 20px;
+            animation: sparkleFloat 0.8s ease-out forwards;
+        }
+
+        @keyframes sparkleFloat {
+            0% {
+                opacity: 1;
+                transform: translate(0, 0) scale(0);
+            }
+            50% {
+                opacity: 1;
+                transform: translate(var(--tx), var(--ty)) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(var(--tx), var(--ty)) scale(0.5);
+            }
         }
 
         .landing-subtitle {
@@ -168,21 +197,22 @@
 
         .question-text {
             font-family: 'Press Start 2P';
+            font-size: clamp(7px, 2.5vw, 11px);
             line-height: 1.6;
             margin-bottom: 12px;
             padding: 12px;
             background: var(--white);
-            text-align: justify;
+            text-align: left;
             flex-shrink: 0;
+            overflow: hidden;
         }
 
         .options {
             display: flex;
             flex-direction: column;
-            margin-bottom: 12px;
-            flex-shrink: 1;
-            min-height: 0;
-            overflow-y: auto;
+            gap: 8px;
+            flex-shrink: 0;
+            overflow: hidden;
         }
 
         .option-btn {
@@ -192,8 +222,8 @@
             border: 3px solid var(--ink);
             border-radius: 12px;
             padding: 10px;
+            font-size: clamp(8px, 2.8vw, 12px);
             font-weight: 700;
-            margin-bottom: 8px;
             text-align: left;
             cursor: pointer;
             font-family: 'Space Mono', monospace;
@@ -234,8 +264,19 @@
         .result-container {
             display: flex;
             flex-direction: column;
-            min-height: 100%;
+            height: 100%;
             overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        /* Hide scrollbar but keep functionality */
+        .result-container::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .result-container {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
         }
 
         .animal-name {
@@ -406,6 +447,36 @@
         let scores = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
         let dataLoaded = false;
         
+        // Sparkle effect
+        function createSparkles(element) {
+            const rect = element.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            
+            const sparkleEmojis = ['✨', '⭐', '💫', '🌟'];
+            const sparkleCount = 6;
+            
+            for (let i = 0; i < sparkleCount; i++) {
+                const sparkle = document.createElement('div');
+                sparkle.className = 'sparkle';
+                sparkle.textContent = sparkleEmojis[Math.floor(Math.random() * sparkleEmojis.length)];
+                
+                const angle = (Math.PI * 2 * i) / sparkleCount;
+                const distance = 40 + Math.random() * 20;
+                const tx = Math.cos(angle) * distance;
+                const ty = Math.sin(angle) * distance;
+                
+                sparkle.style.setProperty('--tx', `${tx}px`);
+                sparkle.style.setProperty('--ty', `${ty}px`);
+                sparkle.style.left = centerX + 'px';
+                sparkle.style.top = centerY + 'px';
+                
+                document.body.appendChild(sparkle);
+                
+                setTimeout(() => sparkle.remove(), 800);
+            }
+        }
+        
         // Load sprites on page load
         loadSprites();
         
@@ -419,6 +490,9 @@
                     const spriteItem = document.createElement('div');
                     spriteItem.className = 'sprite-grid-item';
                     spriteItem.innerHTML = `<img src="${profile.sprite}" alt="${profile.animal}">`;
+                    spriteItem.addEventListener('click', (e) => {
+                        createSparkles(spriteItem);
+                    });
                     spriteGrid.appendChild(spriteItem);
                 });
             } catch (error) {
@@ -498,51 +572,49 @@
             })).filter(p => p.mbti);
         }
         
-        function calculateOptimalFontSize(q) {
+        function adjustFontSize() {
             const container = document.getElementById('app');
+            const questionText = document.getElementById('questionText');
+            const optionsContainer = document.getElementById('optionsContainer');
+            
+            if (!container || !questionText || !optionsContainer) return;
+            
             const containerHeight = container.clientHeight;
+            const questionBgImg = container.querySelector('.question-bg-img');
+            const progressContainer = container.querySelector('.progress-container');
             
-            // Fixed heights
-            const progressBarHeight = 40; // progress container + bar
-            const padding = 32; // top and bottom padding
-            const imageHeight = (q.background && q.background.trim() !== "") ? 
-                (container.clientWidth - 32) * 9 / 16 + 12 : 0; // aspect ratio + margin
+            const imageHeight = questionBgImg ? questionBgImg.offsetHeight : 0;
+            const progressHeight = progressContainer ? progressContainer.offsetHeight : 0;
+            const padding = 32;
             
-            // Available height for text content
-            const availableHeight = containerHeight - progressBarHeight - padding - imageHeight;
+            const availableHeight = containerHeight - imageHeight - progressHeight - padding;
             
-            // Calculate content lengths
-            const questionLength = q.question.length;
-            const optionsLength = q.options.reduce((sum, opt) => sum + opt.text.length, 0);
+            // Start with base sizes
+            let questionFontSize = 11;
+            let optionFontSize = 12;
             
-            // Estimate heights at base font size (11px for question, 12px for options)
-            const charsPerLine = 35; // approximate characters per line at base size
-            const questionLines = Math.ceil(questionLength / charsPerLine);
-            const baseQuestionHeight = questionLines * 11 * 1.6 + 24; // line-height 1.6 + padding
-            
-            // Each option
-            const optionHeights = q.options.map(opt => {
-                const lines = Math.ceil(opt.text.length / charsPerLine);
-                return lines * 12 * 1.6 + 20 + 8; // line-height + padding + margin
+            // Measure actual content height
+            questionText.style.fontSize = questionFontSize + 'px';
+            Array.from(optionsContainer.children).forEach(btn => {
+                btn.style.fontSize = optionFontSize + 'px';
             });
-            const totalOptionsHeight = optionHeights.reduce((sum, h) => sum + h, 0) + 12;
             
-            const totalContentHeight = baseQuestionHeight + totalOptionsHeight;
+            let totalContentHeight = questionText.offsetHeight + optionsContainer.offsetHeight + 12;
             
-            // Calculate scale factor
-            let scaleFactor = 1;
-            if (totalContentHeight > availableHeight) {
-                scaleFactor = availableHeight / totalContentHeight;
-                scaleFactor = Math.max(0.55, Math.min(1, scaleFactor)); // Between 55% and 100%
+            // Shrink if needed
+            let iterations = 0;
+            while (totalContentHeight > availableHeight && questionFontSize > 6 && iterations < 20) {
+                questionFontSize -= 0.5;
+                optionFontSize -= 0.5;
+                
+                questionText.style.fontSize = questionFontSize + 'px';
+                Array.from(optionsContainer.children).forEach(btn => {
+                    btn.style.fontSize = optionFontSize + 'px';
+                });
+                
+                totalContentHeight = questionText.offsetHeight + optionsContainer.offsetHeight + 12;
+                iterations++;
             }
-            
-            return {
-                questionSize: Math.max(7, Math.floor(11 * scaleFactor)),
-                optionSize: Math.max(8, Math.floor(12 * scaleFactor)),
-                questionPadding: Math.max(8, Math.floor(12 * scaleFactor)),
-                optionPadding: Math.max(6, Math.floor(10 * scaleFactor)),
-                optionMargin: Math.max(4, Math.floor(8 * scaleFactor))
-            };
         }
         
         function startQuiz() {
@@ -580,26 +652,19 @@
                 </div>
             `;
             
-            // Calculate and apply optimal font sizes
-            setTimeout(() => {
-                const sizes = calculateOptimalFontSize(q);
-                const questionEl = document.getElementById('questionText');
-                const optionsContainer = document.getElementById('optionsContainer');
-                
-                questionEl.style.fontSize = sizes.questionSize + 'px';
-                questionEl.style.padding = sizes.questionPadding + 'px';
-                
-                q.options.forEach((opt, i) => {
-                    const btn = document.createElement('button');
-                    btn.className = 'option-btn';
-                    btn.textContent = opt.text;
-                    btn.style.fontSize = sizes.optionSize + 'px';
-                    btn.style.padding = sizes.optionPadding + 'px';
-                    btn.style.marginBottom = sizes.optionMargin + 'px';
-                    btn.addEventListener('click', () => selectOption(i));
-                    optionsContainer.appendChild(btn);
-                });
-            }, 10);
+            const optionsContainer = document.getElementById('optionsContainer');
+            q.options.forEach((opt, i) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.textContent = opt.text;
+                btn.addEventListener('click', () => selectOption(i));
+                optionsContainer.appendChild(btn);
+            });
+            
+            // Adjust font size after rendering
+            requestAnimationFrame(() => {
+                adjustFontSize();
+            });
         }
         
         function selectOption(optionIndex) {
