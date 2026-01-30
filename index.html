@@ -296,14 +296,20 @@
             let bgImageHTML = '';
             if (q.background && q.background.trim() !== "") {
                 let imageUrl = q.background.trim();
-                // Convert ImgBB landing page to direct image link if needed
-                if (imageUrl.includes('ibb.co') && !imageUrl.includes('i.ibb.co')) {
-                    imageUrl = imageUrl.replace('ibb.co', 'i.ibb.co');
-                    if (!imageUrl.endsWith('.png') && !imageUrl.endsWith('.jpg') && !imageUrl.endsWith('.jpeg')) {
-                        imageUrl += '.png';
+                
+                // Convert ImgBB share link to direct image link
+                // Format: https://ibb.co/XXXXX -> https://i.ibb.co/XXXXX/image.png
+                if (imageUrl.includes('ibb.co/')) {
+                    // Extract the image ID from the URL
+                    const match = imageUrl.match(/ibb\.co\/([a-zA-Z0-9]+)/);
+                    if (match) {
+                        const imageId = match[1];
+                        // Try common image extensions
+                        imageUrl = `https://i.ibb.co/${imageId}/image.png`;
                     }
                 }
-                bgImageHTML = `<img src="${imageUrl}" class="question-bg-img" alt="Question background">`;
+                
+                bgImageHTML = `<img src="${imageUrl}" class="question-bg-img" alt="Question background" onerror="this.style.display='none'">`;
             }
 
             appDiv.innerHTML = `
