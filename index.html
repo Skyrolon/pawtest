@@ -9,10 +9,18 @@
         @import url('https://fonts.googleapis.com/css2?family=Silkscreen:wght@700&family=Roboto+Mono:wght@400;700&display=swap');
 
         :root {
-            --yellow: #FFD700;
+            /* Bold, non-neon palette */
+            --yellow: #F9C22E;
+            --paper: #F5F5F1;
+            --ink: #222222;
+            --steel-blue: #326789;
+            --brick-red: #E65C4F;
             --white: #FFFFFF;
-            --charcoal: #333333;
-            --blue: #A2D2FF;
+            
+            /* Hard Shadows */
+            --shadow: 4px 4px 0px var(--ink);
+            --shadow-small: 2px 2px 0px var(--ink);
+            --shadow-active: 1px 1px 0px var(--ink);
         }
 
         * {
@@ -23,45 +31,47 @@
         }
 
         body {
-            background-color: #f0f0f0;
+            background-color: #D1D1CB; /* Desktop contrast background */
             font-family: 'Roboto Mono', monospace;
-            margin: 0;
-            padding: 0;
-            color: var(--charcoal);
+            color: var(--ink);
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
+            padding: 10px;
         }
 
+        /* The "Handheld" Frame */
         .mobile-frame {
             width: 100%;
             max-width: 414px;
-            height: 100vh;
-            max-height: 896px;
-            background-color: var(--white);
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            height: 95vh;
+            max-height: 850px;
+            background-color: var(--paper);
+            border: 4px solid var(--ink);
+            box-shadow: 12px 12px 0px rgba(0,0,0,0.1);
             overflow-y: auto;
             display: flex;
             flex-direction: column;
+            position: relative;
         }
 
         .container {
             flex: 1;
             width: 100%;
-            padding: 20px;
+            padding: 24px;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
         }
 
+        /* Bleed layout for question images */
         .question-bg-img {
-            width: 100%;
-            height: 0;
-            /* 9 / 16 = 0.5625, so 56.25% */
+            width: calc(100% + 48px);
+            margin: -24px -24px 24px -24px;
             padding-bottom: 56.25%; 
             position: relative;
             overflow: hidden;
+            border-bottom: 4px solid var(--ink);
         }
         
         .question-bg-img img {
@@ -70,17 +80,18 @@
             left: 0;
             width: 100%;
             height: 100%;
-            /* 'cover' will now fit perfectly, or use 'contain' to be safe */
             object-fit: cover;
         }
 
         .question-text {
             font-family: 'Silkscreen';
-            font-size: 14px;
-            line-height: 1.4;
-            margin-bottom: 16px;
-            color: var(--charcoal);
-            font-weight: 700;
+            font-size: 16px;
+            line-height: 1.5;
+            margin-bottom: 24px;
+            padding: 14px;
+            background: var(--white);
+            border: 3px solid var(--ink);
+            box-shadow: var(--shadow-small);
         }
 
         .options {
@@ -92,20 +103,28 @@
 
         .option-btn {
             width: 100%;
-            background: var(--blue);
-            color: var(--charcoal);
-            border: 3px solid var(--charcoal);
-            padding: 14px 12px;
-            font-size: 13px;
+            background: var(--white);
+            color: var(--ink);
+            border: 3px solid var(--ink);
+            padding: 16px;
+            font-size: 14px;
             font-weight: 700;
-            margin-bottom: 10px;
+            margin-bottom: 14px;
             text-align: left;
             cursor: pointer;
             font-family: 'Roboto Mono', monospace;
-            line-height: 1.4;
+            box-shadow: var(--shadow);
+            transition: all 0.1s ease;
+        }
+
+        .option-btn:hover {
+            background: var(--paper);
+            transform: translate(-1px, -1px);
         }
 
         .option-btn:active {
+            transform: translate(3px, 3px);
+            box-shadow: var(--shadow-active);
             background: var(--yellow);
         }
 
@@ -118,109 +137,108 @@
             width: 100%;
             height: 20px;
             background: var(--white);
-            border: 3px solid var(--charcoal);
+            border: 3px solid var(--ink);
             overflow: hidden;
         }
 
         .progress-fill {
             height: 100%;
             background: var(--yellow);
+            border-right: 3px solid var(--ink);
             transition: width 0.3s ease;
         }
 
+        /* Results Styling */
         .result-container {
-            width: 100%;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
             min-height: 100%;
-        }
-
-        .result-content {
-            flex-grow: 1;
         }
 
         .animal-name {
             font-family: 'Silkscreen';
-            font-size: 18px;
-            margin-bottom: 16px;
+            font-size: 22px;
+            background: var(--brick-red);
+            color: var(--white);
+            padding: 12px;
             text-align: center;
+            border: 3px solid var(--ink);
+            box-shadow: var(--shadow);
+            margin-bottom: 24px;
             text-transform: uppercase;
-            font-weight: 700;
         }
 
         .sprite-img {
-            max-width: 140px;
+            max-width: 150px;
             height: auto;
             image-rendering: pixelated;
-            margin: 16px auto;
+            margin: 0 auto 24px;
             display: block;
         }
 
         .vibe-text {
-            font-size: 13px;
+            font-size: 14px;
             font-weight: 700;
-            margin-bottom: 16px;
             text-align: center;
-            font-family: 'Roboto Mono', monospace;
+            margin-bottom: 24px;
+            background: var(--yellow);
+            padding: 10px;
+            border: 3px solid var(--ink);
+            text-transform: uppercase;
         }
 
         .profile-box {
             background: var(--white);
-            border: 3px solid var(--charcoal);
-            padding: 12px;
-            margin-bottom: 8px;
-            font-size: 12px;
-            line-height: 1.6;
-            font-family: 'Roboto Mono', monospace;
+            border: 3px solid var(--ink);
+            padding: 16px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            line-height: 1.7;
+            box-shadow: var(--shadow-small);
         }
         
         .profile-heading {
             font-family: 'Silkscreen';
             font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
+            color: var(--steel-blue);
             margin-bottom: 8px;
             display: block;
+            border-bottom: 2px dashed var(--ink);
+            padding-bottom: 4px;
+            text-transform: uppercase;
         }
 
         .restart-btn {
             font-family: 'Silkscreen';
             width: 100%;
-            padding: 14px;
-            background: var(--blue);
-            border: 3px solid var(--charcoal);
+            padding: 20px;
+            background: var(--steel-blue);
+            color: var(--white);
+            border: 3px solid var(--ink);
+            box-shadow: var(--shadow);
             cursor: pointer;
             text-transform: uppercase;
-            font-weight: 700;
-            margin-top: 16px;
+            margin-top: 10px;
+            transition: 0.1s;
         }
 
         .restart-btn:active {
-            background: var(--yellow);
+            transform: translate(3px, 3px);
+            box-shadow: var(--shadow-active);
         }
 
         .loading {
             text-align: center;
             font-family: 'Silkscreen';
-            padding: 40px 20px;
-            font-weight: 700;
+            padding: 60px 20px;
+            font-size: 18px;
         }
 
         @media (max-width: 400px) {
             .mobile-frame {
-                max-width: 100%;
-                box-shadow: none;
-            }
-            .question-bg-img {
-                padding-bottom: 50%; /* Keep 4:2 ratio on mobile */
-            }
-            .question-text {
-                font-size: 12px;
-            }
-            .option-btn {
-                font-size: 11px;
-                padding: 12px 10px;
+                height: 100vh;
+                max-height: none;
+                border: none;
             }
         }
     </style>
@@ -228,7 +246,7 @@
 <body>
     <div class="mobile-frame" id="frame">
         <div class="container" id="app">
-            <div class="loading">Loading...</div>
+            <div class="loading">LOADING DATA...</div>
         </div>
     </div>
 
@@ -249,7 +267,7 @@
                 profiles = parseProfiles(profilesData);
                 startQuiz();
             } catch (error) {
-                document.getElementById('app').innerHTML = `<div class="loading">Error Loading Data</div>`;
+                document.getElementById('app').innerHTML = `<div class="loading">ERROR LOADING DATA</div>`;
                 console.error('Error:', error);
             }
         }
@@ -311,23 +329,16 @@
             const progress = (currentQuestion / questions.length) * 100;
             const appDiv = document.getElementById('app');
             
-            // Process background image URL
             let bgImageHTML = '';
             if (q.background && q.background.trim() !== "") {
                 let imageUrl = q.background.trim();
-                
-                // Convert ImgBB share link to direct image link
-                // Format: https://ibb.co/XXXXX -> https://i.ibb.co/XXXXX/image.png
                 if (imageUrl.includes('ibb.co/')) {
-                    // Extract the image ID from the URL
                     const match = imageUrl.match(/ibb\.co\/([a-zA-Z0-9]+)/);
                     if (match) {
                         const imageId = match[1];
-                        // Try common image extensions
                         imageUrl = `https://i.ibb.co/${imageId}/image.png`;
                     }
                 }
-                
                 bgImageHTML = `<div class="question-bg-img"><img src="${imageUrl}" alt="Question background" onerror="this.parentElement.style.display='none'"></div>`;
             }
 
@@ -390,7 +401,6 @@
             const mbti = calculateMBTI();
             const result = profiles.find(p => p.mbti === mbti) || profiles[0];
 
-            // Parse profile text - single line breaks indicate headings
             const profileLines = result.profile.split('\n').filter(p => p.trim() !== '');
             const profileBoxes = [];
             
@@ -398,30 +408,17 @@
             for (let i = 0; i < profileLines.length; i++) {
                 const line = profileLines[i].trim();
                 const nextLine = i < profileLines.length - 1 ? profileLines[i + 1].trim() : '';
-                
-                // Check if this line is a heading (short line followed by longer content)
                 const isHeading = line.length < 30 && nextLine.length > 30;
                 
                 if (isHeading) {
-                    // Save previous box if exists
-                    if (currentBox) {
-                        profileBoxes.push(currentBox);
-                    }
-                    // Start new box with heading
+                    if (currentBox) profileBoxes.push(currentBox);
                     currentBox = `<span class="profile-heading">${line}</span>`;
                 } else {
-                    // Add content to current box
-                    if (currentBox) {
-                        currentBox += line;
-                    } else {
-                        currentBox = line;
-                    }
+                    if (currentBox) currentBox += line;
+                    else currentBox = line;
                 }
             }
-            // Add the last box
-            if (currentBox) {
-                profileBoxes.push(currentBox);
-            }
+            if (currentBox) profileBoxes.push(currentBox);
             
             document.getElementById('app').innerHTML = `
                 <div class="result-container">
@@ -431,7 +428,7 @@
                         <div class="vibe-text">${result.vibe}</div>
                         ${profileBoxes.map(box => `<div class="profile-box">${box}</div>`).join('')}
                     </div>
-                    <button class="restart-btn" id="restartBtn">Play Again</button>
+                    <button class="restart-btn" id="restartBtn">RESTART QUIZ</button>
                 </div>
             `;
             document.getElementById('restartBtn').addEventListener('click', startQuiz);
