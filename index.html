@@ -44,21 +44,6 @@
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            position: relative; /* Required for background positioning */
-            z-index: 1;
-        }
-
-        /* NEW: Background Layer */
-        .quiz-bg {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%; /* Height of the mobile frame */
-            z-index: -1;   /* Sit behind content */
-            object-fit: cover; /* Same size for every image, no stretching */
-            opacity: 0.4;  /* Lower opacity so text remains readable */
-            transition: opacity 0.5s ease;
         }
 
         .container {
@@ -67,23 +52,32 @@
             padding: 20px;
             display: flex;
             flex-direction: column;
-            background: rgba(255, 255, 255, 0.6); /* Semi-transparent overlay for text readability */
+            justify-content: space-between;
+        }
+
+        .question-bg-img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            display: block;
+            margin-bottom: 16px;
+            border: 3px solid var(--charcoal);
         }
 
         .question-text {
             font-family: 'Silkscreen';
             font-size: 14px;
             line-height: 1.4;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
             color: var(--charcoal);
             font-weight: 700;
-            text-shadow: 1px 1px 0px white;
         }
 
         .options {
             display: flex;
             flex-direction: column;
             margin-bottom: 16px;
+            flex-grow: 1;
         }
 
         .option-btn {
@@ -106,8 +100,8 @@
         }
 
         .progress-container {
-            margin-top: auto; /* Push to bottom */
-            padding-bottom: 20px;
+            margin-top: auto;
+            padding-top: 16px;
         }
 
         .progress-bar {
@@ -124,27 +118,96 @@
             transition: width 0.3s ease;
         }
 
-        /* Result Specifics */
-        .result-container { width: 100%; }
-        .animal-name { font-family: 'Silkscreen'; font-size: 18px; margin-bottom: 16px; text-align: center; text-transform: uppercase; }
-        .sprite-img { max-width: 140px; height: auto; image-rendering: pixelated; margin: 16px auto; display: block; }
-        .vibe-text { font-size: 13px; font-weight: 700; margin-bottom: 16px; text-align: center; }
-        .profile-box { background: var(--white); border: 3px solid var(--charcoal); padding: 12px; margin-bottom: 8px; font-size: 12px; }
-        .restart-btn { font-family: 'Silkscreen'; width: 100%; padding: 14px; background: var(--blue); border: 3px solid var(--charcoal); cursor: pointer; text-transform: uppercase; }
+        .result-container {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 100%;
+        }
 
-        .loading { text-align: center; font-family: 'Silkscreen'; padding: 40px 20px; }
+        .result-content {
+            flex-grow: 1;
+        }
+
+        .animal-name {
+            font-family: 'Silkscreen';
+            font-size: 18px;
+            margin-bottom: 16px;
+            text-align: center;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        .sprite-img {
+            max-width: 140px;
+            height: auto;
+            image-rendering: pixelated;
+            margin: 16px auto;
+            display: block;
+        }
+
+        .vibe-text {
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            text-align: center;
+            font-family: 'Roboto Mono', monospace;
+        }
+
+        .profile-box {
+            background: var(--white);
+            border: 3px solid var(--charcoal);
+            padding: 12px;
+            margin-bottom: 8px;
+            font-size: 12px;
+            line-height: 1.6;
+            font-family: 'Roboto Mono', monospace;
+        }
+
+        .restart-btn {
+            font-family: 'Silkscreen';
+            width: 100%;
+            padding: 14px;
+            background: var(--blue);
+            border: 3px solid var(--charcoal);
+            cursor: pointer;
+            text-transform: uppercase;
+            font-weight: 700;
+            margin-top: 16px;
+        }
+
+        .restart-btn:active {
+            background: var(--yellow);
+        }
+
+        .loading {
+            text-align: center;
+            font-family: 'Silkscreen';
+            padding: 40px 20px;
+            font-weight: 700;
+        }
 
         @media (max-width: 400px) {
-            .mobile-frame { max-width: 100%; box-shadow: none; }
-            .question-text { font-size: 12px; }
-            .option-btn { font-size: 11px; padding: 12px 10px; }
+            .mobile-frame {
+                max-width: 100%;
+                box-shadow: none;
+            }
+            .question-bg-img {
+                height: 160px;
+            }
+            .question-text {
+                font-size: 12px;
+            }
+            .option-btn {
+                font-size: 11px;
+                padding: 12px 10px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="mobile-frame" id="frame">
-        <img id="bg-layer" class="quiz-bg" src="" style="display:none;">
-        
         <div class="container" id="app">
             <div class="loading">Loading...</div>
         </div>
@@ -175,7 +238,9 @@
         function fetchCSV(url) {
             return new Promise((resolve, reject) => {
                 Papa.parse(url, {
-                    download: true, header: true, skipEmptyLines: true,
+                    download: true,
+                    header: true,
+                    skipEmptyLines: true,
                     complete: (results) => resolve(results.data),
                     error: (error) => reject(error)
                 });
@@ -200,8 +265,7 @@
                     if (text) options.push({ text, trait });
                 }
 
-                // UPDATED: Also grab the Background column
-                const bg = row['Background'] || row['background'];
+                const bg = row['Background'] || row['background'] || '';
 
                 return { question: questionText, options, background: bg };
             }).filter(q => q !== null);
@@ -227,19 +291,23 @@
             const q = questions[currentQuestion];
             const progress = (currentQuestion / questions.length) * 100;
             const appDiv = document.getElementById('app');
-            const bgLayer = document.getElementById('bg-layer');
             
-            // NEW: Update Background Image
+            // Process background image URL
+            let bgImageHTML = '';
             if (q.background && q.background.trim() !== "") {
-                // Convert ImgBB landing page to direct image link
-                let directLink = q.background.replace("ibb.co", "i.ibb.co") + ".png";
-                bgLayer.src = directLink;
-                bgLayer.style.display = 'block';
-            } else {
-                bgLayer.style.display = 'none';
+                let imageUrl = q.background.trim();
+                // Convert ImgBB landing page to direct image link if needed
+                if (imageUrl.includes('ibb.co') && !imageUrl.includes('i.ibb.co')) {
+                    imageUrl = imageUrl.replace('ibb.co', 'i.ibb.co');
+                    if (!imageUrl.endsWith('.png') && !imageUrl.endsWith('.jpg') && !imageUrl.endsWith('.jpeg')) {
+                        imageUrl += '.png';
+                    }
+                }
+                bgImageHTML = `<img src="${imageUrl}" class="question-bg-img" alt="Question background">`;
             }
 
             appDiv.innerHTML = `
+                ${bgImageHTML}
                 <div class="question-text">${q.question}</div>
                 <div class="options" id="optionsContainer"></div>
                 <div class="progress-container">
@@ -296,19 +364,17 @@
         function showResults() {
             const mbti = calculateMBTI();
             const result = profiles.find(p => p.mbti === mbti) || profiles[0];
-            const bgLayer = document.getElementById('bg-layer');
-            
-            // Hide quiz background for results screen
-            bgLayer.style.display = 'none';
 
             const profileParagraphs = result.profile.split('\n').filter(p => p.trim() !== '');
             
             document.getElementById('app').innerHTML = `
                 <div class="result-container">
-                    <div class="animal-name">${result.animal}</div>
-                    <img src="${result.sprite}" alt="${result.animal}" class="sprite-img" onerror="this.style.display='none'">
-                    <div class="vibe-text">${result.vibe}</div>
-                    ${profileParagraphs.map(paragraph => `<div class="profile-box">${paragraph}</div>`).join('')}
+                    <div class="result-content">
+                        <div class="animal-name">${result.animal}</div>
+                        <img src="${result.sprite}" alt="${result.animal}" class="sprite-img" onerror="this.style.display='none'">
+                        <div class="vibe-text">${result.vibe}</div>
+                        ${profileParagraphs.map(paragraph => `<div class="profile-box">${paragraph}</div>`).join('')}
+                    </div>
                     <button class="restart-btn" id="restartBtn">Play Again</button>
                 </div>
             `;
