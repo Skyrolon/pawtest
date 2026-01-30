@@ -54,10 +54,12 @@
 
         .container {
             width: 100%;
-            min-height: 100vh;
+            height: 100vh;
+            height: 100dvh;
             padding: 16px;
             display: flex;
             flex-direction: column;
+            overflow: hidden;
         }
 
         /* Landing Page Styles */
@@ -76,7 +78,7 @@
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 12px;
-            margin-bottom: 32px;
+            margin-bottom: 24px;
             max-width: 320px;
         }
 
@@ -84,8 +86,8 @@
             width: 70px;
             height: 70px;
             border: 3px solid var(--ink);
+            border-radius: 12px;
             background: var(--paper);
-            box-shadow: var(--shadow-small);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -99,30 +101,27 @@
             image-rendering: pixelated;
         }
 
-        .landing-title {
-            font-family: 'Press Start 2P';
-            font-size: 24px;
-            line-height: 1.5;
-            margin-bottom: 24px;
-            color: var(--ink);
-            text-transform: uppercase;
-            background: var(--yellow);
-            padding: 20px;
-            border: 4px solid var(--ink);
-            box-shadow: var(--shadow);
-        }
-
         .landing-subtitle {
             font-family: 'Space Mono';
-            font-size: 16px;
+            font-size: 18px;
             font-weight: 700;
-            margin-bottom: 48px;
+            margin-bottom: 12px;
             color: var(--ink);
             background: var(--white);
             padding: 16px 24px;
             border: 3px solid var(--ink);
-            box-shadow: var(--shadow-small);
-            max-width: 300px;
+            border-radius: 12px;
+            max-width: 320px;
+            width: 100%;
+        }
+
+        .landing-subtext {
+            font-family: 'Space Mono';
+            font-size: 12px;
+            margin-bottom: 48px;
+            color: var(--ink);
+            opacity: 0.7;
+            max-width: 320px;
         }
 
         .start-btn {
@@ -132,7 +131,7 @@
             background: var(--brick-red);
             color: var(--white);
             border: 4px solid var(--ink);
-            box-shadow: var(--shadow);
+            border-radius: 12px;
             cursor: pointer;
             text-transform: uppercase;
             transition: all 0.1s ease;
@@ -141,21 +140,21 @@
 
         .start-btn:hover {
             transform: translate(-2px, -2px);
-            box-shadow: 6px 6px 0px var(--ink);
         }
 
         .start-btn:active {
-            transform: translate(3px, 3px);
-            box-shadow: var(--shadow-active);
+            transform: translateY(4px);
         }
 
-        /* Background image without border */
+        /* Background image with soft edges */
         .question-bg-img {
             width: 100%;
             aspect-ratio: 16 / 9;
             position: relative;
             overflow: hidden;
-            margin-bottom: 16px;
+            margin-bottom: 12px;
+            border-radius: 12px;
+            flex-shrink: 0;
         }
         
         .question-bg-img img {
@@ -170,16 +169,20 @@
         .question-text {
             font-family: 'Press Start 2P';
             line-height: 1.6;
-            margin-bottom: 16px;
+            margin-bottom: 12px;
             padding: 12px;
             background: var(--white);
+            text-align: justify;
+            flex-shrink: 0;
         }
 
         .options {
             display: flex;
             flex-direction: column;
             margin-bottom: 12px;
-            flex-grow: 1;
+            flex-shrink: 1;
+            min-height: 0;
+            overflow-y: auto;
         }
 
         .option-btn {
@@ -187,30 +190,30 @@
             background: var(--white);
             color: var(--ink);
             border: 3px solid var(--ink);
-            padding: 12px;
+            border-radius: 12px;
+            padding: 10px;
             font-weight: 700;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             text-align: left;
             cursor: pointer;
             font-family: 'Space Mono', monospace;
-            box-shadow: var(--shadow);
-            transition: all 0.1s ease;
+            transition: transform 0.1s ease;
+            flex-shrink: 0;
         }
 
         .option-btn:hover {
             background: var(--paper);
-            transform: translate(-1px, -1px);
         }
 
         .option-btn:active {
-            transform: translate(3px, 3px);
-            box-shadow: var(--shadow-active);
+            transform: translateY(4px);
             background: var(--yellow);
         }
 
         .progress-container {
             margin-top: auto;
             padding-top: 12px;
+            flex-shrink: 0;
         }
 
         .progress-bar {
@@ -218,13 +221,13 @@
             height: 16px;
             background: var(--white);
             border: 3px solid var(--ink);
+            border-radius: 8px;
             overflow: hidden;
         }
 
         .progress-fill {
             height: 100%;
             background: var(--yellow);
-            border-right: 3px solid var(--ink);
             transition: width 0.3s ease;
         }
 
@@ -232,6 +235,7 @@
             display: flex;
             flex-direction: column;
             min-height: 100%;
+            overflow-y: auto;
         }
 
         .animal-name {
@@ -241,8 +245,8 @@
             color: var(--white);
             padding: 12px;
             text-align: center;
-            border: 3px solid var(--ink);
-            box-shadow: var(--shadow);
+            border: 2px solid var(--ink);
+            border-radius: 12px;
             margin-bottom: 16px;
             text-transform: uppercase;
             line-height: 1.4;
@@ -263,18 +267,19 @@
             margin-bottom: 16px;
             background: var(--yellow);
             padding: 10px;
-            border: 3px solid var(--ink);
+            border: 2px solid var(--ink);
+            border-radius: 12px;
             text-transform: uppercase;
             line-height: 1.4;
         }
 
         .profile-box {
-            border: 3px solid var(--ink);
+            border: 2px solid var(--ink);
+            border-radius: 12px;
             padding: 12px;
             margin-bottom: 12px;
             font-size: 12px;
             line-height: 1.6;
-            box-shadow: var(--shadow-small);
         }
 
         .profile-box:nth-child(4) {
@@ -334,8 +339,8 @@
             padding: 16px;
             background: var(--steel-blue);
             color: var(--white);
-            border: 3px solid var(--ink);
-            box-shadow: var(--shadow);
+            border: 2px solid var(--ink);
+            border-radius: 12px;
             cursor: pointer;
             text-transform: uppercase;
             margin-top: 8px;
@@ -345,8 +350,7 @@
         }
 
         .restart-btn:active {
-            transform: translate(3px, 3px);
-            box-shadow: var(--shadow-active);
+            transform: translateY(4px);
         }
 
         .loading {
@@ -376,13 +380,12 @@
     <div class="mobile-viewport">
         <!-- Landing Page -->
         <div class="landing-page" id="landingPage">
-            <h1 class="landing-title">Personality Test</h1>
-            
             <div class="sprite-grid" id="spriteGrid">
                 <!-- Sprites will be loaded here -->
             </div>
             
             <p class="landing-subtitle">Find out what pet you are</p>
+            <p class="landing-subtext">Can you get the prized black cat or golden retriever?</p>
             
             <button class="start-btn" id="startBtn">Start Test</button>
         </div>
@@ -442,7 +445,6 @@
                 questions = parseQuestions(questionsData);
                 profiles = parseProfiles(profilesData);
                 dataLoaded = true;
-                calculateOptimalFontSizes();
                 startQuiz();
             } catch (error) {
                 document.getElementById('app').innerHTML = `<div class="loading">ERROR LOADING DATA</div>`;
@@ -496,44 +498,51 @@
             })).filter(p => p.mbti);
         }
         
-        function calculateOptimalFontSizes() {
-            const viewportHeight = window.innerHeight;
-            const availableHeight = viewportHeight - 100; // Account for padding and progress bar
+        function calculateOptimalFontSize(q) {
+            const container = document.getElementById('app');
+            const containerHeight = container.clientHeight;
             
-            let maxContentHeight = 0;
-            questions.forEach(q => {
-                const hasImage = q.background && q.background.trim() !== "";
-                const imageHeight = hasImage ? 200 : 0; // Approximate image height
-                const questionLength = q.question.length;
-                const optionsLength = q.options.reduce((sum, opt) => sum + opt.text.length, 0);
-                const totalLength = questionLength + optionsLength;
-                
-                // Estimate content height
-                const estimatedHeight = imageHeight + (totalLength * 0.5);
-                maxContentHeight = Math.max(maxContentHeight, estimatedHeight);
+            // Fixed heights
+            const progressBarHeight = 40; // progress container + bar
+            const padding = 32; // top and bottom padding
+            const imageHeight = (q.background && q.background.trim() !== "") ? 
+                (container.clientWidth - 32) * 9 / 16 + 12 : 0; // aspect ratio + margin
+            
+            // Available height for text content
+            const availableHeight = containerHeight - progressBarHeight - padding - imageHeight;
+            
+            // Calculate content lengths
+            const questionLength = q.question.length;
+            const optionsLength = q.options.reduce((sum, opt) => sum + opt.text.length, 0);
+            
+            // Estimate heights at base font size (11px for question, 12px for options)
+            const charsPerLine = 35; // approximate characters per line at base size
+            const questionLines = Math.ceil(questionLength / charsPerLine);
+            const baseQuestionHeight = questionLines * 11 * 1.6 + 24; // line-height 1.6 + padding
+            
+            // Each option
+            const optionHeights = q.options.map(opt => {
+                const lines = Math.ceil(opt.text.length / charsPerLine);
+                return lines * 12 * 1.6 + 20 + 8; // line-height + padding + margin
             });
+            const totalOptionsHeight = optionHeights.reduce((sum, h) => sum + h, 0) + 12;
+            
+            const totalContentHeight = baseQuestionHeight + totalOptionsHeight;
             
             // Calculate scale factor
             let scaleFactor = 1;
-            if (maxContentHeight > availableHeight) {
-                scaleFactor = availableHeight / maxContentHeight;
-                scaleFactor = Math.max(0.6, scaleFactor); // Don't go below 60% size
+            if (totalContentHeight > availableHeight) {
+                scaleFactor = availableHeight / totalContentHeight;
+                scaleFactor = Math.max(0.55, Math.min(1, scaleFactor)); // Between 55% and 100%
             }
             
-            // Apply font sizes
-            const questionFontSize = Math.floor(11 * scaleFactor);
-            const optionFontSize = Math.floor(12 * scaleFactor);
-            
-            document.documentElement.style.setProperty('--question-font-size', `${questionFontSize}px`);
-            document.documentElement.style.setProperty('--option-font-size', `${optionFontSize}px`);
-            
-            // Update CSS
-            const style = document.createElement('style');
-            style.textContent = `
-                .question-text { font-size: ${questionFontSize}px; }
-                .option-btn { font-size: ${optionFontSize}px; }
-            `;
-            document.head.appendChild(style);
+            return {
+                questionSize: Math.max(7, Math.floor(11 * scaleFactor)),
+                optionSize: Math.max(8, Math.floor(12 * scaleFactor)),
+                questionPadding: Math.max(8, Math.floor(12 * scaleFactor)),
+                optionPadding: Math.max(6, Math.floor(10 * scaleFactor)),
+                optionMargin: Math.max(4, Math.floor(8 * scaleFactor))
+            };
         }
         
         function startQuiz() {
@@ -562,7 +571,7 @@
 
             appDiv.innerHTML = `
                 ${bgImageHTML}
-                <div class="question-text">${q.question}</div>
+                <div class="question-text" id="questionText">${q.question}</div>
                 <div class="options" id="optionsContainer"></div>
                 <div class="progress-container">
                     <div class="progress-bar">
@@ -571,14 +580,26 @@
                 </div>
             `;
             
-            const optionsContainer = document.getElementById('optionsContainer');
-            q.options.forEach((opt, i) => {
-                const btn = document.createElement('button');
-                btn.className = 'option-btn';
-                btn.textContent = opt.text;
-                btn.addEventListener('click', () => selectOption(i));
-                optionsContainer.appendChild(btn);
-            });
+            // Calculate and apply optimal font sizes
+            setTimeout(() => {
+                const sizes = calculateOptimalFontSize(q);
+                const questionEl = document.getElementById('questionText');
+                const optionsContainer = document.getElementById('optionsContainer');
+                
+                questionEl.style.fontSize = sizes.questionSize + 'px';
+                questionEl.style.padding = sizes.questionPadding + 'px';
+                
+                q.options.forEach((opt, i) => {
+                    const btn = document.createElement('button');
+                    btn.className = 'option-btn';
+                    btn.textContent = opt.text;
+                    btn.style.fontSize = sizes.optionSize + 'px';
+                    btn.style.padding = sizes.optionPadding + 'px';
+                    btn.style.marginBottom = sizes.optionMargin + 'px';
+                    btn.addEventListener('click', () => selectOption(i));
+                    optionsContainer.appendChild(btn);
+                });
+            }, 10);
         }
         
         function selectOption(optionIndex) {
