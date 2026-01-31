@@ -135,7 +135,7 @@
         }
 
         .sprite-grid-item.lit {
-            background: var(--paper);
+            background: transparent;
         }
 
         .sprite-grid-item img {
@@ -197,10 +197,10 @@
             transform: translateY(4px);
         }
 
-        /* Background image with soft edges - 4:1.5 ratio */
+        /* Background image with soft edges - 4:2 ratio */
         .question-bg-img {
             width: 100%;
-            aspect-ratio: 4 / 1.5;
+            aspect-ratio: 4 / 2;
             position: relative;
             overflow: hidden;
             margin-bottom: 8px;
@@ -270,7 +270,7 @@
 
         .progress-container {
             margin-top: auto;
-            padding: 12px 0;
+            padding: 12px 0 20px 0;
             flex-shrink: 0;
         }
 
@@ -323,6 +323,11 @@
             margin-bottom: 16px;
             text-transform: uppercase;
             line-height: 1.4;
+            display: inline-block;
+            margin-left: auto;
+            margin-right: auto;
+            width: fit-content;
+            max-width: 100%;
         }
 
         .sprite-img {
@@ -432,6 +437,12 @@
             margin-left: 4px;
             font-size: 9px;
             font-family: monospace;
+        }
+
+        .result-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         @media (max-width: 430px) {
@@ -613,6 +624,18 @@
                 console.error('Error loading sprites:', error);
                 document.getElementById('loadingScreen').innerHTML = '<p class="loading-text">ERROR<br>LOADING<br>SPRITES</p>';
             }
+        }
+        
+        function resetSprites() {
+            const spriteItems = document.querySelectorAll('.sprite-grid-item');
+            spriteItems.forEach((item, index) => {
+                // Only positions 1 and 2 (black cat and golden retriever) should be lit
+                if (index === 1 || index === 2) {
+                    item.classList.add('lit');
+                } else {
+                    item.classList.remove('lit');
+                }
+            });
         }
         
         // Start button click handler
@@ -869,6 +892,7 @@
                 </div>
             `;
             document.getElementById('restartBtn').addEventListener('click', () => {
+                resetSprites();
                 document.getElementById('app').classList.add('hidden');
                 document.getElementById('landingPage').classList.remove('hidden');
             });
