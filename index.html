@@ -1,85 +1,942 @@
-# Google Analytics Setup Instructions
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pixel Personality Quiz</title>
+    
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-XXXXXXXXXX');
+    </script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Space+Mono:wght@400;700&display=swap');
 
-Your quiz is now ready for Google Analytics tracking! Here's how to complete the setup:
+        :root {
+            /* Soft pastel palette - cohesive and calming */
+            --soft-yellow: #FFF4D6;
+            --soft-blue: #E3F2FD;
+            --soft-red: #FFE8E8;
+            --soft-purple: #F3E5F5;
+            --soft-green: #E8F5E9;
+            --soft-peach: #FFE4D6;
+            
+            /* Accent colors */
+            --bold-red: #E57373;
+            --bold-blue: #64B5F6;
+            --progress-blue: #90CAF9;
+            --progress-border: #FFFFFF;
+            --light-beige: #faf0e6;
+            
+            --paper: #FAFAFA;
+            --light-grey: #E8E8E8;
+            --ink: #222222;
+            --dark-grey: #4A4A4A;
+            --white: #FFFFFF;
+            
+            /* Border colors for sprites */
+            --mint: #C9E8D8;
+            --peach: #E8D0C0;
+            --lavender: #DCCAE8;
+            --sky: #CDE0ED;
+        }
 
-## Step 1: Create a Google Analytics Account
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
 
-1. Go to https://analytics.google.com/
-2. Click "Start measuring" (or sign in if you have an account)
-3. Create a new account or select an existing one
-4. Set up a new property:
-   - Property name: "Personality Pawtest" (or whatever you prefer)
-   - Select your timezone and currency
-   - Click "Next"
+        body {
+            background-color: #E8E8E8;
+            font-family: 'Space Mono', monospace;
+            color: var(--ink);
+            min-height: 100vh;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
 
-## Step 2: Set Up a Data Stream
+        .mobile-viewport {
+            width: 100%;
+            max-width: 430px;
+            height: 100vh;
+            height: 100dvh;
+            background-color: var(--white);
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
 
-1. Choose "Web" as your platform
-2. Enter your website URL (where you'll host the quiz)
-3. Name the stream: "Personality Quiz"
-4. Click "Create stream"
+        .container {
+            width: 100%;
+            height: 100%;
+            padding: 12px 12px 40px 12px;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
 
-## Step 3: Get Your Measurement ID
+        /* Initial Loading Screen */
+        .loading-screen {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            height: 100dvh;
+            background: var(--white);
+            text-align: center;
+            padding: 24px;
+        }
 
-After creating the stream, you'll see a **Measurement ID** that looks like:
-```
-G-XXXXXXXXXX
-```
+        .loading-text {
+            font-family: 'Press Start 2P';
+            font-size: 12px;
+            color: var(--ink);
+            line-height: 1.6;
+        }
 
-## Step 4: Add Your Measurement ID to the Quiz
+        /* Landing Page Styles */
+        .landing-page {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            height: 100dvh;
+            padding: 32px 24px;
+            background: var(--white);
+            text-align: center;
+            overflow: hidden;
+        }
 
-1. Open the `pixel-personality-quiz-updated.html` file
-2. Find this section near the top (around line 8-9):
-   ```html
-   <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
-   <script>
-       window.dataLayer = window.dataLayer || [];
-       function gtag(){dataLayer.push(arguments);}
-       gtag('js', new Date());
-       gtag('config', 'G-XXXXXXXXXX');
-   </script>
-   ```
-3. Replace **both** instances of `G-XXXXXXXXXX` with your actual Measurement ID
-4. Save the file
+        .sprite-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 24px;
+            max-width: 320px;
+            position: relative;
+        }
 
-## Step 5: View Your Analytics
+        .sprite-grid-item {
+            width: 70px;
+            height: 70px;
+            border: none;
+            border-radius: 12px;
+            background: #3a3a3a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
 
-Once the quiz is live and people start taking it, you can view analytics at:
-https://analytics.google.com/
+        .sprite-grid-item.lit {
+            background: transparent;
+        }
 
-### What Gets Tracked:
+        .sprite-grid-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            image-rendering: pixelated;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
 
-✅ **Page views** - Every time someone loads the quiz
-✅ **Quiz started** - When someone clicks "Start Test"
-✅ **Quiz completed** - When someone finishes, including their result (MBTI type and animal)
-✅ **Quiz restarted** - When someone clicks "Restart Quiz"
+        .sprite-grid-item.lit img {
+            opacity: 1;
+        }
 
-### Viewing Your Data:
+        .landing-subtitle {
+            font-family: 'Space Mono';
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: var(--ink);
+            background: transparent;
+            max-width: 320px;
+            width: 100%;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-align: center;
+        }
 
-- **Real-time visitors**: Reports > Realtime
-- **Total visits**: Reports > Engagement > Pages and screens
-- **Custom events**: Reports > Engagement > Events
-  - Look for: `quiz_started`, `quiz_completed`, `quiz_restarted`
-- **Result breakdown**: Click on `quiz_completed` event to see which animals/MBTI types are most common
+        .landing-subtext {
+            font-family: 'Space Mono';
+            font-size: 12px;
+            margin-bottom: 48px;
+            color: var(--ink);
+            opacity: 0.7;
+            max-width: 320px;
+        }
 
-### Common Result Parameters:
+        .visitor-count {
+            font-family: 'Space Mono';
+            font-size: 11px;
+            color: var(--ink);
+            opacity: 0.5;
+            margin-top: 16px;
+        }
 
-When someone completes the quiz, Analytics tracks:
-- `result_type`: The MBTI type (e.g., "ENFP", "ISTJ")
-- `result_animal`: The animal result (e.g., "Golden Retriever", "Black Cat")
+        .start-btn {
+            font-family: 'Press Start 2P';
+            font-size: 14px;
+            padding: 20px 40px;
+            background: var(--bold-red);
+            color: var(--white);
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: all 0.1s ease;
+            margin-bottom: 16px;
+        }
 
-## Troubleshooting:
+        .start-btn:hover {
+            transform: translate(-2px, -2px);
+        }
 
-**Not seeing data?**
-- Wait 24-48 hours for data to populate (real-time should show immediately)
-- Check that your Measurement ID is correct in both places
-- Make sure the quiz is actually hosted online (not just opened as a local file)
-- Verify in your browser's developer console that there are no errors
+        .start-btn:active {
+            transform: translateY(4px);
+        }
 
-**Privacy Note:**
-Google Analytics is GDPR-compliant when configured properly. It tracks anonymized data and doesn't collect personal information from your quiz takers.
+        /* Background image with soft edges - 4:2 ratio */
+        .question-bg-img {
+            width: 100%;
+            aspect-ratio: 4 / 2;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 8px;
+            border-radius: 12px;
+            flex-shrink: 0;
+        }
+        
+        .question-bg-img img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
 
-## Support:
+        .question-text {
+            font-family: 'Space Mono';
+            font-size: clamp(10px, 3vw, 14px);
+            font-weight: 700;
+            line-height: 1.6;
+            margin-bottom: 10px;
+            padding: 10px;
+            background: var(--white);
+            text-align: left;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
 
-For more help with Google Analytics, visit:
-https://support.google.com/analytics/
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            flex-shrink: 0;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+
+        .option-btn {
+            width: 100%;
+            background: var(--light-grey);
+            color: var(--ink);
+            border: none;
+            border-radius: 12px;
+            padding: 14px;
+            font-size: clamp(10px, 3vw, 14px);
+            font-weight: 700;
+            text-align: left;
+            cursor: pointer;
+            font-family: 'Space Mono', monospace;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+            position: relative;
+            min-height: 48px;
+        }
+
+        .option-btn:hover {
+            background: #D8D8D8;
+        }
+
+        .option-btn:active {
+            transform: scale(0.92);
+        }
+
+        .option-btn.selected {
+            transform: scale(0.92);
+        }
+
+        .progress-container {
+            margin-top: auto;
+            padding: 12px 0 40px 0;
+            flex-shrink: 0;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 16px;
+            background: var(--light-beige);
+            border: none;
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--progress-blue);
+            transition: width 0.3s ease;
+            position: relative;
+            z-index: 1;
+        }
+
+        .result-container {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding-bottom: 80px;
+        }
+
+        /* Hide scrollbar but keep functionality */
+        .result-container::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .result-container {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .animal-name {
+            font-family: 'Press Start 2P';
+            font-size: 14px;
+            background: var(--bold-red);
+            color: var(--white);
+            padding: 12px;
+            text-align: center;
+            border: none;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            line-height: 1.4;
+            display: inline-block;
+            margin-left: auto;
+            margin-right: auto;
+            width: fit-content;
+            max-width: 100%;
+        }
+
+        .sprite-img {
+            max-width: 200px;
+            height: auto;
+            image-rendering: pixelated;
+            display: block;
+            margin: 0 auto 16px;
+        }
+
+        .vibe-text {
+            font-size: 11px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 16px;
+            background: transparent;
+            padding: 0;
+            border: none;
+            text-transform: uppercase;
+            line-height: 1.4;
+            color: var(--ink);
+        }
+
+        .profile-box {
+            border: none;
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 12px;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        /* Assign specific soft colors to each profile section */
+        .profile-box:nth-child(4) { background: var(--soft-blue); }
+        .profile-box:nth-child(4) .profile-heading { color: #1976D2; }
+        
+        .profile-box:nth-child(5) { background: var(--soft-red); }
+        .profile-box:nth-child(5) .profile-heading { color: #C62828; }
+        
+        .profile-box:nth-child(6) { background: var(--soft-yellow); }
+        .profile-box:nth-child(6) .profile-heading { color: #F57F17; }
+        
+        .profile-box:nth-child(7) { background: var(--soft-purple); }
+        .profile-box:nth-child(7) .profile-heading { color: #7B1FA2; }
+        
+        .profile-box:nth-child(8) { background: var(--soft-green); }
+        .profile-box:nth-child(8) .profile-heading { color: #388E3C; }
+        
+        .profile-heading {
+            font-family: 'Press Start 2P';
+            font-size: 9px;
+            margin-bottom: 8px;
+            display: block;
+            border-bottom: none;
+            padding-bottom: 4px;
+            text-transform: uppercase;
+            line-height: 1.4;
+        }
+
+        .restart-btn {
+            font-family: 'Press Start 2P';
+            width: auto;
+            padding: 16px 32px;
+            background: var(--bold-blue);
+            color: var(--white);
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            text-transform: uppercase;
+            margin-top: 8px;
+            margin-bottom: 16px;
+            margin-left: auto;
+            margin-right: auto;
+            display: block;
+            transition: 0.1s;
+            font-size: 11px;
+            line-height: 1.4;
+            flex-shrink: 0;
+        }
+
+        .restart-btn:active {
+            transform: translateY(4px);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Debug styles */
+        .debug-info {
+            position: fixed;
+            bottom: 10px;
+            left: 10px;
+            background: rgba(0, 0, 0, 0.8);
+            color: #00ff00;
+            padding: 10px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 10px;
+            max-width: 250px;
+            z-index: 9999;
+            line-height: 1.4;
+        }
+
+        .debug-trait {
+            display: inline-block;
+            background: rgba(255, 255, 0, 0.3);
+            padding: 2px 4px;
+            border-radius: 3px;
+            margin-left: 4px;
+            font-size: 9px;
+            font-family: monospace;
+        }
+
+        .result-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        @media (max-width: 430px) {
+            body {
+                background-color: var(--white);
+            }
+            
+            .mobile-viewport {
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="mobile-viewport">
+        <!-- Loading Screen -->
+        <div class="loading-screen" id="loadingScreen">
+            <p class="loading-text">LOADING...</p>
+        </div>
+
+        <!-- Landing Page -->
+        <div class="landing-page hidden" id="landingPage">
+            <div class="sprite-grid" id="spriteGrid">
+                <!-- Sprites will be loaded here -->
+            </div>
+            
+            <p class="landing-subtitle">FIND OUT WHAT<br>ANIMAL YOU ARE</p>
+            <p class="landing-subtext">Are you a black cat or golden retriever or something else...</p>
+            
+            <button class="start-btn" id="startBtn">Start Test</button>
+            <p class="visitor-count hidden" id="visitorCount">Loading visits...</p>
+        </div>
+
+        <!-- Quiz Container -->
+        <div class="container hidden" id="app">
+            <div style="display: flex; justify-content: center; align-items: center; height: 100%; text-align: center;">
+                <div class="loading-text">LOADING<br>DATA...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==================== DEBUG CONFIGURATION ====================
+        const DEBUG_MODE = false; // Set to true to enable debugging, false to disable
+        // =============================================================
+
+        const QUESTIONS_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTl7KuGBmEGEHqavwmPHRCLRvFHwvzSKVcKMRCEw0aWPej50cAVUrA_Oh1PIMSY6yKL4B8OEh7tqR1d/pub?gid=0&single=true&output=csv';
+        const PROFILES_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTl7KuGBmEGEHqavwmPHRCLRvFHwvzSKVcKMRCEw0aWPej50cAVUrA_Oh1PIMSY6yKL4B8OEh7tqR1d/pub?gid=1646208880&single=true&output=csv';
+        
+        let questions = [];
+        let profiles = [];
+        let currentQuestion = 0;
+        let scores = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
+        let dataLoaded = false;
+        let allImagesLoaded = false;
+        let debugElement = null;
+        
+        // Debug functions
+        function createDebugDisplay() {
+            if (!DEBUG_MODE) return;
+            debugElement = document.createElement('div');
+            debugElement.className = 'debug-info';
+            document.body.appendChild(debugElement);
+            updateDebugDisplay();
+        }
+
+        function updateDebugDisplay() {
+            if (!DEBUG_MODE || !debugElement) return;
+            const total = Object.values(scores).reduce((a, b) => a + b, 0);
+            debugElement.innerHTML = `
+                <strong>SCORES:</strong><br>
+                E: ${scores.E.toFixed(1)} | I: ${scores.I.toFixed(1)}<br>
+                S: ${scores.S.toFixed(1)} | N: ${scores.N.toFixed(1)}<br>
+                T: ${scores.T.toFixed(1)} | F: ${scores.F.toFixed(1)}<br>
+                J: ${scores.J.toFixed(1)} | P: ${scores.P.toFixed(1)}<br>
+                <strong>Total: ${total.toFixed(1)}</strong><br>
+                <strong>Q: ${currentQuestion + 1}/${questions.length}</strong>
+            `;
+        }
+
+        function logDebug(message) {
+            if (DEBUG_MODE) {
+                console.log(`[DEBUG] ${message}`);
+            }
+        }
+        
+        // Load sprites on page load
+        loadSprites();
+        
+        async function loadSprites() {
+            try {
+                const profilesData = await fetchCSV(PROFILES_URL);
+                const parsedProfiles = parseProfiles(profilesData);
+                
+                const spriteGrid = document.getElementById('spriteGrid');
+                
+                // Find black cat and golden retriever
+                let blackCatProfile = null;
+                let goldenRetrieverProfile = null;
+                let blackCatOriginalIndex = -1;
+                let goldenRetrieverOriginalIndex = -1;
+                
+                parsedProfiles.forEach((profile, index) => {
+                    const animalLower = profile.animal.toLowerCase();
+                    if (animalLower.includes('black cat')) {
+                        blackCatProfile = profile;
+                        blackCatOriginalIndex = index;
+                        logDebug(`Found Black Cat at index ${index}: ${profile.animal}`);
+                    }
+                    if (animalLower.includes('golden retriever')) {
+                        goldenRetrieverProfile = profile;
+                        goldenRetrieverOriginalIndex = index;
+                        logDebug(`Found Golden Retriever at index ${index}: ${profile.animal}`);
+                    }
+                });
+
+                // Create a new array with black cat and golden retriever at positions 1 and 2
+                const reorderedProfiles = [...parsedProfiles];
+                
+                if (blackCatProfile && goldenRetrieverProfile) {
+                    // Remove them from their original positions (remove in reverse order to maintain indices)
+                    if (blackCatOriginalIndex > goldenRetrieverOriginalIndex) {
+                        reorderedProfiles.splice(blackCatOriginalIndex, 1);
+                        reorderedProfiles.splice(goldenRetrieverOriginalIndex, 1);
+                    } else {
+                        reorderedProfiles.splice(goldenRetrieverOriginalIndex, 1);
+                        reorderedProfiles.splice(blackCatOriginalIndex, 1);
+                    }
+                    
+                    // Insert at positions 5 and 6 (middle two spots in 4x4 grid)
+                    reorderedProfiles.splice(5, 0, blackCatProfile);
+                    reorderedProfiles.splice(6, 0, goldenRetrieverProfile);
+                    
+                    logDebug(`Reordered: Black Cat at position 5, Golden Retriever at position 6`);
+                }
+                
+                // Create array to track image loading
+                const imagePromises = [];
+                
+                reorderedProfiles.forEach((profile, index) => {
+                    const spriteItem = document.createElement('div');
+                    spriteItem.className = 'sprite-grid-item';
+                    
+                    // Turn on lights for positions 5 and 6 (middle two in 4x4 grid)
+                    if (index === 5 || index === 6) {
+                        spriteItem.classList.add('lit');
+                        logDebug(`Lighting sprite at position ${index}: ${profile.animal}`);
+                    }
+                    
+                    const img = document.createElement('img');
+                    img.alt = profile.animal;
+                    
+                    // Create promise for image loading
+                    const imagePromise = new Promise((resolve, reject) => {
+                        img.onload = () => resolve();
+                        img.onerror = () => resolve(); // Resolve anyway to not block
+                    });
+                    imagePromises.push(imagePromise);
+                    
+                    img.src = profile.sprite;
+                    spriteItem.appendChild(img);
+                    
+                    // Add click event to toggle "lights"
+                    spriteItem.addEventListener('click', () => {
+                        spriteItem.classList.toggle('lit');
+                    });
+                    
+                    spriteGrid.appendChild(spriteItem);
+                });
+                
+                // Wait for all images to load
+                await Promise.all(imagePromises);
+                allImagesLoaded = true;
+                
+                // Hide loading screen and show landing page
+                document.getElementById('loadingScreen').classList.add('hidden');
+                document.getElementById('landingPage').classList.remove('hidden');
+                
+            } catch (error) {
+                console.error('Error loading sprites:', error);
+                document.getElementById('loadingScreen').innerHTML = '<p class="loading-text">ERROR<br>LOADING<br>SPRITES</p>';
+            }
+        }
+        
+        function resetSprites() {
+            const spriteItems = document.querySelectorAll('.sprite-grid-item');
+            spriteItems.forEach((item, index) => {
+                // Only positions 5 and 6 (middle two) should be lit
+                if (index === 5 || index === 6) {
+                    item.classList.add('lit');
+                } else {
+                    item.classList.remove('lit');
+                }
+            });
+        }
+        
+        // Start button click handler
+        document.getElementById('startBtn').addEventListener('click', async () => {
+            // Only proceed if all images are loaded
+            if (!allImagesLoaded) {
+                return;
+            }
+            
+            // Track quiz start event
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'quiz_started');
+            }
+            
+            document.getElementById('landingPage').classList.add('hidden');
+            document.getElementById('app').classList.remove('hidden');
+            
+            if (!dataLoaded) {
+                await loadData();
+            } else {
+                startQuiz();
+            }
+        });
+        
+        async function loadData() {
+            try {
+                const questionsData = await fetchCSV(QUESTIONS_URL);
+                const profilesData = await fetchCSV(PROFILES_URL);
+                questions = parseQuestions(questionsData);
+                profiles = parseProfiles(profilesData);
+                
+                // Preload all question background images
+                await preloadQuestionImages();
+                
+                dataLoaded = true;
+                createDebugDisplay();
+                startQuiz();
+            } catch (error) {
+                document.getElementById('app').innerHTML = `<div class="loading-text">ERROR<br>LOADING<br>DATA</div>`;
+                console.error('Error:', error);
+            }
+        }
+        
+        async function preloadQuestionImages() {
+            const imagePromises = questions.map(q => {
+                return new Promise((resolve) => {
+                    if (!q.background || q.background.trim() === "") {
+                        resolve();
+                        return;
+                    }
+                    
+                    let imageUrl = q.background.trim();
+                    if (imageUrl.includes('ibb.co/')) {
+                        const match = imageUrl.match(/ibb\.co\/([a-zA-Z0-9]+)/);
+                        if (match) {
+                            const imageId = match[1];
+                            imageUrl = `https://i.ibb.co/${imageId}/image.png`;
+                        }
+                    }
+                    
+                    const img = new Image();
+                    img.onload = () => resolve();
+                    img.onerror = () => resolve(); // Resolve anyway to not block
+                    img.src = imageUrl;
+                });
+            });
+            
+            await Promise.all(imagePromises);
+        }
+        
+        function fetchCSV(url) {
+            return new Promise((resolve, reject) => {
+                Papa.parse(url, {
+                    download: true,
+                    header: true,
+                    skipEmptyLines: true,
+                    complete: (results) => resolve(results.data),
+                    error: (error) => reject(error)
+                });
+            });
+        }
+        
+        function getFieldValue(row, baseName, index = "") {
+            const searchName = (baseName + index).toLowerCase().replace(/[^a-z0-9]/g, "");
+            const key = Object.keys(row).find(k => k.toLowerCase().replace(/[^a-z0-9]/g, "") === searchName);
+            return key ? row[key] : null;
+        }
+        
+        function parseQuestions(data) {
+            return data.map(row => {
+                const questionText = getFieldValue(row, "question");
+                if (!questionText) return null;
+
+                const options = [];
+                for (let i = 1; i <= 4; i++) {
+                    const text = getFieldValue(row, "option", i);
+                    const trait = getFieldValue(row, "trait", i);
+                    if (text) options.push({ text, trait });
+                }
+
+                const bg = row['Background'] || row['background'] || '';
+
+                return { question: questionText, options, background: bg };
+            }).filter(q => q !== null);
+        }
+        
+        function parseProfiles(data) {
+            return data.map(row => ({
+                mbti: row.MBTI || row.mbti,
+                animal: row.Animal || row.animal,
+                sprite: row.Sprite || row.sprite,
+                vibe: row.Vibe || row.vibe,
+                profile: row.Profiles || row.profiles || row.Profile || row.profile
+            })).filter(p => p.mbti);
+        }
+        
+        function startQuiz() {
+            currentQuestion = 0;
+            scores = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
+            updateDebugDisplay();
+            renderQuestion();
+        }
+        
+        function renderQuestion() {
+            const q = questions[currentQuestion];
+            const progress = (currentQuestion / questions.length) * 100;
+            const appDiv = document.getElementById('app');
+            
+            logDebug(`Rendering question ${currentQuestion + 1}/${questions.length}`);
+            
+            let bgImageHTML = '';
+            if (q.background && q.background.trim() !== "") {
+                let imageUrl = q.background.trim();
+                if (imageUrl.includes('ibb.co/')) {
+                    const match = imageUrl.match(/ibb\.co\/([a-zA-Z0-9]+)/);
+                    if (match) {
+                        const imageId = match[1];
+                        imageUrl = `https://i.ibb.co/${imageId}/image.png`;
+                    }
+                }
+                bgImageHTML = `<div class="question-bg-img"><img src="${imageUrl}" alt="Question background" onerror="this.parentElement.style.display='none'"></div>`;
+            }
+
+            appDiv.innerHTML = `
+                ${bgImageHTML}
+                <div class="question-text">${q.question}</div>
+                <div class="options" id="optionsContainer"></div>
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${progress}%"></div>
+                    </div>
+                </div>
+            `;
+            
+            const optionsContainer = document.getElementById('optionsContainer');
+            q.options.forEach((opt, i) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                
+                // Add debug trait display if enabled
+                if (DEBUG_MODE && opt.trait) {
+                    btn.innerHTML = `${opt.text} <span class="debug-trait">${opt.trait}</span>`;
+                } else {
+                    btn.textContent = opt.text;
+                }
+                
+                btn.addEventListener('click', () => selectOption(i, btn));
+                optionsContainer.appendChild(btn);
+                
+                logDebug(`Option ${i + 1}: "${opt.text}" -> ${opt.trait || 'no trait'}`);
+            });
+            
+            updateDebugDisplay();
+        }
+        
+        function selectOption(optionIndex, buttonElement) {
+            const option = questions[currentQuestion].options[optionIndex];
+            
+            // Add visual feedback
+            buttonElement.classList.add('selected');
+            
+            let traitStr = option.trait ? String(option.trait).trim() : null;
+
+            if (traitStr) {
+                // Match patterns like: E, E+1, E(+1), E 1.5, E(1.5), E +1.5, etc.
+                const match = traitStr.match(/([A-Z])\s*\(?\+?\s*([\d.]+)\)?/i);
+                let letter, value;
+                if (match) {
+                    letter = match[1].toUpperCase();
+                    value = parseFloat(match[2]); // Use parseFloat to handle decimals
+                } else {
+                    letter = traitStr.charAt(0).toUpperCase();
+                    value = 1;
+                }
+                
+                if (scores.hasOwnProperty(letter)) {
+                    scores[letter] += value;
+                    logDebug(`Selected: ${letter} +${value}. New score: ${letter}=${scores[letter]}`);
+                }
+            }
+
+            updateDebugDisplay();
+
+            // Delay before moving to next question
+            setTimeout(() => {
+                currentQuestion++;
+                if (currentQuestion < questions.length) {
+                    renderQuestion();
+                } else {
+                    showResults();
+                }
+            }, 50);
+        }
+        
+        function calculateMBTI() {
+            let mbti = '';
+            mbti += scores.E > scores.I ? 'E' : 'I';
+            mbti += scores.S > scores.N ? 'S' : 'N';
+            mbti += scores.T > scores.F ? 'T' : 'F';
+            mbti += scores.J > scores.P ? 'J' : 'P';
+            logDebug(`Final MBTI: ${mbti} (E:${scores.E} I:${scores.I} S:${scores.S} N:${scores.N} T:${scores.T} F:${scores.F} J:${scores.J} P:${scores.P})`);
+            return mbti;
+        }
+        
+        function showResults() {
+            const mbti = calculateMBTI();
+            const result = profiles.find(p => p.mbti === mbti) || profiles[0];
+
+            logDebug(`Showing result: ${result.animal} (${mbti})`);
+            
+            // Track quiz completion with Google Analytics
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'quiz_completed', {
+                    'result_type': mbti,
+                    'result_animal': result.animal
+                });
+            }
+
+            const profileLines = result.profile.split('\n').filter(p => p.trim() !== '');
+            const profileBoxes = [];
+            
+            let currentBox = '';
+            for (let i = 0; i < profileLines.length; i++) {
+                const line = profileLines[i].trim();
+                const nextLine = i < profileLines.length - 1 ? profileLines[i + 1].trim() : '';
+                const isHeading = line.length < 30 && nextLine.length > 30;
+                
+                if (isHeading) {
+                    if (currentBox) profileBoxes.push(currentBox);
+                    currentBox = `<span class="profile-heading">${line}</span>`;
+                } else {
+                    if (currentBox) currentBox += line;
+                    else currentBox = line;
+                }
+            }
+            if (currentBox) profileBoxes.push(currentBox);
+            
+            document.getElementById('app').innerHTML = `
+                <div class="result-container">
+                    <div class="result-content">
+                        <div class="animal-name">${result.animal}</div>
+                        <img src="${result.sprite}" alt="${result.animal}" class="sprite-img" onerror="this.style.display='none'">
+                        <div class="vibe-text">${result.vibe}</div>
+                        ${profileBoxes.map(box => `<div class="profile-box">${box}</div>`).join('')}
+                    </div>
+                    <button class="restart-btn" id="restartBtn">RESTART QUIZ</button>
+                </div>
+            `;
+            document.getElementById('restartBtn').addEventListener('click', () => {
+                // Track restart event
+                if (typeof gtag !== 'undefined') {
+                    gtag('event', 'quiz_restarted');
+                }
+                resetSprites();
+                document.getElementById('app').classList.add('hidden');
+                document.getElementById('landingPage').classList.remove('hidden');
+            });
+        }
+    </script>
+</body>
+</html>
