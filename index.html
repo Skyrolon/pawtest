@@ -9,16 +9,16 @@
         @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Space+Mono:wght@400;700&display=swap');
 
         :root {
-            --yellow: #F9C22E;
+            --yellow: #E8D8A0;
             --paper: #F5F5F1;
             --ink: #222222;
-            --steel-blue: #326789;
-            --brick-red: #E65C4F;
+            --steel-blue: #7A9BB0;
+            --brick-red: #D89A8F;
             --white: #FFFFFF;
-            --mint: #A8E6CF;
-            --peach: #FFD3B6;
-            --lavender: #D4B5F0;
-            --sky: #B3D9FF;
+            --mint: #C9E8D8;
+            --peach: #E8D0C0;
+            --lavender: #DCCAE8;
+            --sky: #CDE0ED;
         }
 
         * {
@@ -55,10 +55,9 @@
             width: 100%;
             height: 100%;
             padding: 12px;
-            padding-bottom: 20px;
             display: flex;
             flex-direction: column;
-            overflow: hidden;
+            overflow-y: auto;
         }
 
         /* Initial Loading Screen */
@@ -159,6 +158,7 @@
             max-width: 320px;
             width: 100%;
             text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .landing-subtext {
@@ -255,16 +255,17 @@
         }
 
         .option-btn:active {
-            transform: scale(0.98);
+            transform: scale(0.92);
         }
 
         .option-btn.selected {
-            transform: scale(0.95);
+            transform: scale(0.92);
         }
 
         .progress-container {
-            margin-top: auto;
+            margin-top: 8px;
             flex-shrink: 0;
+            padding-bottom: 8px;
         }
 
         .progress-bar {
@@ -415,7 +416,7 @@
                 <!-- Sprites will be loaded here -->
             </div>
             
-            <p class="landing-subtitle">FIND OUT WHAT PET YOU ARE</p>
+            <p class="landing-subtitle">FIND OUT WHAT ANIMAL YOU ARE</p>
             <p class="landing-subtext">Can you get the prized black cat or golden retriever?</p>
             
             <button class="start-btn" id="startBtn">Start Test</button>
@@ -423,7 +424,9 @@
 
         <!-- Quiz Container -->
         <div class="container hidden" id="app">
-            <div class="loading-text">LOADING DATA...</div>
+            <div style="display: flex; justify-content: center; align-items: center; height: 100%; text-align: center;">
+                <div class="loading-text">LOADING<br>DATA...</div>
+            </div>
         </div>
     </div>
 
@@ -469,9 +472,9 @@
                     img.src = profile.sprite;
                     spriteItem.appendChild(img);
                     
-                    // Add click event to "turn on the lights"
+                    // Add click event to toggle "lights"
                     spriteItem.addEventListener('click', () => {
-                        spriteItem.classList.add('lit');
+                        spriteItem.classList.toggle('lit');
                     });
                     
                     spriteGrid.appendChild(spriteItem);
