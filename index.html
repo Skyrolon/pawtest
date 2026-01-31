@@ -145,12 +145,14 @@
             object-fit: contain;
             image-rendering: pixelated;
             pointer-events: none;
-            opacity: 0.1;
+            opacity: 0;
             transition: opacity 0.3s ease;
+            visibility: hidden;
         }
 
         .sprite-grid-item.lit img {
             opacity: 1;
+            visibility: visible;
         }
 
         .landing-subtitle {
@@ -586,17 +588,7 @@
             let bgImageHTML = '';
             if (q.background && q.background.trim() !== "") {
                 let imageUrl = q.background.trim();
-                
-                // Handle ImgBB links
-                if (imageUrl.includes('ibb.co/')) {
-                    const match = imageUrl.match(/ibb\.co\/([a-zA-Z0-9]+)/);
-                    if (match) {
-                        const imageId = match[1];
-                        // Try direct image URL without extension first
-                        imageUrl = `https://i.ibb.co/${imageId}`;
-                    }
-                }
-                
+                // Use the image URL directly as provided - no conversion needed
                 bgImageHTML = `<div class="question-bg-img"><img src="${imageUrl}" alt="Question background" onerror="this.parentElement.style.display='none'"></div>`;
             }
 
