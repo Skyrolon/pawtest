@@ -29,7 +29,6 @@
             --ink: #222222;
             --dark-grey: #4A4A4A;
             --white: #FFFFFF;
-            --papyrus: #f5edd6;
             
             /* Border colors for sprites */
             --mint: #C9E8D8;
@@ -63,7 +62,7 @@
             max-width: 430px;
             height: 100vh;
             height: 100dvh;
-            background-color: var(--papyrus);
+            background-color: var(--white);
             box-shadow: 0 0 40px rgba(0, 0, 0, 0.1);
             overflow: hidden;
         }
@@ -85,7 +84,7 @@
             align-items: center;
             height: 100vh;
             height: 100dvh;
-            background: var(--papyrus);
+            background: var(--white);
             text-align: center;
             padding: 24px;
         }
@@ -106,7 +105,7 @@
             height: 100vh;
             height: 100dvh;
             padding: 32px 24px;
-            background: var(--papyrus);
+            background: var(--white);
             text-align: center;
             overflow: hidden;
         }
@@ -407,7 +406,7 @@
 
         @media (max-width: 430px) {
             body {
-                background-color: var(--papyrus);
+                background-color: var(--white);
             }
             
             .mobile-viewport {
@@ -495,3 +494,250 @@
                 // Wait for all images to load
                 await Promise.all(imagePromises);
                 allImagesLoaded = true;
+                
+                // Hide loading screen and show landing page
+                document.getElementById('loadingScreen').classList.add('hidden');
+                document.getElementById('landingPage').classList.remove('hidden');
+                
+            } catch (error) {
+                console.error('Error loading sprites:', error);
+                document.getElementById('loadingScreen').innerHTML = '<p class="loading-text">ERROR<br>LOADING<br>SPRITES</p>';
+            }
+        }
+        
+        // Start button click handler
+        document.getElementById('startBtn').addEventListener('click', async () => {
+            // Only proceed if all images are loaded
+            if (!allImagesLoaded) {
+                return;
+            }
+            
+            document.getElementById('landingPage').classList.add('hidden');
+            document.getElementById('app').classList.remove('hidden');
+            
+            if (!dataLoaded) {
+                await loadData();
+            } else {
+                startQuiz();
+            }
+        });
+        
+        async function loadData() {
+            try {
+                const questionsData = await fetchCSV(QUESTIONS_URL);
+                const profilesData = await fetchCSV(PROFILES_URL);
+                questions = parseQuestions(questionsData);
+                profiles = parseProfiles(profilesData);
+                
+                // Preload all question background images
+                await preloadQuestionImages();
+                
+                dataLoaded = true;
+                startQuiz();
+            } catch (error) {
+                document.getElementById('app').innerHTML = `<div class="loading-text">ERROR<br>LOADING<br>DATA</div>`;
+                console.error('Error:', error);
+            }
+        }
+        
+        async function preloadQuestionImages() {
+            const imagePromises = questions.map(q => {
+                return new Promise((resolve) => {
+                    if (!q.background || q.background.trim() === "") {
+                        resolve();
+                        return;
+                    }
+                    
+                    let imageUrl = q.background.trim();
+                    if (imageUrl.includes('ibb.co/')) {
+                        const match = imageUrl.match(/ibb\.co\/([a-zA-Z0-9]+)/);
+                        if (match) {
+                            const imageId = match[1];
+                            imageUrl = `https://i.ibb.co/${imageId}/image.png`;
+                        }
+                    }
+                    
+                    const img = new Image();
+                    img.onload = () => resolve();
+                    img.onerror = () => resolve(); // Resolve anyway to not block
+                    img.src = imageUrl;
+                });
+            });
+            
+            await Promise.all(imagePromises);
+        }
+        
+        function fetchCSV(url) {
+            return new Promise((resolve, reject) => {
+                Papa.parse(url, {
+                    download: true,
+                    header: true,
+                    skipEmptyLines: true,
+                    complete: (results) => resolve(results.data),
+                    error: (error) => reject(error)
+                });
+            });
+        }
+        
+        function getFieldValue(row, baseName, index = "") {
+            const searchName = (baseName + index).toLowerCase().replace(/[^a-z0-9]/g, "");
+            const key = Object.keys(row).find(k => k.toLowerCase().replace(/[^a-z0-9]/g, "") === searchName);
+            return key ? row[key] : null;
+        }
+        
+        function parseQuestions(data) {
+            return data.map(row => {
+                const questionText = getFieldValue(row, "question");
+                if (!questionText) return null;
+
+                const options = [];
+                for (let i = 1; i <= 4; i++) {
+                    const text = getFieldValue(row, "option", i);
+                    const trait = getFieldValue(row, "trait", i);
+                    if (text) options.push({ text, trait });
+                }
+
+                const bg = row['Background'] || row['background'] || '';
+
+                return { question: questionText, options, background: bg };
+            }).filter(q => q !== null);
+        }
+        
+        function parseProfiles(data) {
+            return data.map(row => ({
+                mbti: row.MBTI || row.mbti,
+                animal: row.Animal || row.animal,
+                sprite: row.Sprite || row.sprite,
+                vibe: row.Vibe || row.vibe,
+                profile: row.Profiles || row.profiles || row.Profile || row.profile
+            })).filter(p => p.mbti);
+        }
+        
+        function startQuiz() {
+            currentQuestion = 0;
+            scores = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
+            renderQuestion();
+        }
+        
+        function renderQuestion() {
+            const q = questions[currentQuestion];
+            const progress = (currentQuestion / questions.length) * 100;
+            const appDiv = document.getElementById('app');
+            
+            let bgImageHTML = '';
+            if (q.background && q.background.trim() !== "") {
+                let imageUrl = q.background.trim();
+                if (imageUrl.includes('ibb.co/')) {
+                    const match = imageUrl.match(/ibb\.co\/([a-zA-Z0-9]+)/);
+                    if (match) {
+                        const imageId = match[1];
+                        imageUrl = `https://i.ibb.co/${imageId}/image.png`;
+                    }
+                }
+                bgImageHTML = `<div class="question-bg-img"><img src="${imageUrl}" alt="Question background" onerror="this.parentElement.style.display='none'"></div>`;
+            }
+
+            appDiv.innerHTML = `
+                ${bgImageHTML}
+                <div class="question-text">${q.question}</div>
+                <div class="options" id="optionsContainer"></div>
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${progress}%"></div>
+                    </div>
+                </div>
+            `;
+            
+            const optionsContainer = document.getElementById('optionsContainer');
+            q.options.forEach((opt, i) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.textContent = opt.text;
+                btn.addEventListener('click', () => selectOption(i, btn));
+                optionsContainer.appendChild(btn);
+            });
+        }
+        
+        function selectOption(optionIndex, buttonElement) {
+            const option = questions[currentQuestion].options[optionIndex];
+            
+            // Add visual feedback
+            buttonElement.classList.add('selected');
+            
+            let traitStr = option.trait ? String(option.trait).trim() : null;
+
+            if (traitStr) {
+                const match = traitStr.match(/([A-Z])\s*\(?\+?(\d+)\)?/i);
+                let letter, value;
+                if (match) {
+                    letter = match[1].toUpperCase();
+                    value = parseInt(match[2]);
+                } else {
+                    letter = traitStr.charAt(0).toUpperCase();
+                    value = 1;
+                }
+                if (scores.hasOwnProperty(letter)) scores[letter] += value;
+            }
+
+            // Delay before moving to next question
+            setTimeout(() => {
+                currentQuestion++;
+                if (currentQuestion < questions.length) {
+                    renderQuestion();
+                } else {
+                    showResults();
+                }
+            }, 50);
+        }
+        
+        function calculateMBTI() {
+            let mbti = '';
+            mbti += scores.E > scores.I ? 'E' : 'I';
+            mbti += scores.S > scores.N ? 'S' : 'N';
+            mbti += scores.T > scores.F ? 'T' : 'F';
+            mbti += scores.J > scores.P ? 'J' : 'P';
+            return mbti;
+        }
+        
+        function showResults() {
+            const mbti = calculateMBTI();
+            const result = profiles.find(p => p.mbti === mbti) || profiles[0];
+
+            const profileLines = result.profile.split('\n').filter(p => p.trim() !== '');
+            const profileBoxes = [];
+            
+            let currentBox = '';
+            for (let i = 0; i < profileLines.length; i++) {
+                const line = profileLines[i].trim();
+                const nextLine = i < profileLines.length - 1 ? profileLines[i + 1].trim() : '';
+                const isHeading = line.length < 30 && nextLine.length > 30;
+                
+                if (isHeading) {
+                    if (currentBox) profileBoxes.push(currentBox);
+                    currentBox = `<span class="profile-heading">${line}</span>`;
+                } else {
+                    if (currentBox) currentBox += line;
+                    else currentBox = line;
+                }
+            }
+            if (currentBox) profileBoxes.push(currentBox);
+            
+            document.getElementById('app').innerHTML = `
+                <div class="result-container">
+                    <div class="result-content">
+                        <div class="animal-name">${result.animal}</div>
+                        <img src="${result.sprite}" alt="${result.animal}" class="sprite-img" onerror="this.style.display='none'">
+                        <div class="vibe-text">${result.vibe}</div>
+                        ${profileBoxes.map(box => `<div class="profile-box">${box}</div>`).join('')}
+                    </div>
+                    <button class="restart-btn" id="restartBtn">RESTART QUIZ</button>
+                </div>
+            `;
+            document.getElementById('restartBtn').addEventListener('click', () => {
+                document.getElementById('app').classList.add('hidden');
+                document.getElementById('landingPage').classList.remove('hidden');
+            });
+        }
+    </script>
+</body>
+</html>
