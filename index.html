@@ -219,9 +219,9 @@
 
         .question-text {
             font-family: 'Press Start 2P';
-            font-size: clamp(7px, 2.5vw, 11px);
+            font-size: clamp(8px, 2.8vw, 12px);
             line-height: 1.6;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             padding: 10px;
             background: var(--white);
             text-align: left;
@@ -232,7 +232,7 @@
         .options {
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 10px;
             flex-shrink: 0;
             overflow: hidden;
             margin-bottom: 8px;
@@ -244,8 +244,8 @@
             color: var(--ink);
             border: none;
             border-radius: 12px;
-            padding: 10px;
-            font-size: clamp(8px, 2.8vw, 12px);
+            padding: 14px;
+            font-size: clamp(10px, 3vw, 14px);
             font-weight: 700;
             text-align: left;
             cursor: pointer;
@@ -253,6 +253,7 @@
             transition: all 0.2s ease;
             flex-shrink: 0;
             position: relative;
+            min-height: 48px;
         }
 
         .option-btn:hover {
@@ -407,6 +408,31 @@
             display: none !important;
         }
 
+        /* Debug styles */
+        .debug-info {
+            position: fixed;
+            bottom: 10px;
+            left: 10px;
+            background: rgba(0, 0, 0, 0.8);
+            color: #00ff00;
+            padding: 10px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 10px;
+            max-width: 200px;
+            z-index: 9999;
+        }
+
+        .debug-trait {
+            display: inline-block;
+            background: rgba(255, 255, 0, 0.3);
+            padding: 2px 4px;
+            border-radius: 3px;
+            margin-left: 4px;
+            font-size: 9px;
+            font-family: monospace;
+        }
+
         @media (max-width: 430px) {
             body {
                 background-color: var(--white);
@@ -446,6 +472,10 @@
     </div>
 
     <script>
+        // ==================== DEBUG CONFIGURATION ====================
+        const DEBUG_MODE = false; // Set to true to enable debugging, false to disable
+        // =============================================================
+
         const QUESTIONS_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTl7KuGBmEGEHqavwmPHRCLRvFHwvzSKVcKMRCEw0aWPej50cAVUrA_Oh1PIMSY6yKL4B8OEh7tqR1d/pub?gid=0&single=true&output=csv';
         const PROFILES_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTl7KuGBmEGEHqavwmPHRCLRvFHwvzSKVcKMRCEw0aWPej50cAVUrA_Oh1PIMSY6yKL4B8OEh7tqR1d/pub?gid=1646208880&single=true&output=csv';
         
@@ -455,6 +485,34 @@
         let scores = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
         let dataLoaded = false;
         let allImagesLoaded = false;
+        let debugElement = null;
+        
+        // Debug functions
+        function createDebugDisplay() {
+            if (!DEBUG_MODE) return;
+            debugElement = document.createElement('div');
+            debugElement.className = 'debug-info';
+            document.body.appendChild(debugElement);
+            updateDebugDisplay();
+        }
+
+        function updateDebugDisplay() {
+            if (!DEBUG_MODE || !debugElement) return;
+            debugElement.innerHTML = `
+                <strong>SCORES:</strong><br>
+                E: ${scores.E} | I: ${scores.I}<br>
+                S: ${scores.S} | N: ${scores.N}<br>
+                T: ${scores.T} | F: ${scores.F}<br>
+                J: ${scores.J} | P: ${scores.P}<br>
+                <strong>Q: ${currentQuestion + 1}/${questions.length}</strong>
+            `;
+        }
+
+        function logDebug(message) {
+            if (DEBUG_MODE) {
+                console.log(`[DEBUG] ${message}`);
+            }
+        }
         
         // Load sprites on page load
         loadSprites();
@@ -466,6 +524,43 @@
                 
                 const spriteGrid = document.getElementById('spriteGrid');
                 
+                // Find black cat and golden retriever indices
+                let blackCatIndex = -1;
+                let goldenRetrieverIndex = -1;
+                
+                parsedProfiles.forEach((profile, index) => {
+                    const animalLower = profile.animal.toLowerCase();
+                    if (animalLower.includes('black cat')) {
+                        blackCatIndex = index;
+                    }
+                    if (animalLower.includes('golden retriever')) {
+                        goldenRetrieverIndex = index;
+                    }
+                });
+
+                // Swap positions if needed to put them next to each other
+                if (blackCatIndex !== -1 && goldenRetrieverIndex !== -1) {
+                    // Put them at positions 1 and 2 (indices 1 and 2 in the middle-top row)
+                    const temp1 = parsedProfiles[1];
+                    const temp2 = parsedProfiles[2];
+                    
+                    parsedProfiles[1] = parsedProfiles[blackCatIndex];
+                    parsedProfiles[2] = parsedProfiles[goldenRetrieverIndex];
+                    
+                    if (blackCatIndex === 1) {
+                        parsedProfiles[goldenRetrieverIndex] = temp2;
+                    } else if (blackCatIndex === 2) {
+                        parsedProfiles[goldenRetrieverIndex] = temp1;
+                    } else if (goldenRetrieverIndex === 1) {
+                        parsedProfiles[blackCatIndex] = temp2;
+                    } else if (goldenRetrieverIndex === 2) {
+                        parsedProfiles[blackCatIndex] = temp1;
+                    } else {
+                        parsedProfiles[blackCatIndex] = temp1;
+                        parsedProfiles[goldenRetrieverIndex] = temp2;
+                    }
+                }
+                
                 // Create array to track image loading
                 const imagePromises = [];
                 
@@ -473,11 +568,8 @@
                     const spriteItem = document.createElement('div');
                     spriteItem.className = 'sprite-grid-item';
                     
-                    // Turn on lights for black cat and golden retriever by default
-                    // Assuming black cat and golden retriever are specific animals in your data
-                    // You may need to adjust this based on your actual data
-                    const animalLower = profile.animal.toLowerCase();
-                    if (animalLower.includes('black cat') || animalLower.includes('golden retriever')) {
+                    // Turn on lights for positions 1 and 2 (black cat and golden retriever)
+                    if (index === 1 || index === 2) {
                         spriteItem.classList.add('lit');
                     }
                     
@@ -544,6 +636,7 @@
                 await preloadQuestionImages();
                 
                 dataLoaded = true;
+                createDebugDisplay();
                 startQuiz();
             } catch (error) {
                 document.getElementById('app').innerHTML = `<div class="loading-text">ERROR<br>LOADING<br>DATA</div>`;
@@ -627,6 +720,7 @@
         function startQuiz() {
             currentQuestion = 0;
             scores = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
+            updateDebugDisplay();
             renderQuestion();
         }
         
@@ -634,6 +728,8 @@
             const q = questions[currentQuestion];
             const progress = (currentQuestion / questions.length) * 100;
             const appDiv = document.getElementById('app');
+            
+            logDebug(`Rendering question ${currentQuestion + 1}/${questions.length}`);
             
             let bgImageHTML = '';
             if (q.background && q.background.trim() !== "") {
@@ -663,10 +759,21 @@
             q.options.forEach((opt, i) => {
                 const btn = document.createElement('button');
                 btn.className = 'option-btn';
-                btn.textContent = opt.text;
+                
+                // Add debug trait display if enabled
+                if (DEBUG_MODE && opt.trait) {
+                    btn.innerHTML = `${opt.text} <span class="debug-trait">${opt.trait}</span>`;
+                } else {
+                    btn.textContent = opt.text;
+                }
+                
                 btn.addEventListener('click', () => selectOption(i, btn));
                 optionsContainer.appendChild(btn);
+                
+                logDebug(`Option ${i + 1}: "${opt.text}" -> ${opt.trait || 'no trait'}`);
             });
+            
+            updateDebugDisplay();
         }
         
         function selectOption(optionIndex, buttonElement) {
@@ -687,8 +794,13 @@
                     letter = traitStr.charAt(0).toUpperCase();
                     value = 1;
                 }
-                if (scores.hasOwnProperty(letter)) scores[letter] += value;
+                if (scores.hasOwnProperty(letter)) {
+                    scores[letter] += value;
+                    logDebug(`Selected: ${letter} +${value}. New score: ${letter}=${scores[letter]}`);
+                }
             }
+
+            updateDebugDisplay();
 
             // Delay before moving to next question
             setTimeout(() => {
@@ -707,12 +819,15 @@
             mbti += scores.S > scores.N ? 'S' : 'N';
             mbti += scores.T > scores.F ? 'T' : 'F';
             mbti += scores.J > scores.P ? 'J' : 'P';
+            logDebug(`Final MBTI: ${mbti}`);
             return mbti;
         }
         
         function showResults() {
             const mbti = calculateMBTI();
             const result = profiles.find(p => p.mbti === mbti) || profiles[0];
+
+            logDebug(`Showing result: ${result.animal} (${mbti})`);
 
             const profileLines = result.profile.split('\n').filter(p => p.trim() !== '');
             const profileBoxes = [];
