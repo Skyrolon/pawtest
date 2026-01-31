@@ -1,4 +1,4 @@
-r<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -20,9 +20,9 @@ r<!DOCTYPE html>
             /* Accent colors */
             --bold-red: #E57373;
             --bold-blue: #64B5F6;
-            --progress-blue: #E3F2FD;
+            --progress-blue: #90CAF9;
             --progress-border: #FFFFFF;
-            --light-beige: ##faf0e6;
+            --light-beige: #faf0e6;
             
             --paper: #FAFAFA;
             --light-grey: #E8E8E8;
@@ -277,15 +277,18 @@ r<!DOCTYPE html>
             width: 100%;
             height: 16px;
             background: var(--light-beige);
-            border: 2px solid var(--light-beige);
+            border: none;
             border-radius: 8px;
             overflow: hidden;
+            position: relative;
         }
 
         .progress-fill {
             height: 100%;
             background: var(--progress-blue);
             transition: width 0.3s ease;
+            position: relative;
+            z-index: 1;
         }
 
         .result-container {
@@ -466,9 +469,17 @@ r<!DOCTYPE html>
                 // Create array to track image loading
                 const imagePromises = [];
                 
-                parsedProfiles.forEach(profile => {
+                parsedProfiles.forEach((profile, index) => {
                     const spriteItem = document.createElement('div');
                     spriteItem.className = 'sprite-grid-item';
+                    
+                    // Turn on lights for black cat and golden retriever by default
+                    // Assuming black cat and golden retriever are specific animals in your data
+                    // You may need to adjust this based on your actual data
+                    const animalLower = profile.animal.toLowerCase();
+                    if (animalLower.includes('black cat') || animalLower.includes('golden retriever')) {
+                        spriteItem.classList.add('lit');
+                    }
                     
                     const img = document.createElement('img');
                     img.alt = profile.animal;
