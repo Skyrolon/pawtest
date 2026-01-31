@@ -108,7 +108,7 @@
             height: 70px;
             border: 2px solid var(--ink);
             border-radius: 12px;
-            background: var(--paper);
+            background: #3a3a3a;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -116,11 +116,10 @@
             position: relative;
             cursor: pointer;
             transition: all 0.3s ease;
-            filter: brightness(0.05);
         }
 
         .sprite-grid-item.lit {
-            filter: brightness(1);
+            background: var(--paper);
         }
 
         .sprite-grid-item:nth-child(1) { border-color: var(--brick-red); }
@@ -146,6 +145,12 @@
             object-fit: contain;
             image-rendering: pixelated;
             pointer-events: none;
+            opacity: 0.1;
+            transition: opacity 0.3s ease;
+        }
+
+        .sprite-grid-item.lit img {
+            opacity: 1;
         }
 
         .landing-subtitle {
@@ -289,7 +294,7 @@
             height: 100%;
             overflow-y: auto;
             overflow-x: hidden;
-            padding-bottom: 16px;
+            padding-bottom: 80px;
         }
 
         /* Hide scrollbar but keep functionality */
@@ -379,9 +384,11 @@
             cursor: pointer;
             text-transform: uppercase;
             margin-top: 8px;
+            margin-bottom: 16px;
             transition: 0.1s;
             font-size: 11px;
             line-height: 1.4;
+            flex-shrink: 0;
         }
 
         .restart-btn:active {
