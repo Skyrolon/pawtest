@@ -25,6 +25,7 @@
             
             --paper: #FAFAFA;
             --ink: #222222;
+            --dark-grey: #4A4A4A;
             --white: #FFFFFF;
             
             /* Border colors for sprites */
@@ -119,7 +120,7 @@
         .sprite-grid-item {
             width: 70px;
             height: 70px;
-            border: 2px solid var(--ink);
+            border: 1px solid var(--ink);
             border-radius: 12px;
             background: #3a3a3a;
             display: flex;
@@ -194,7 +195,7 @@
             padding: 20px 40px;
             background: var(--bold-red);
             color: var(--white);
-            border: 4px solid var(--ink);
+            border: 1px solid var(--ink);
             border-radius: 12px;
             cursor: pointer;
             text-transform: uppercase;
@@ -255,7 +256,7 @@
             width: 100%;
             background: var(--white);
             color: var(--ink);
-            border: 3px solid var(--ink);
+            border: 1px solid var(--dark-grey);
             border-radius: 12px;
             padding: 10px;
             font-size: clamp(8px, 2.8vw, 12px);
@@ -290,7 +291,7 @@
             width: 100%;
             height: 16px;
             background: var(--white);
-            border: 3px solid var(--progress-border);
+            border: 1px solid var(--progress-border);
             border-radius: 8px;
             overflow: hidden;
         }
@@ -327,18 +328,11 @@
             color: var(--white);
             padding: 12px;
             text-align: center;
-            border: none;
+            border: 1px solid var(--ink);
             border-radius: 12px;
             margin-bottom: 16px;
             text-transform: uppercase;
             line-height: 1.4;
-        }
-
-        .sprite-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-bottom: 16px;
         }
 
         .sprite-img {
@@ -346,41 +340,7 @@
             height: auto;
             image-rendering: pixelated;
             display: block;
-            margin-bottom: -20px;
-            z-index: 2;
-            position: relative;
-        }
-
-        .rug {
-            width: 220px;
-            height: 80px;
-            background: linear-gradient(to bottom, 
-                #8B4513 0%, 
-                #A0522D 10%, 
-                #8B4513 20%,
-                #A0522D 30%,
-                #8B4513 40%,
-                #A0522D 50%,
-                #8B4513 60%,
-                #A0522D 70%,
-                #8B4513 80%,
-                #A0522D 90%,
-                #8B4513 100%
-            );
-            border-radius: 50%;
-            position: relative;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-
-        .rug::before {
-            content: '';
-            position: absolute;
-            top: 5px;
-            left: 10px;
-            right: 10px;
-            bottom: 5px;
-            border: 2px solid #D2691E;
-            border-radius: 50%;
+            margin: 0 auto 16px;
         }
 
         .vibe-text {
@@ -397,7 +357,7 @@
         }
 
         .profile-box {
-            border: none;
+            border: 1px solid var(--ink);
             border-radius: 12px;
             padding: 12px;
             margin-bottom: 12px;
@@ -426,7 +386,7 @@
             font-size: 9px;
             margin-bottom: 8px;
             display: block;
-            border-bottom: 2px dashed currentColor;
+            border-bottom: 1px dashed currentColor;
             padding-bottom: 4px;
             text-transform: uppercase;
             line-height: 1.4;
@@ -438,7 +398,7 @@
             padding: 16px;
             background: var(--bold-blue);
             color: var(--white);
-            border: none;
+            border: 1px solid var(--ink);
             border-radius: 12px;
             cursor: pointer;
             text-transform: uppercase;
@@ -473,7 +433,7 @@
     <div class="mobile-viewport">
         <!-- Loading Screen -->
         <div class="loading-screen" id="loadingScreen">
-            <p class="loading-text">LOADING<br>SPRITES...</p>
+            <p class="loading-text">LOADING...</p>
         </div>
 
         <!-- Landing Page -->
@@ -482,8 +442,8 @@
                 <!-- Sprites will be loaded here -->
             </div>
             
-            <p class="landing-subtitle">FIND OUT WHAT ANIMAL YOU ARE</p>
-            <p class="landing-subtext">Can you get the prized black cat or golden retriever?</p>
+            <p class="landing-subtitle">FIND OUT WHAT <br>ANIMAL YOU ARE</p>
+            <p class="landing-subtext">Are you a black cat or golden retriever or something else...</p>
             
             <button class="start-btn" id="startBtn">Start Test</button>
         </div>
@@ -505,6 +465,7 @@
         let currentQuestion = 0;
         let scores = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
         let dataLoaded = false;
+        let allImagesLoaded = false;
         
         // Load sprites on page load
         loadSprites();
@@ -546,6 +507,7 @@
                 
                 // Wait for all images to load
                 await Promise.all(imagePromises);
+                allImagesLoaded = true;
                 
                 // Hide loading screen and show landing page
                 document.getElementById('loadingScreen').classList.add('hidden');
@@ -558,12 +520,17 @@
         }
         
         // Start button click handler
-        document.getElementById('startBtn').addEventListener('click', () => {
+        document.getElementById('startBtn').addEventListener('click', async () => {
+            // Only proceed if all images are loaded
+            if (!allImagesLoaded) {
+                return;
+            }
+            
             document.getElementById('landingPage').classList.add('hidden');
             document.getElementById('app').classList.remove('hidden');
             
             if (!dataLoaded) {
-                loadData();
+                await loadData();
             } else {
                 startQuiz();
             }
@@ -575,12 +542,43 @@
                 const profilesData = await fetchCSV(PROFILES_URL);
                 questions = parseQuestions(questionsData);
                 profiles = parseProfiles(profilesData);
+                
+                // Preload all question background images
+                await preloadQuestionImages();
+                
                 dataLoaded = true;
                 startQuiz();
             } catch (error) {
                 document.getElementById('app').innerHTML = `<div class="loading-text">ERROR<br>LOADING<br>DATA</div>`;
                 console.error('Error:', error);
             }
+        }
+        
+        async function preloadQuestionImages() {
+            const imagePromises = questions.map(q => {
+                return new Promise((resolve) => {
+                    if (!q.background || q.background.trim() === "") {
+                        resolve();
+                        return;
+                    }
+                    
+                    let imageUrl = q.background.trim();
+                    if (imageUrl.includes('ibb.co/')) {
+                        const match = imageUrl.match(/ibb\.co\/([a-zA-Z0-9]+)/);
+                        if (match) {
+                            const imageId = match[1];
+                            imageUrl = `https://i.ibb.co/${imageId}/image.png`;
+                        }
+                    }
+                    
+                    const img = new Image();
+                    img.onload = () => resolve();
+                    img.onerror = () => resolve(); // Resolve anyway to not block
+                    img.src = imageUrl;
+                });
+            });
+            
+            await Promise.all(imagePromises);
         }
         
         function fetchCSV(url) {
@@ -742,10 +740,7 @@
                 <div class="result-container">
                     <div class="result-content">
                         <div class="animal-name">${result.animal}</div>
-                        <div class="sprite-container">
-                            <img src="${result.sprite}" alt="${result.animal}" class="sprite-img" onerror="this.style.display='none'">
-                            <div class="rug"></div>
-                        </div>
+                        <img src="${result.sprite}" alt="${result.animal}" class="sprite-img" onerror="this.style.display='none'">
                         <div class="vibe-text">${result.vibe}</div>
                         ${profileBoxes.map(box => `<div class="profile-box">${box}</div>`).join('')}
                     </div>
