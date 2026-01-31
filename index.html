@@ -55,9 +55,29 @@
             width: 100%;
             height: 100%;
             padding: 16px;
+            padding-bottom: 24px;
             display: flex;
             flex-direction: column;
             overflow: hidden;
+        }
+
+        /* Initial Loading Screen */
+        .loading-screen {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            height: 100dvh;
+            background: var(--white);
+            text-align: center;
+        }
+
+        .loading-text {
+            font-family: 'Press Start 2P';
+            font-size: 12px;
+            color: var(--ink);
+            line-height: 1.6;
         }
 
         /* Landing Page Styles */
@@ -92,16 +112,15 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            overflow: visible;
+            overflow: hidden;
             position: relative;
-            cursor: move;
-            transition: transform 0.1s ease;
-            touch-action: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            filter: brightness(0.3);
         }
 
-        .sprite-grid-item.dragging {
-            opacity: 0.5;
-            z-index: 1000;
+        .sprite-grid-item.lit {
+            filter: brightness(1);
         }
 
         .sprite-grid-item:nth-child(1) { border-color: var(--brick-red); }
@@ -237,6 +256,7 @@
             gap: 8px;
             flex-shrink: 0;
             overflow: hidden;
+            margin-bottom: 12px;
         }
 
         .option-btn {
@@ -251,8 +271,9 @@
             text-align: left;
             cursor: pointer;
             font-family: 'Space Mono', monospace;
-            transition: transform 0.1s ease;
+            transition: all 0.2s ease;
             flex-shrink: 0;
+            position: relative;
         }
 
         .option-btn:hover {
@@ -260,13 +281,16 @@
         }
 
         .option-btn:active {
-            transform: translateY(4px);
+            transform: scale(0.98);
+        }
+
+        .option-btn.selected {
             background: var(--yellow);
+            transform: scale(0.95);
         }
 
         .progress-container {
             margin-top: auto;
-            padding-top: 12px;
             flex-shrink: 0;
         }
 
@@ -291,6 +315,7 @@
             height: 100%;
             overflow-y: auto;
             overflow-x: hidden;
+            padding-bottom: 16px;
         }
 
         /* Hide scrollbar but keep functionality */
@@ -347,45 +372,16 @@
             line-height: 1.6;
         }
 
-        .profile-box:nth-child(4) {
-            background: var(--mint);
-        }
-
-        .profile-box:nth-child(4) .profile-heading {
-            color: #2D5F3F;
-        }
-
-        .profile-box:nth-child(5) {
-            background: var(--peach);
-        }
-
-        .profile-box:nth-child(5) .profile-heading {
-            color: #B8643C;
-        }
-
-        .profile-box:nth-child(6) {
-            background: var(--lavender);
-        }
-
-        .profile-box:nth-child(6) .profile-heading {
-            color: #6B4C8C;
-        }
-
-        .profile-box:nth-child(7) {
-            background: var(--sky);
-        }
-
-        .profile-box:nth-child(7) .profile-heading {
-            color: #2E5C8A;
-        }
-
-        .profile-box:nth-child(8) {
-            background: var(--yellow);
-        }
-
-        .profile-box:nth-child(8) .profile-heading {
-            color: #8B6914;
-        }
+        .profile-box:nth-child(4) { background: var(--mint); }
+        .profile-box:nth-child(4) .profile-heading { color: #2D5F3F; }
+        .profile-box:nth-child(5) { background: var(--peach); }
+        .profile-box:nth-child(5) .profile-heading { color: #B8643C; }
+        .profile-box:nth-child(6) { background: var(--lavender); }
+        .profile-box:nth-child(6) .profile-heading { color: #6B4C8C; }
+        .profile-box:nth-child(7) { background: var(--sky); }
+        .profile-box:nth-child(7) .profile-heading { color: #2E5C8A; }
+        .profile-box:nth-child(8) { background: var(--yellow); }
+        .profile-box:nth-child(8) .profile-heading { color: #8B6914; }
         
         .profile-heading {
             font-family: 'Press Start 2P';
@@ -418,16 +414,8 @@
             transform: translateY(4px);
         }
 
-        .loading {
-            text-align: center;
-            font-family: 'Press Start 2P';
-            padding: 40px 16px;
-            font-size: 12px;
-            line-height: 1.6;
-        }
-
         .hidden {
-            display: none;
+            display: none !important;
         }
 
         @media (max-width: 430px) {
@@ -443,8 +431,13 @@
 </head>
 <body>
     <div class="mobile-viewport">
+        <!-- Loading Screen -->
+        <div class="loading-screen" id="loadingScreen">
+            <p class="loading-text">LOADING<br>SPRITES...</p>
+        </div>
+
         <!-- Landing Page -->
-        <div class="landing-page" id="landingPage">
+        <div class="landing-page hidden" id="landingPage">
             <div class="sprite-grid" id="spriteGrid">
                 <!-- Sprites will be loaded here -->
             </div>
@@ -457,7 +450,7 @@
 
         <!-- Quiz Container -->
         <div class="container hidden" id="app">
-            <div class="loading">LOADING DATA...</div>
+            <div class="loading-text">LOADING DATA...</div>
         </div>
     </div>
 
@@ -470,100 +463,6 @@
         let currentQuestion = 0;
         let scores = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
         let dataLoaded = false;
-        
-        // Drag and drop functionality
-        let draggedElement = null;
-        let draggedIndex = null;
-        
-        function initDragAndDrop() {
-            const spriteGrid = document.getElementById('spriteGrid');
-            const items = spriteGrid.querySelectorAll('.sprite-grid-item');
-            
-            items.forEach((item, index) => {
-                // Mouse events
-                item.addEventListener('mousedown', (e) => startDrag(e, item, index));
-                
-                // Touch events
-                item.addEventListener('touchstart', (e) => {
-                    e.preventDefault();
-                    startDrag(e.touches[0], item, index);
-                });
-                
-                item.addEventListener('dragover', (e) => e.preventDefault());
-                item.addEventListener('drop', (e) => handleDrop(e, index));
-                
-                // Click for sparkles
-                item.addEventListener('click', (e) => {
-                    if (!draggedElement) {
-                        createSparkles(item);
-                    }
-                });
-            });
-            
-            document.addEventListener('mousemove', handleDragMove);
-            document.addEventListener('mouseup', endDrag);
-            document.addEventListener('touchmove', (e) => handleDragMove(e.touches[0]));
-            document.addEventListener('touchend', endDrag);
-        }
-        
-        function startDrag(e, item, index) {
-            draggedElement = item;
-            draggedIndex = index;
-            item.classList.add('dragging');
-        }
-        
-        function handleDragMove(e) {
-            if (!draggedElement) return;
-            e.preventDefault();
-        }
-        
-        function endDrag(e) {
-            if (!draggedElement) return;
-            
-            const spriteGrid = document.getElementById('spriteGrid');
-            const items = Array.from(spriteGrid.querySelectorAll('.sprite-grid-item'));
-            
-            // Find which item we're hovering over
-            let targetIndex = null;
-            items.forEach((item, index) => {
-                if (item === draggedElement) return;
-                const rect = item.getBoundingClientRect();
-                const clientX = e.clientX || (e.changedTouches && e.changedTouches[0].clientX);
-                const clientY = e.clientY || (e.changedTouches && e.changedTouches[0].clientY);
-                
-                if (clientX >= rect.left && clientX <= rect.right &&
-                    clientY >= rect.top && clientY <= rect.bottom) {
-                    targetIndex = index;
-                }
-            });
-            
-            // Swap positions
-            if (targetIndex !== null && targetIndex !== draggedIndex) {
-                const draggedHTML = draggedElement.innerHTML;
-                const targetHTML = items[targetIndex].innerHTML;
-                
-                draggedElement.innerHTML = targetHTML;
-                items[targetIndex].innerHTML = draggedHTML;
-            }
-            
-            draggedElement.classList.remove('dragging');
-            draggedElement = null;
-            draggedIndex = null;
-        }
-        
-        function handleDrop(e, targetIndex) {
-            e.preventDefault();
-            if (draggedElement && draggedIndex !== targetIndex) {
-                const spriteGrid = document.getElementById('spriteGrid');
-                const items = Array.from(spriteGrid.querySelectorAll('.sprite-grid-item'));
-                
-                const draggedHTML = draggedElement.innerHTML;
-                const targetHTML = items[targetIndex].innerHTML;
-                
-                draggedElement.innerHTML = targetHTML;
-                items[targetIndex].innerHTML = draggedHTML;
-            }
-        }
         
         // Sparkle effect
         function createSparkles(element) {
@@ -604,17 +503,46 @@
                 const parsedProfiles = parseProfiles(profilesData);
                 
                 const spriteGrid = document.getElementById('spriteGrid');
+                
+                // Create array to track image loading
+                const imagePromises = [];
+                
                 parsedProfiles.forEach(profile => {
                     const spriteItem = document.createElement('div');
                     spriteItem.className = 'sprite-grid-item';
-                    spriteItem.innerHTML = `<img src="${profile.sprite}" alt="${profile.animal}">`;
-                    spriteItem.draggable = true;
+                    
+                    const img = document.createElement('img');
+                    img.alt = profile.animal;
+                    
+                    // Create promise for image loading
+                    const imagePromise = new Promise((resolve, reject) => {
+                        img.onload = () => resolve();
+                        img.onerror = () => resolve(); // Resolve anyway to not block
+                    });
+                    imagePromises.push(imagePromise);
+                    
+                    img.src = profile.sprite;
+                    spriteItem.appendChild(img);
+                    
+                    // Add click event to "turn on the lights"
+                    spriteItem.addEventListener('click', () => {
+                        spriteItem.classList.add('lit');
+                        createSparkles(spriteItem);
+                    });
+                    
                     spriteGrid.appendChild(spriteItem);
                 });
                 
-                initDragAndDrop();
+                // Wait for all images to load
+                await Promise.all(imagePromises);
+                
+                // Hide loading screen and show landing page
+                document.getElementById('loadingScreen').classList.add('hidden');
+                document.getElementById('landingPage').classList.remove('hidden');
+                
             } catch (error) {
                 console.error('Error loading sprites:', error);
+                document.getElementById('loadingScreen').innerHTML = '<p class="loading-text">ERROR<br>LOADING<br>SPRITES</p>';
             }
         }
         
@@ -639,7 +567,7 @@
                 dataLoaded = true;
                 startQuiz();
             } catch (error) {
-                document.getElementById('app').innerHTML = `<div class="loading">ERROR LOADING DATA</div>`;
+                document.getElementById('app').innerHTML = `<div class="loading-text">ERROR<br>LOADING<br>DATA</div>`;
                 console.error('Error:', error);
             }
         }
@@ -716,7 +644,7 @@
 
             appDiv.innerHTML = `
                 ${bgImageHTML}
-                <div class="question-text" id="questionText">${q.question}</div>
+                <div class="question-text">${q.question}</div>
                 <div class="options" id="optionsContainer"></div>
                 <div class="progress-container">
                     <div class="progress-bar">
@@ -730,18 +658,17 @@
                 const btn = document.createElement('button');
                 btn.className = 'option-btn';
                 btn.textContent = opt.text;
-                btn.addEventListener('click', () => selectOption(i));
+                btn.addEventListener('click', () => selectOption(i, btn));
                 optionsContainer.appendChild(btn);
             });
-            
-            // Adjust font size after rendering
-            setTimeout(() => {
-                adjustFontSize();
-            }, 50);
         }
         
-        function selectOption(optionIndex) {
+        function selectOption(optionIndex, buttonElement) {
             const option = questions[currentQuestion].options[optionIndex];
+            
+            // Add visual feedback
+            buttonElement.classList.add('selected');
+            
             let traitStr = option.trait ? String(option.trait).trim() : null;
 
             if (traitStr) {
@@ -757,12 +684,15 @@
                 if (scores.hasOwnProperty(letter)) scores[letter] += value;
             }
 
-            currentQuestion++;
-            if (currentQuestion < questions.length) {
-                renderQuestion();
-            } else {
-                showResults();
-            }
+            // Delay before moving to next question
+            setTimeout(() => {
+                currentQuestion++;
+                if (currentQuestion < questions.length) {
+                    renderQuestion();
+                } else {
+                    showResults();
+                }
+            }, 200);
         }
         
         function calculateMBTI() {
