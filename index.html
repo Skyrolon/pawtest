@@ -54,8 +54,8 @@
         .container {
             width: 100%;
             height: 100%;
-            padding: 16px;
-            padding-bottom: 24px;
+            padding: 12px;
+            padding-bottom: 20px;
             display: flex;
             flex-direction: column;
             overflow: hidden;
@@ -71,6 +71,7 @@
             height: 100dvh;
             background: var(--white);
             text-align: center;
+            padding: 24px;
         }
 
         .loading-text {
@@ -116,7 +117,7 @@
             position: relative;
             cursor: pointer;
             transition: all 0.3s ease;
-            filter: brightness(0.3);
+            filter: brightness(0.05);
         }
 
         .sprite-grid-item.lit {
@@ -140,39 +141,12 @@
         .sprite-grid-item:nth-child(15) { border-color: #85C1E2; }
         .sprite-grid-item:nth-child(16) { border-color: #F8B88B; }
 
-        .sprite-grid-item:active {
-            transform: scale(0.95);
-        }
-
         .sprite-grid-item img {
             width: 100%;
             height: 100%;
             object-fit: contain;
             image-rendering: pixelated;
             pointer-events: none;
-        }
-
-        .sparkle {
-            position: fixed;
-            pointer-events: none;
-            font-size: 20px;
-            animation: sparkleFloat 0.8s ease-out forwards;
-            z-index: 10000;
-        }
-
-        @keyframes sparkleFloat {
-            0% {
-                opacity: 1;
-                transform: translate(0, 0) scale(0);
-            }
-            50% {
-                opacity: 1;
-                transform: translate(var(--tx), var(--ty)) scale(1);
-            }
-            100% {
-                opacity: 0;
-                transform: translate(var(--tx), var(--ty)) scale(0.5);
-            }
         }
 
         .landing-subtitle {
@@ -224,7 +198,7 @@
             aspect-ratio: 16 / 9;
             position: relative;
             overflow: hidden;
-            margin-bottom: 12px;
+            margin-bottom: 8px;
             border-radius: 12px;
             flex-shrink: 0;
         }
@@ -242,8 +216,8 @@
             font-family: 'Press Start 2P';
             font-size: clamp(7px, 2.5vw, 11px);
             line-height: 1.6;
-            margin-bottom: 12px;
-            padding: 12px;
+            margin-bottom: 8px;
+            padding: 10px;
             background: var(--white);
             text-align: left;
             flex-shrink: 0;
@@ -253,10 +227,10 @@
         .options {
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 6px;
             flex-shrink: 0;
             overflow: hidden;
-            margin-bottom: 12px;
+            margin-bottom: 8px;
         }
 
         .option-btn {
@@ -285,7 +259,6 @@
         }
 
         .option-btn.selected {
-            background: var(--yellow);
             transform: scale(0.95);
         }
 
@@ -464,35 +437,7 @@
         let scores = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
         let dataLoaded = false;
         
-        // Sparkle effect
-        function createSparkles(element) {
-            const rect = element.getBoundingClientRect();
-            const centerX = rect.left + rect.width / 2;
-            const centerY = rect.top + rect.height / 2;
-            
-            const sparkleEmojis = ['✨', '⭐', '💫', '🌟'];
-            const sparkleCount = 6;
-            
-            for (let i = 0; i < sparkleCount; i++) {
-                const sparkle = document.createElement('div');
-                sparkle.className = 'sparkle';
-                sparkle.textContent = sparkleEmojis[Math.floor(Math.random() * sparkleEmojis.length)];
-                
-                const angle = (Math.PI * 2 * i) / sparkleCount;
-                const distance = 40 + Math.random() * 20;
-                const tx = Math.cos(angle) * distance;
-                const ty = Math.sin(angle) * distance;
-                
-                sparkle.style.setProperty('--tx', `${tx}px`);
-                sparkle.style.setProperty('--ty', `${ty}px`);
-                sparkle.style.left = centerX + 'px';
-                sparkle.style.top = centerY + 'px';
-                
-                document.body.appendChild(sparkle);
-                
-                setTimeout(() => sparkle.remove(), 800);
-            }
-        }
+        // Removed sparkle effect function
         
         // Load sprites on page load
         loadSprites();
@@ -527,7 +472,6 @@
                     // Add click event to "turn on the lights"
                     spriteItem.addEventListener('click', () => {
                         spriteItem.classList.add('lit');
-                        createSparkles(spriteItem);
                     });
                     
                     spriteGrid.appendChild(spriteItem);
@@ -692,7 +636,7 @@
                 } else {
                     showResults();
                 }
-            }, 200);
+            }, 50);
         }
         
         function calculateMBTI() {
