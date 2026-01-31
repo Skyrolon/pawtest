@@ -9,12 +9,28 @@
         @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Space+Mono:wght@400;700&display=swap');
 
         :root {
-            --yellow: #E8D8A0;
-            --paper: #F5F5F1;
+            /* Soft pastel palette - cohesive and calming */
+            --soft-yellow: #FFF4D6;
+            --soft-blue: #E3F2FD;
+            --soft-red: #FFE8E8;
+            --soft-purple: #F3E5F5;
+            --soft-green: #E8F5E9;
+            --soft-peach: #FFE4D6;
+            
+            /* Accent colors */
+            --bold-red: #E57373;
+            --bold-blue: #64B5F6;
+            --progress-blue: #90CAF9;
+            --progress-border: #FFFFFF;
+            --light-beige: #faf0e6;
+            
+            --paper: #FAFAFA;
+            --light-grey: #E8E8E8;
             --ink: #222222;
-            --steel-blue: #7A9BB0;
-            --brick-red: #D89A8F;
+            --dark-grey: #4A4A4A;
             --white: #FFFFFF;
+            
+            /* Border colors for sprites */
             --mint: #C9E8D8;
             --peach: #E8D0C0;
             --lavender: #DCCAE8;
@@ -106,7 +122,7 @@
         .sprite-grid-item {
             width: 70px;
             height: 70px;
-            border: 2px solid var(--ink);
+            border: none;
             border-radius: 12px;
             background: #3a3a3a;
             display: flex;
@@ -119,25 +135,8 @@
         }
 
         .sprite-grid-item.lit {
-            background: transparent;
+            background: var(--paper);
         }
-
-        .sprite-grid-item:nth-child(1) { border-color: var(--brick-red); }
-        .sprite-grid-item:nth-child(2) { border-color: var(--yellow); }
-        .sprite-grid-item:nth-child(3) { border-color: var(--mint); }
-        .sprite-grid-item:nth-child(4) { border-color: var(--sky); }
-        .sprite-grid-item:nth-child(5) { border-color: var(--lavender); }
-        .sprite-grid-item:nth-child(6) { border-color: var(--peach); }
-        .sprite-grid-item:nth-child(7) { border-color: var(--steel-blue); }
-        .sprite-grid-item:nth-child(8) { border-color: #FF6B9D; }
-        .sprite-grid-item:nth-child(9) { border-color: #95E1D3; }
-        .sprite-grid-item:nth-child(10) { border-color: #FFA07A; }
-        .sprite-grid-item:nth-child(11) { border-color: #DDA0DD; }
-        .sprite-grid-item:nth-child(12) { border-color: #98D8C8; }
-        .sprite-grid-item:nth-child(13) { border-color: #F7DC6F; }
-        .sprite-grid-item:nth-child(14) { border-color: #BB8FCE; }
-        .sprite-grid-item:nth-child(15) { border-color: #85C1E2; }
-        .sprite-grid-item:nth-child(16) { border-color: #F8B88B; }
 
         .sprite-grid-item img {
             width: 100%;
@@ -147,12 +146,10 @@
             pointer-events: none;
             opacity: 0;
             transition: opacity 0.3s ease;
-            visibility: hidden;
         }
 
         .sprite-grid-item.lit img {
             opacity: 1;
-            visibility: visible;
         }
 
         .landing-subtitle {
@@ -166,6 +163,7 @@
             width: 100%;
             text-transform: uppercase;
             letter-spacing: 1px;
+            text-align: center;
         }
 
         .landing-subtext {
@@ -181,9 +179,9 @@
             font-family: 'Press Start 2P';
             font-size: 14px;
             padding: 20px 40px;
-            background: var(--brick-red);
+            background: var(--bold-red);
             color: var(--white);
-            border: 4px solid var(--ink);
+            border: none;
             border-radius: 12px;
             cursor: pointer;
             text-transform: uppercase;
@@ -199,10 +197,10 @@
             transform: translateY(4px);
         }
 
-        /* Background image with soft edges */
+        /* Background image with soft edges - 4:1.5 ratio */
         .question-bg-img {
             width: 100%;
-            aspect-ratio: 16 / 9;
+            aspect-ratio: 4 / 1.5;
             position: relative;
             overflow: hidden;
             margin-bottom: 8px;
@@ -221,9 +219,9 @@
 
         .question-text {
             font-family: 'Press Start 2P';
-            font-size: clamp(7px, 2.5vw, 11px);
+            font-size: clamp(10px, 3vw, 14px);
             line-height: 1.6;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             padding: 10px;
             background: var(--white);
             text-align: left;
@@ -234,7 +232,7 @@
         .options {
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 10px;
             flex-shrink: 0;
             overflow: hidden;
             margin-bottom: 8px;
@@ -242,12 +240,12 @@
 
         .option-btn {
             width: 100%;
-            background: var(--white);
+            background: var(--light-grey);
             color: var(--ink);
-            border: 3px solid var(--ink);
+            border: none;
             border-radius: 12px;
-            padding: 10px;
-            font-size: clamp(8px, 2.8vw, 12px);
+            padding: 14px;
+            font-size: clamp(10px, 3vw, 14px);
             font-weight: 700;
             text-align: left;
             cursor: pointer;
@@ -255,10 +253,11 @@
             transition: all 0.2s ease;
             flex-shrink: 0;
             position: relative;
+            min-height: 48px;
         }
 
         .option-btn:hover {
-            background: var(--paper);
+            background: #D8D8D8;
         }
 
         .option-btn:active {
@@ -270,24 +269,27 @@
         }
 
         .progress-container {
-            margin-top: 8px;
+            margin-top: auto;
+            padding: 12px 0;
             flex-shrink: 0;
-            padding-bottom: 8px;
         }
 
         .progress-bar {
             width: 100%;
             height: 16px;
-            background: var(--white);
-            border: 3px solid var(--ink);
+            background: var(--light-beige);
+            border: none;
             border-radius: 8px;
             overflow: hidden;
+            position: relative;
         }
 
         .progress-fill {
             height: 100%;
-            background: var(--yellow);
+            background: var(--progress-blue);
             transition: width 0.3s ease;
+            position: relative;
+            z-index: 1;
         }
 
         .result-container {
@@ -312,11 +314,11 @@
         .animal-name {
             font-family: 'Press Start 2P';
             font-size: 14px;
-            background: var(--brick-red);
+            background: var(--bold-red);
             color: var(--white);
             padding: 12px;
             text-align: center;
-            border: 2px solid var(--ink);
+            border: none;
             border-radius: 12px;
             margin-bottom: 16px;
             text-transform: uppercase;
@@ -327,8 +329,8 @@
             max-width: 200px;
             height: auto;
             image-rendering: pixelated;
-            margin: 0 auto 16px;
             display: block;
+            margin: 0 auto 16px;
         }
 
         .vibe-text {
@@ -345,7 +347,7 @@
         }
 
         .profile-box {
-            border: 2px solid var(--ink);
+            border: none;
             border-radius: 12px;
             padding: 12px;
             margin-bottom: 12px;
@@ -353,23 +355,28 @@
             line-height: 1.6;
         }
 
-        .profile-box:nth-child(4) { background: var(--mint); }
-        .profile-box:nth-child(4) .profile-heading { color: #2D5F3F; }
-        .profile-box:nth-child(5) { background: var(--peach); }
-        .profile-box:nth-child(5) .profile-heading { color: #B8643C; }
-        .profile-box:nth-child(6) { background: var(--lavender); }
-        .profile-box:nth-child(6) .profile-heading { color: #6B4C8C; }
-        .profile-box:nth-child(7) { background: var(--sky); }
-        .profile-box:nth-child(7) .profile-heading { color: #2E5C8A; }
-        .profile-box:nth-child(8) { background: var(--yellow); }
-        .profile-box:nth-child(8) .profile-heading { color: #8B6914; }
+        /* Assign specific soft colors to each profile section */
+        .profile-box:nth-child(4) { background: var(--soft-blue); }
+        .profile-box:nth-child(4) .profile-heading { color: #1976D2; }
+        
+        .profile-box:nth-child(5) { background: var(--soft-red); }
+        .profile-box:nth-child(5) .profile-heading { color: #C62828; }
+        
+        .profile-box:nth-child(6) { background: var(--soft-yellow); }
+        .profile-box:nth-child(6) .profile-heading { color: #F57F17; }
+        
+        .profile-box:nth-child(7) { background: var(--soft-purple); }
+        .profile-box:nth-child(7) .profile-heading { color: #7B1FA2; }
+        
+        .profile-box:nth-child(8) { background: var(--soft-green); }
+        .profile-box:nth-child(8) .profile-heading { color: #388E3C; }
         
         .profile-heading {
             font-family: 'Press Start 2P';
             font-size: 9px;
             margin-bottom: 8px;
             display: block;
-            border-bottom: 2px dashed var(--ink);
+            border-bottom: none;
             padding-bottom: 4px;
             text-transform: uppercase;
             line-height: 1.4;
@@ -379,9 +386,9 @@
             font-family: 'Press Start 2P';
             width: 100%;
             padding: 16px;
-            background: var(--steel-blue);
+            background: var(--bold-blue);
             color: var(--white);
-            border: 2px solid var(--ink);
+            border: none;
             border-radius: 12px;
             cursor: pointer;
             text-transform: uppercase;
@@ -401,6 +408,32 @@
             display: none !important;
         }
 
+        /* Debug styles */
+        .debug-info {
+            position: fixed;
+            bottom: 10px;
+            left: 10px;
+            background: rgba(0, 0, 0, 0.8);
+            color: #00ff00;
+            padding: 10px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 10px;
+            max-width: 250px;
+            z-index: 9999;
+            line-height: 1.4;
+        }
+
+        .debug-trait {
+            display: inline-block;
+            background: rgba(255, 255, 0, 0.3);
+            padding: 2px 4px;
+            border-radius: 3px;
+            margin-left: 4px;
+            font-size: 9px;
+            font-family: monospace;
+        }
+
         @media (max-width: 430px) {
             body {
                 background-color: var(--white);
@@ -416,7 +449,7 @@
     <div class="mobile-viewport">
         <!-- Loading Screen -->
         <div class="loading-screen" id="loadingScreen">
-            <p class="loading-text">LOADING<br>SPRITES...</p>
+            <p class="loading-text">LOADING...</p>
         </div>
 
         <!-- Landing Page -->
@@ -425,8 +458,8 @@
                 <!-- Sprites will be loaded here -->
             </div>
             
-            <p class="landing-subtitle">FIND OUT WHAT ANIMAL YOU ARE</p>
-            <p class="landing-subtext">Can you get the prized black cat or golden retriever?</p>
+            <p class="landing-subtitle">FIND OUT WHAT<br>ANIMAL YOU ARE</p>
+            <p class="landing-subtext">Are you a black cat or golden retriever or something else...</p>
             
             <button class="start-btn" id="startBtn">Start Test</button>
         </div>
@@ -440,6 +473,10 @@
     </div>
 
     <script>
+        // ==================== DEBUG CONFIGURATION ====================
+        const DEBUG_MODE = false; // Set to true to enable debugging, false to disable
+        // =============================================================
+
         const QUESTIONS_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTl7KuGBmEGEHqavwmPHRCLRvFHwvzSKVcKMRCEw0aWPej50cAVUrA_Oh1PIMSY6yKL4B8OEh7tqR1d/pub?gid=0&single=true&output=csv';
         const PROFILES_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTl7KuGBmEGEHqavwmPHRCLRvFHwvzSKVcKMRCEw0aWPej50cAVUrA_Oh1PIMSY6yKL4B8OEh7tqR1d/pub?gid=1646208880&single=true&output=csv';
         
@@ -448,8 +485,37 @@
         let currentQuestion = 0;
         let scores = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
         let dataLoaded = false;
+        let allImagesLoaded = false;
+        let debugElement = null;
         
-        // Removed sparkle effect function
+        // Debug functions
+        function createDebugDisplay() {
+            if (!DEBUG_MODE) return;
+            debugElement = document.createElement('div');
+            debugElement.className = 'debug-info';
+            document.body.appendChild(debugElement);
+            updateDebugDisplay();
+        }
+
+        function updateDebugDisplay() {
+            if (!DEBUG_MODE || !debugElement) return;
+            const total = Object.values(scores).reduce((a, b) => a + b, 0);
+            debugElement.innerHTML = `
+                <strong>SCORES:</strong><br>
+                E: ${scores.E.toFixed(1)} | I: ${scores.I.toFixed(1)}<br>
+                S: ${scores.S.toFixed(1)} | N: ${scores.N.toFixed(1)}<br>
+                T: ${scores.T.toFixed(1)} | F: ${scores.F.toFixed(1)}<br>
+                J: ${scores.J.toFixed(1)} | P: ${scores.P.toFixed(1)}<br>
+                <strong>Total: ${total.toFixed(1)}</strong><br>
+                <strong>Q: ${currentQuestion + 1}/${questions.length}</strong>
+            `;
+        }
+
+        function logDebug(message) {
+            if (DEBUG_MODE) {
+                console.log(`[DEBUG] ${message}`);
+            }
+        }
         
         // Load sprites on page load
         loadSprites();
@@ -461,12 +527,58 @@
                 
                 const spriteGrid = document.getElementById('spriteGrid');
                 
+                // Find black cat and golden retriever
+                let blackCatProfile = null;
+                let goldenRetrieverProfile = null;
+                let blackCatOriginalIndex = -1;
+                let goldenRetrieverOriginalIndex = -1;
+                
+                parsedProfiles.forEach((profile, index) => {
+                    const animalLower = profile.animal.toLowerCase();
+                    if (animalLower.includes('black cat')) {
+                        blackCatProfile = profile;
+                        blackCatOriginalIndex = index;
+                        logDebug(`Found Black Cat at index ${index}: ${profile.animal}`);
+                    }
+                    if (animalLower.includes('golden retriever')) {
+                        goldenRetrieverProfile = profile;
+                        goldenRetrieverOriginalIndex = index;
+                        logDebug(`Found Golden Retriever at index ${index}: ${profile.animal}`);
+                    }
+                });
+
+                // Create a new array with black cat and golden retriever at positions 1 and 2
+                const reorderedProfiles = [...parsedProfiles];
+                
+                if (blackCatProfile && goldenRetrieverProfile) {
+                    // Remove them from their original positions (remove in reverse order to maintain indices)
+                    if (blackCatOriginalIndex > goldenRetrieverOriginalIndex) {
+                        reorderedProfiles.splice(blackCatOriginalIndex, 1);
+                        reorderedProfiles.splice(goldenRetrieverOriginalIndex, 1);
+                    } else {
+                        reorderedProfiles.splice(goldenRetrieverOriginalIndex, 1);
+                        reorderedProfiles.splice(blackCatOriginalIndex, 1);
+                    }
+                    
+                    // Insert at positions 1 and 2
+                    reorderedProfiles.splice(1, 0, blackCatProfile);
+                    reorderedProfiles.splice(2, 0, goldenRetrieverProfile);
+                    
+                    logDebug(`Reordered: Black Cat at position 1, Golden Retriever at position 2`);
+                }
+                
                 // Create array to track image loading
                 const imagePromises = [];
                 
-                parsedProfiles.forEach(profile => {
+                reorderedProfiles.forEach((profile, index) => {
                     const spriteItem = document.createElement('div');
                     spriteItem.className = 'sprite-grid-item';
+                    
+                    // Turn on lights for positions 1 and 2 (black cat and golden retriever)
+                    if (index === 1 || index === 2) {
+                        spriteItem.classList.add('lit');
+                        logDebug(`Lighting sprite at position ${index}: ${profile.animal}`);
+                    }
                     
                     const img = document.createElement('img');
                     img.alt = profile.animal;
@@ -491,6 +603,7 @@
                 
                 // Wait for all images to load
                 await Promise.all(imagePromises);
+                allImagesLoaded = true;
                 
                 // Hide loading screen and show landing page
                 document.getElementById('loadingScreen').classList.add('hidden');
@@ -503,12 +616,17 @@
         }
         
         // Start button click handler
-        document.getElementById('startBtn').addEventListener('click', () => {
+        document.getElementById('startBtn').addEventListener('click', async () => {
+            // Only proceed if all images are loaded
+            if (!allImagesLoaded) {
+                return;
+            }
+            
             document.getElementById('landingPage').classList.add('hidden');
             document.getElementById('app').classList.remove('hidden');
             
             if (!dataLoaded) {
-                loadData();
+                await loadData();
             } else {
                 startQuiz();
             }
@@ -520,12 +638,44 @@
                 const profilesData = await fetchCSV(PROFILES_URL);
                 questions = parseQuestions(questionsData);
                 profiles = parseProfiles(profilesData);
+                
+                // Preload all question background images
+                await preloadQuestionImages();
+                
                 dataLoaded = true;
+                createDebugDisplay();
                 startQuiz();
             } catch (error) {
                 document.getElementById('app').innerHTML = `<div class="loading-text">ERROR<br>LOADING<br>DATA</div>`;
                 console.error('Error:', error);
             }
+        }
+        
+        async function preloadQuestionImages() {
+            const imagePromises = questions.map(q => {
+                return new Promise((resolve) => {
+                    if (!q.background || q.background.trim() === "") {
+                        resolve();
+                        return;
+                    }
+                    
+                    let imageUrl = q.background.trim();
+                    if (imageUrl.includes('ibb.co/')) {
+                        const match = imageUrl.match(/ibb\.co\/([a-zA-Z0-9]+)/);
+                        if (match) {
+                            const imageId = match[1];
+                            imageUrl = `https://i.ibb.co/${imageId}/image.png`;
+                        }
+                    }
+                    
+                    const img = new Image();
+                    img.onload = () => resolve();
+                    img.onerror = () => resolve(); // Resolve anyway to not block
+                    img.src = imageUrl;
+                });
+            });
+            
+            await Promise.all(imagePromises);
         }
         
         function fetchCSV(url) {
@@ -577,6 +727,7 @@
         function startQuiz() {
             currentQuestion = 0;
             scores = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
+            updateDebugDisplay();
             renderQuestion();
         }
         
@@ -585,10 +736,18 @@
             const progress = (currentQuestion / questions.length) * 100;
             const appDiv = document.getElementById('app');
             
+            logDebug(`Rendering question ${currentQuestion + 1}/${questions.length}`);
+            
             let bgImageHTML = '';
             if (q.background && q.background.trim() !== "") {
                 let imageUrl = q.background.trim();
-                // Use the image URL directly as provided - no conversion needed
+                if (imageUrl.includes('ibb.co/')) {
+                    const match = imageUrl.match(/ibb\.co\/([a-zA-Z0-9]+)/);
+                    if (match) {
+                        const imageId = match[1];
+                        imageUrl = `https://i.ibb.co/${imageId}/image.png`;
+                    }
+                }
                 bgImageHTML = `<div class="question-bg-img"><img src="${imageUrl}" alt="Question background" onerror="this.parentElement.style.display='none'"></div>`;
             }
 
@@ -607,10 +766,21 @@
             q.options.forEach((opt, i) => {
                 const btn = document.createElement('button');
                 btn.className = 'option-btn';
-                btn.textContent = opt.text;
+                
+                // Add debug trait display if enabled
+                if (DEBUG_MODE && opt.trait) {
+                    btn.innerHTML = `${opt.text} <span class="debug-trait">${opt.trait}</span>`;
+                } else {
+                    btn.textContent = opt.text;
+                }
+                
                 btn.addEventListener('click', () => selectOption(i, btn));
                 optionsContainer.appendChild(btn);
+                
+                logDebug(`Option ${i + 1}: "${opt.text}" -> ${opt.trait || 'no trait'}`);
             });
+            
+            updateDebugDisplay();
         }
         
         function selectOption(optionIndex, buttonElement) {
@@ -622,17 +792,24 @@
             let traitStr = option.trait ? String(option.trait).trim() : null;
 
             if (traitStr) {
-                const match = traitStr.match(/([A-Z])\s*\(?\+?(\d+)\)?/i);
+                // Match patterns like: E, E+1, E(+1), E 1.5, E(1.5), E +1.5, etc.
+                const match = traitStr.match(/([A-Z])\s*\(?\+?\s*([\d.]+)\)?/i);
                 let letter, value;
                 if (match) {
                     letter = match[1].toUpperCase();
-                    value = parseInt(match[2]);
+                    value = parseFloat(match[2]); // Use parseFloat to handle decimals
                 } else {
                     letter = traitStr.charAt(0).toUpperCase();
                     value = 1;
                 }
-                if (scores.hasOwnProperty(letter)) scores[letter] += value;
+                
+                if (scores.hasOwnProperty(letter)) {
+                    scores[letter] += value;
+                    logDebug(`Selected: ${letter} +${value}. New score: ${letter}=${scores[letter]}`);
+                }
             }
+
+            updateDebugDisplay();
 
             // Delay before moving to next question
             setTimeout(() => {
@@ -651,12 +828,15 @@
             mbti += scores.S > scores.N ? 'S' : 'N';
             mbti += scores.T > scores.F ? 'T' : 'F';
             mbti += scores.J > scores.P ? 'J' : 'P';
+            logDebug(`Final MBTI: ${mbti} (E:${scores.E} I:${scores.I} S:${scores.S} N:${scores.N} T:${scores.T} F:${scores.F} J:${scores.J} P:${scores.P})`);
             return mbti;
         }
         
         function showResults() {
             const mbti = calculateMBTI();
             const result = profiles.find(p => p.mbti === mbti) || profiles[0];
+
+            logDebug(`Showing result: ${result.animal} (${mbti})`);
 
             const profileLines = result.profile.split('\n').filter(p => p.trim() !== '');
             const profileBoxes = [];
