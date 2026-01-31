@@ -71,6 +71,7 @@
             width: 100%;
             height: 100%;
             padding: 12px;
+            padding-bottom: max(12px, env(safe-area-inset-bottom));
             display: flex;
             flex-direction: column;
             overflow-y: auto;
@@ -175,6 +176,14 @@
             max-width: 320px;
         }
 
+        .visitor-count {
+            font-family: 'Space Mono';
+            font-size: 11px;
+            color: var(--ink);
+            opacity: 0.5;
+            margin-top: 16px;
+        }
+
         .start-btn {
             font-family: 'Press Start 2P';
             font-size: 14px;
@@ -218,8 +227,9 @@
         }
 
         .question-text {
-            font-family: 'Press Start 2P';
+            font-family: 'Space Mono';
             font-size: clamp(10px, 3vw, 14px);
+            font-weight: 700;
             line-height: 1.6;
             margin-bottom: 10px;
             padding: 10px;
@@ -270,7 +280,7 @@
 
         .progress-container {
             margin-top: auto;
-            padding: 12px 0 20px 0;
+            padding: 12px 0 32px 0;
             flex-shrink: 0;
         }
 
@@ -473,6 +483,7 @@
             <p class="landing-subtext">Are you a black cat or golden retriever or something else...</p>
             
             <button class="start-btn" id="startBtn">Start Test</button>
+            <p class="visitor-count hidden" id="visitorCount">Loading visits...</p>
         </div>
 
         <!-- Quiz Container -->
@@ -530,6 +541,31 @@
         
         // Load sprites on page load
         loadSprites();
+        
+        // Track page visit with CountAPI
+        async function trackVisit() {
+            try {
+                // You can change 'personality-pawtest' to any unique namespace you want
+                // The key 'visits' will store the count
+                const response = await fetch('https://api.countapi.xyz/hit/personality-pawtest/visits');
+                const data = await response.json();
+                
+                // Display the count
+                const visitorCountElement = document.getElementById('visitorCount');
+                if (visitorCountElement) {
+                    visitorCountElement.textContent = `${data.value.toLocaleString()} total visits`;
+                }
+            } catch (error) {
+                console.error('Error tracking visit:', error);
+                const visitorCountElement = document.getElementById('visitorCount');
+                if (visitorCountElement) {
+                    visitorCountElement.textContent = '';
+                }
+            }
+        }
+        
+        // Track visit when page loads
+        trackVisit();
         
         async function loadSprites() {
             try {
